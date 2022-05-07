@@ -21,14 +21,16 @@ jobs:
 
       - name: Create Application Property
         run: |
-          echo ${{ secrets.DATASOURCE_URL }}
+          touch ./src/main/resources/application.properties
 
       - name: Create Application Property_
         run: |
           echo ${{ secrets.DATASOURCE_URL }} >> ./src/main/resources/application.properties
+
       - name: Create Application Property
         run: |
           echo ${{ secrets.DATASOURCE_USERNAME }} >> ./src/main/resources/application.properties
+
       - name: Create Application Property
         run: |
           echo ${{ secrets.DATASOURCE_PASSWORD }} >> ./src/main/resources/application.properties
