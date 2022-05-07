@@ -19,21 +19,17 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Create Application Property
-        run: |
-          touch ./src/main/resources/application.properties
-
       - name: Create Application Property_
         run: |
-          echo ${{ secrets.DATASOURCE_URL }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_URL }} >> application.properties
 
       - name: Create Application Property
         run: |
-          echo ${{ secrets.DATASOURCE_USERNAME }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_USERNAME }} >> application.properties
 
       - name: Create Application Property
         run: |
-          echo ${{ secrets.DATASOURCE_PASSWORD }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_PASSWORD }} >> application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
