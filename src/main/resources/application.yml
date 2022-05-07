@@ -10,9 +10,10 @@ logging:
                 security: DEBUG
 spring:
     datasource:
-        password: ${{ secrets.AWS_RDS_PASSWORD }}
-        url: jdbc:mysql://${{ secrets.AWS_RDS_DATABASE_ADDRESS }}:3306/${{ secrets.AWS_RDS_DATABASE_NAME }}
-        username: ${{ secrets.AWS_RDS_USERNAME }}
+            driver-class-name: ${{ secrets.AWS_RDS_DATABASE_NAME }}
+            url: ${{ secrets.AWS_RDS_DATABASE_ADDRESS_NAME }}
+            username: ${{ secrets.AWS_RDS_USERNAME }}
+            password: ${{ secrets.AWS_RDS_PASSWORD }}
     jpa:
         generate-ddl: true
         hibernate:
