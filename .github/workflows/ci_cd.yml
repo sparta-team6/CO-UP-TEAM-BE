@@ -21,11 +21,13 @@ jobs:
 
       - name: Create Application Property
         run: |
-          echo ${{ secrets.APPLICATION_PROPERTIES }}
+          echo ${{ secrets.DATASOURCE_URL }}
 
       - name: Create Application Property
         run: |
-          echo ${{ secrets.APPLICATION_PROPERTIES }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_URL }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_USERNAME }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.DATASOURCE_PASSWORD }} >> ./src/main/resources/application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
