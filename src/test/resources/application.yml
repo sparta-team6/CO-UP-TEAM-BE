@@ -11,8 +11,7 @@ logging:
 spring:
   datasource:
     username: ${{ secrets.AWS_RDS_USERNAME }}
-    url: jdbc:mysql://${{ secrets.AWS_RDS_DATABASE_ADDRESS }}:3306/${{ secrets.AWS_RDS_DATABASE_NAME
-      }}
+    url: jdbc:mysql://${{ secrets.AWS_RDS_DATABASE_ADDRESS }}:3306/${{ secrets.AWS_RDS_DATABASE_NAME }}
     password: ${{ secrets.AWS_RDS_PASSWORD }}
   jpa:
     generate-ddl: 'true'
