@@ -1,0 +1,23 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
+spring:
+  datasource:
+    username: ${{ secrets.AWS_RDS_USERNAME }}
+    url: jdbc:mysql://${{ secrets.AWS_RDS_DATABASE_ADDRESS }}:3306/${{ secrets.AWS_RDS_DATABASE_NAME
+      }}
+    password: ${{ secrets.AWS_RDS_PASSWORD }}
+  jpa:
+    generate-ddl: 'true'
+    properties:
+      hibernate:
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: create
