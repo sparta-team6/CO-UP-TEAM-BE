@@ -1,4 +1,4 @@
-package hanghae.api.coupteambe.domain.model.baseentity;
+package hanghae.api.coupteambe.domain.entity.baseentity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
