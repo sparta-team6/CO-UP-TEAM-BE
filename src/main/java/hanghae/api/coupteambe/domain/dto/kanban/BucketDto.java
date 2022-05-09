@@ -7,6 +7,9 @@ import java.util.List;
 @Getter
 public class BucketDto {
 
+    // 버킷 ID
+    private String kbbId;
+
     // 버킷 제목
     private String title;
 
