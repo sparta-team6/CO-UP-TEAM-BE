@@ -7,7 +7,7 @@ import java.util.List;
 public class FolderDto {
 
     //폴더번호
-    private String dfId;
+    private String pjId;
     //폴더이름
     private String title;
     //배치순서
