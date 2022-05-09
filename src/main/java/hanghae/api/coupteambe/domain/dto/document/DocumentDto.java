@@ -3,7 +3,8 @@ package hanghae.api.coupteambe.domain.dto.document;
 import javax.validation.constraints.NotNull;
 
 public class DocumentDto {
-
+    //폴더번호
+    private String dfId;
     //문서번호
     private String docId;
     //제목
