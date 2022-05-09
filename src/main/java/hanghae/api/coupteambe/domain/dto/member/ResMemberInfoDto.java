@@ -4,9 +4,6 @@ import hanghae.api.coupteambe.enumerate.Social;
 
 public class ResMemberInfoDto {
 
-    // 멤버 이름
-    private String memberName;
-
     // 로그인 아이디 (email) *소셜 회원가입 시 이메일 중복가입 불허인 관계로, 로그인 ID는 유니크함
     private String loginId;
 
