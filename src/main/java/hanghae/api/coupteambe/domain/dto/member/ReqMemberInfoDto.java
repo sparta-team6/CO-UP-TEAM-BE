@@ -2,8 +2,8 @@ package hanghae.api.coupteambe.domain.dto.member;
 
 public class ReqMemberInfoDto {
 
-    // 멤버 번호
-    private String mbId;
+    // 로그인ID
+    private String loginId;
 
     // 프로필 이미지 URL
     private String profileImage;
