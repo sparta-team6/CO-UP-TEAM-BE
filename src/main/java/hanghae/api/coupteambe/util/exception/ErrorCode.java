@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
  * 403 Forbidden : 접근 권한 없음.
  * 404 Not Found : Resource 없음.
  * 405 Methods Not Allowed : 유효하지 않은 요청
+ * 409 Conflict : 리소스 충돌(중복)
  *
  * 5xx 서버 오류
  * 500 Internal Server Error : 서버 오류 발생
@@ -27,9 +28,12 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // 공통
-    COMMON_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+    COMMON_INTERNAL_ERROR_500(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생하였습니다."),
+    COMMON_BAD_REQUEST_400(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+
 
     // Member 관련
+    LOGINID_DUPLICATION_409(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
 
 
     // Project 관련
@@ -40,6 +44,8 @@ public enum ErrorCode {
 
     // Document 관련
 
+
+    DO_NOT_USED(null,null);
 
 
     private final HttpStatus httpStatus;

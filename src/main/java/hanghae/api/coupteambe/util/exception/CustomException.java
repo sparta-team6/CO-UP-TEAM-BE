@@ -1,11 +1,15 @@
 package hanghae.api.coupteambe.util.exception;
 
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
 public class CustomException extends RuntimeException {
 
-    private ErrorCode errorCode;
+    private final HttpStatus httpStatus;
 
-    public CustomException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+    public CustomException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.httpStatus = errorCode.getHttpStatus();
     }
 }
