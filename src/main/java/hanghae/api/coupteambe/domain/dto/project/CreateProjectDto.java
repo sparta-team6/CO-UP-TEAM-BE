@@ -8,4 +8,5 @@ public class CreateProjectDto {
     private String title;
     //프로젝트개요
     private String summary;
+
 }
