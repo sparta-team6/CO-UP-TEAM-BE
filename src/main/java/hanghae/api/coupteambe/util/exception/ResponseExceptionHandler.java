@@ -16,10 +16,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<String> handleCustomException(CustomException e) {
+    @ExceptionHandler({RequestException.class, JwtException.class})
+    protected ResponseEntity<String> handleCustomException(RequestException e) {
 
-        log.debug("Error - CustomException : '{}'", e.getMessage());
+        log.debug("Exception : '{}'", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
 }
