@@ -2,5 +2,5 @@ package hanghae.api.coupteambe.enumerate;
 
 public enum Social {
 
-    KAKAO
+    KAKAO, GITHUB, GOOGLE
 }

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({RequestException.class, JwtException.class})
+    @ExceptionHandler(RequestException.class)
     protected ResponseEntity<String> handleCustomException(RequestException e) {
 
         log.debug("Exception : '{}'", e.getMessage());

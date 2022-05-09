@@ -1,7 +1,10 @@
 package hanghae.api.coupteambe.domain.dto.member;
 
+import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.enumerate.Social;
+import lombok.Getter;
 
+@Getter
 public class ResMemberInfoDto {
 
     // 로그인 아이디 (email) *소셜 회원가입 시 이메일 중복가입 불허인 관계로, 로그인 ID는 유니크함
@@ -21,4 +24,13 @@ public class ResMemberInfoDto {
 
     // 프로필 이미지 URL
     private String profileImage;
+
+    public ResMemberInfoDto(Member member) {
+        this.loginId = member.getLoginId();
+        this.social = member.getSocial();
+        this.nickname = member.getNickname();
+        this.url = member.getUrl();
+        this.aboutMe = member.getAboutMe();
+        this.profileImage = member.getProfileImage();
+    }
 }
