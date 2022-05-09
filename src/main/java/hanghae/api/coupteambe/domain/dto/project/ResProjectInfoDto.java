@@ -1,6 +1,6 @@
 package hanghae.api.coupteambe.domain.dto.project;
 
-public class ReqProjectInfoDto {
+public class ResProjectInfoDto {
 
     //프로젝트번호
     private String pjId;
@@ -10,4 +10,6 @@ public class ReqProjectInfoDto {
     private String title;
     //프로젝트개요
     private String summary;
+    //초대코드
+    private String inviteCode;
 }
