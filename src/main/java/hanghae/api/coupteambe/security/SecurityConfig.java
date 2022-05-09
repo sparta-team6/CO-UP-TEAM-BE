@@ -6,6 +6,7 @@ import hanghae.api.coupteambe.security.jwt.JwtSecurityConfig;
 import hanghae.api.coupteambe.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -30,6 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -41,19 +47,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable();
+        http.csrf().disable()
 
-        http.exceptionHandling()
+            .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            .accessDeniedHandler(jwtAccessDeniedHandler);
+            .accessDeniedHandler(jwtAccessDeniedHandler)
 
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-        http.apply(new JwtSecurityConfig(tokenProvider));
+            .and()
+            .apply(new JwtSecurityConfig(tokenProvider))
 
-        http.authorizeRequests()
-            .antMatchers("/api/hello").permitAll()
+            .and()
+            .authorizeRequests()
+            .antMatchers("/auth/**").permitAll()
             .anyRequest().authenticated();
     }
 }
