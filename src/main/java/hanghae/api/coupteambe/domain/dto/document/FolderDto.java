@@ -10,6 +10,8 @@ public class FolderDto {
     private String dfId;
     //폴더이름
     private String title;
+    //배치순서
+    private int position;
 
     private List<DocumentDto> docs;
 }

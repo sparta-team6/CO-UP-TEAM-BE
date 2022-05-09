@@ -10,4 +10,6 @@ public class DocumentDto {
     private String title;
     //본문
     private String contents;
+    //배치순서
+    private int position;
 }
