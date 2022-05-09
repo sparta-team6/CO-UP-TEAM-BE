@@ -1,6 +1,7 @@
 package hanghae.api.coupteambe.domain.dto.project;
 
 public class ReqProjectInfoDto {
+    
     //프로젝트번호
     private String pjId;
     // 이미지주소
