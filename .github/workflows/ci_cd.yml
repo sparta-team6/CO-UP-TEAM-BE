@@ -44,6 +44,14 @@ jobs:
         run: |
           echo ${{ secrets.DATASOURCE_PASSWORD }} >> ./src/main/resources/application.properties
 
+      - name: Add Kakao_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_CLIENT_ID }} >> ./src/main/resources/application.properties
+
+      - name: Add Kakao_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_REDIRECT_URI }} >> ./src/main/resources/application.properties
+
       - name: cat application.properties
         run: |
           cat ./src/main/resources/application.properties
