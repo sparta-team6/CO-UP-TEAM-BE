@@ -31,7 +31,7 @@ class MemberTest {
         Member findMember = memberRepository.save(member);
 
         assertThat(member.getId()).isEqualTo(findMember.getId());
-        assertThat(findMember.getDelFlag()).isEqualTo(StatusFlag.SURVIVAL);
+        assertThat(findMember.getDelFlag()).isEqualTo(StatusFlag.NORMAL);
         assertThat(findMember.getSocial()).isEqualTo(Social.KAKAO);
     }
 }
