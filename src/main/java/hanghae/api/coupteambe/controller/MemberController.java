@@ -41,10 +41,9 @@ public class MemberController {
      */
     @GetMapping("/")
     public ResponseEntity<ResMemberInfoDto> getMemberInfo(@RequestParam("loginId") String loginId) {
-        ResMemberInfoDto memberInfo = new ResMemberInfoDto();
 
         // 반환값 : 멤버 정보, 상태값(200)
-        return ResponseEntity.ok(memberInfo);
+        return ResponseEntity.ok(null);
     }
 
     /**
@@ -53,9 +52,8 @@ public class MemberController {
     @GetMapping("/myInfo")
     public ResponseEntity<ResMemberInfoDto> getMyInfo() {
         // 로그인한 유저의 유효한 jwt 토큰 값으로 정보 조회할 예정이므로 파라매터 안받아옴
-        ResMemberInfoDto myInfo = new ResMemberInfoDto();
 
         // 반환값 : 본인 정보, 상태값(200)
-        return ResponseEntity.ok(myInfo);
+        return ResponseEntity.ok(null);
     }
 }
