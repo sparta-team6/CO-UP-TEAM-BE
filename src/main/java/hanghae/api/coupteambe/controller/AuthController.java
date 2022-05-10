@@ -24,29 +24,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/{social}")
-    public ResponseEntity<ResResultDto> login(@PathVariable("social") String socialPath, HttpServletResponse response) {
-        Social social = null;
+    public ResponseEntity<ResResultDto> login(
+            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code,HttpServletResponse response) {
+        SocialUserInfoDto socialUserInfoDto = null;
         switch (socialPath) {
             case "kakao":
-                social = Social.KAKAO;
+                socialUserInfoDto = authService.kakao(code);
+
                 break;
             case "google":
-                social = Social.GOOGLE;
+                socialUserInfoDto = authService.google(code);
                 break;
             case "github":
-                social = Social.GITHUB;
+                socialUserInfoDto = authService.github(code);
                 break;
         }
-        if (social == null) {
+        if (socialUserInfoDto == null) {
             throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
         }
 
-        SocialUserInfoDto socialUserInfoDto = SocialUserInfoDto.builder()
-                                                               .loginId(null)
-                                                               .nickname(null)
-                                                               .profileImage(null)
-                                                               .social(social)
-                                                               .build();
 
         JwtTokenDto jwtTokenDto = authService.login(socialUserInfoDto);
 
