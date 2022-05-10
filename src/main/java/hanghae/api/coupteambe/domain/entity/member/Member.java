@@ -26,7 +26,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Social social;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, length = 20)
