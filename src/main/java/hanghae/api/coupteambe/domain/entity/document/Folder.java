@@ -7,19 +7,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
+import javax.persistence.*;
 
-@EntityListeners(AuditingEntityListener.class)
+@Entity
 @Getter
 @NoArgsConstructor
 public class Folder extends BaseEntity {
 
-    @Column(updatable = false, nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String dfId;
 
-    @Column(updatable = false, nullable = false)
-    private Project pjId;
+    //Folder : Project => N: 1 엔티티에서 pjId 외래키를 뜻함
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECTpjId", nullable = false)
+    private Project project;
 
     @Column(nullable = false)
     private String title;
@@ -31,9 +33,9 @@ public class Folder extends BaseEntity {
     private String creator;
 
     @Builder
-    public Folder(String dfId, Project pjId, String title, int position, String creator) {
+    public Folder(String dfId, Project project, String title, int position, String creator) {
         this.dfId = dfId;
-        this.pjId = pjId;
+        this.project = project;
         this.title = title;
         this.position = position;
         this.creator = creator;

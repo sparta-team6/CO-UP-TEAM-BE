@@ -6,22 +6,26 @@ import hanghae.api.coupteambe.enumerate.MStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+@Entity
 public class Document extends BaseEntity {
+
 
     @Column(updatable = false, nullable = false)
     private String docId;
 
-    @Column(updatable = false, nullable = false)
-    private Folder dfId;
+    //Document : Folder => N: 1 엔티티에서 dfId 외래키를 뜻함
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOLDERdfId", nullable = false)
+    private Folder folder;
 
-    @Column(updatable = false, nullable = false)
-    private Project pjId;
+    //Document : Project => N: 1 엔티티에서 pjId 외래키를 뜻함
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECTpjId", nullable = false)
+    private Project project;
 
     @Column(nullable = false)
     private String title;
@@ -36,10 +40,10 @@ public class Document extends BaseEntity {
     private MStatus mStatus = MStatus.M_STATUS_SUCCESS;
 
     @Builder
-    public Document(String docId, Folder dfId, Project pjId, String title, String contents, int position, MStatus mStatus) {
+    public Document(String docId, Folder folder, Project project, String title, String contents, int position, MStatus mStatus) {
         this.docId = docId;
-        this.dfId = dfId;
-        this.pjId = pjId;
+        this.folder = folder;
+        this.project = project;
         this.title = title;
         this.contents = contents;
         this.position = position;

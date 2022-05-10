@@ -4,16 +4,17 @@ import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
 
-@EntityListeners(AuditingEntityListener.class)
+import javax.persistence.*;
+
+
+@Entity
 @Getter
 @NoArgsConstructor
 public class Project extends BaseEntity {
 
-    @Column(updatable = false, nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String pjId;
 
     private String thumbnail;
