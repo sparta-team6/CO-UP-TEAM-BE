@@ -44,7 +44,7 @@ jobs:
         run: |
           cat ./src/main/resources/application.properties
       # application.properties 추가정보 입력 끝
-      -
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
