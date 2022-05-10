@@ -1,10 +1,9 @@
 package hanghae.api.coupteambe.util.exception;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -14,11 +13,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 
 @RestControllerAdvice
+@Slf4j
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-        return super.handleExceptionInternal(ex, body, headers, status, request);
+    @ExceptionHandler(RequestException.class)
+    protected ResponseEntity<String> handleCustomException(RequestException e) {
+
+        log.debug("Exception : '{}'", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
 }

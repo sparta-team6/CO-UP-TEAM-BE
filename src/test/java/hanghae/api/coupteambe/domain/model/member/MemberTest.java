@@ -19,7 +19,6 @@ class MemberTest {
     @Test
     public void createMember(){
         Member member = Member.builder()
-                              .memberName("memberName")
                               .loginId("loginId")
                               .nickname("nickname")
                               .password("password")
@@ -32,7 +31,6 @@ class MemberTest {
         Member findMember = memberRepository.save(member);
 
         assertThat(member.getId()).isEqualTo(findMember.getId());
-        assertThat(member.getMemberName()).isEqualTo(findMember.getMemberName());
         assertThat(findMember.getDelFlag()).isEqualTo(StatusFlag.SURVIVAL);
         assertThat(findMember.getSocial()).isEqualTo(Social.KAKAO);
     }
