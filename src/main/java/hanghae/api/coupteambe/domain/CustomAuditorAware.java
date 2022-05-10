@@ -1,9 +1,8 @@
 package hanghae.api.coupteambe.domain;
 
+import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.domain.repository.MemberRepository;
-import hanghae.api.coupteambe.util.exception.ErrorCode;
-import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
@@ -27,10 +26,7 @@ public class CustomAuditorAware implements AuditorAware<UUID> {
             return Optional.empty();
         }
         Optional<Member> member = memberRepository.findByLoginId(authentication.getName());
-        if (member.isPresent()) {
-            return Optional.of(member.get().getId());
-        } else {
-            throw new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404);
-        }
+        //            throw new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404);
+        return member.map(BaseEntity::getId);
     }
 }
