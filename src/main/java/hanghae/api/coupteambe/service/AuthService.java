@@ -6,6 +6,7 @@ import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.domain.entity.security.RefreshToken;
 import hanghae.api.coupteambe.domain.repository.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.RefreshTokenRepository;
+import hanghae.api.coupteambe.enumerate.Social;
 import hanghae.api.coupteambe.security.jwt.TokenProvider;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -99,5 +100,48 @@ public class AuthService {
     @Transactional
     public void logout(String loginId) {
         refreshTokenRepository.deleteByLoginId(loginId);
+    }
+
+    public SocialUserInfoDto kakao(String code) {
+
+        //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
+        // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
+
+
+
+        Social social = Social.KAKAO;
+        return generateSocialUserInfoDto(null, null, null, social);
+    }
+
+    public SocialUserInfoDto google(String code) {
+
+        //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
+        // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
+
+
+
+        Social social = Social.GOOGLE;
+        return generateSocialUserInfoDto(null, null, null, social);
+    }
+
+    public SocialUserInfoDto github(String code) {
+
+        //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
+        // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
+
+
+
+        Social social = Social.GITHUB;
+        return generateSocialUserInfoDto(null, null, null, social);
+    }
+
+
+    private SocialUserInfoDto generateSocialUserInfoDto(String loginId, String nickname, String profileImage,
+            Social social) {
+        return SocialUserInfoDto.builder()
+                                .loginId(loginId)
+                                .nickname(nickname)
+                                .profileImage(profileImage)
+                                .social(social).build();
     }
 }

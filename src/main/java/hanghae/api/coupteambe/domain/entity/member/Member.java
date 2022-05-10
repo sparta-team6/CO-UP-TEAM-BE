@@ -22,22 +22,24 @@ import java.time.LocalDateTime;
 @Builder
 public class Member extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String loginId;
 
     @Enumerated(EnumType.STRING)
     private Social social;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String nickname;
 
     private String url;
 
+    @Column(columnDefinition = "TEXT")
     private String aboutMe;
 
+    @Column(columnDefinition = "TEXT")
     private String profileImage;
 
     private LocalDateTime loginTime;
@@ -50,7 +52,7 @@ public class Member extends BaseEntity {
 
     //fixme 소셜로그인 전용임으로 password 불필요하나,
     // 스프링시큐리티 특성상 암호화된 password 를 넣어야한다. updatePassword()를 통해 암호화된 비밀번호를 넣자.
-    // 추후 일반 회원가입 기능이 생긴다면, 패스워드 검증 룰을 재정의 하여야한다.(
+    // 추후 일반 회원가입 기능이 생긴다면, 패스워드 검증 룰을 재정의 하여야한다.
 
     public Member(SocialUserInfoDto socialUserInfoDto) {
         this.loginId = socialUserInfoDto.getLoginId();
