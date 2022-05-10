@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,19 +33,18 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
     public JwtTokenDto login(SocialUserInfoDto socialUserInfoDto) {
 
         Member member = new Member(socialUserInfoDto);
 
         //가입되지 않은 사용자이면 데이터베이스에 저장한다. (회원가입)
         if (!memberRepository.existsMemberByLoginId(member.getLoginId())) {
-            member.updatePassword(passwordEncoder.encode(socialUserInfoDto.getLoginId()));
+            member.updatePassword(passwordEncoder.encode(member.getLoginId()));
             memberRepository.save(member);
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(member.getLoginId(), member.getPassword());
+                new UsernamePasswordAuthenticationToken(member.getLoginId(), member.getLoginId());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         //XXX stateless 임을 생각하면 로그인 직후 contextholder 에서 보관할 이유가 없을것 같다.
         //SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -71,12 +71,15 @@ public class AuthService {
      *     재발급 요청을 하여 해당 메소드로 재발급을 진행한다.
      * </pre>
      */
-    @Transactional
     public JwtTokenDto reissue(JwtTokenDto jwtTokenDto) {
 
+        //fixme refresh 토큰이 만료일 경우 쿠키 삭제, 데이터베이스 삭제 등 처리가 필요하다.
+        if (!tokenProvider.validateToken(jwtTokenDto.getRefreshToken())) {
+            String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+            refreshTokenRepository.deleteByLoginId(loginId);
 
-        //fixme refresh 토큰이 만료일 경우 쿠키 삭제, 데이터베이스 삭제 등 처리가 필요하다.( 만료될 경우 예외처리되어 난감하다. )
-        tokenProvider.validateToken(jwtTokenDto.getRefreshToken());
+            throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
+        }
 
         // 사용자의 데이터베이스에 저장된 토큰 조회
         Authentication authentication = tokenProvider.getAuthentication(jwtTokenDto.getRefreshToken());

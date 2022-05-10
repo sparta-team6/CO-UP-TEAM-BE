@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
 import hanghae.api.coupteambe.enumerate.Social;
+import hanghae.api.coupteambe.util.exception.ErrorCode;
+import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -37,6 +40,7 @@ public class AuthKakaoService {
 
     @Value("${auth.kakao.redirect-uri}")
     private String kakaoRedirectUri;
+
     // 1. "인가 코드"로 "액세스 토큰" 요청
     private String getAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
@@ -54,23 +58,29 @@ public class AuthKakaoService {
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = rt.exchange(
+                    "https://kauth.kakao.com/oauth/token",
+                    HttpMethod.POST,
+                    kakaoTokenRequest,
+                    String.class
+            );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-        String access_token = jsonNode.get("access_token").asText();
-        String refresh_token = jsonNode.get("refresh_token").asText();
-        log.debug("access token : " + access_token);
-        log.debug("refresh token : " + refresh_token);
 
-        return access_token;
+            // HTTP 응답 (JSON) -> 액세스 토큰 파싱
+            String responseBody = response.getBody();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
+            String access_token = jsonNode.get("access_token").asText();
+            String refresh_token = jsonNode.get("refresh_token").asText();
+            log.debug("access token : " + access_token);
+            log.debug("refresh token : " + refresh_token);
+
+            return access_token;
+        } catch (HttpClientErrorException e) {
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
     }
 
     // 2. "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
@@ -105,9 +115,9 @@ public class AuthKakaoService {
         log.debug("프로필이미지 URL : " + profile_image);
 
         return SocialUserInfoDto.builder()
-                         .loginId(email)
-                         .nickname(nickname)
-                         .profileImage(profile_image)
-                         .social(Social.KAKAO).build();
+                                .loginId(email)
+                                .nickname(nickname)
+                                .profileImage(profile_image)
+                                .social(Social.KAKAO).build();
     }
 }
