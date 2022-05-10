@@ -19,6 +19,32 @@ jobs:
         with:
           java-version: 1.8
 
+      # application.properties 추가정보 입력 시작
+      - name: Create ./src/test/resources/
+        run: |
+          mkdir -p  ./src/test/resources/
+
+      - name: touch Application Property
+        run: |
+          touch ./src/test/resources/application.properties
+
+      - name: cat application.properties
+        run: |
+          cat ./src/test/resources/application.properties
+
+      - name: Add Kakao_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_CLIENT_ID }} >> ./src/test/resources/application.properties
+
+      - name: Add Kakao_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_REDIRECT_URI }} >> ./src/test/resources/application.properties
+
+      - name: cat application.properties
+        run: |
+          cat ./src/test/resources/application.properties
+      # application.properties 추가정보 입력 끝
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
