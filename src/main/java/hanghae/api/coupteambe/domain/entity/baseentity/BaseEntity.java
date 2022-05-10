@@ -35,6 +35,8 @@ public abstract class BaseEntity extends BaseTimeEntity {
     @LastModifiedBy
     private UUID modifiedBy;
 
+    private UUID eliminator;
+
     @Enumerated(EnumType.STRING)
-    private StatusFlag delFlag = StatusFlag.SURVIVAL;
+    private StatusFlag delFlag = StatusFlag.NORMAL;
 }

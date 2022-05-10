@@ -1,25 +1,23 @@
 package hanghae.api.coupteambe.domain.entity.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
+import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
 import hanghae.api.coupteambe.enumerate.Role;
 import hanghae.api.coupteambe.enumerate.Social;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Member extends BaseEntity {
 
     @Column(unique = true, length = 50)
@@ -49,8 +47,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    //fixme 소셜로그인 전용임으로 password 불필요하나,
+    @Builder
+    public Member(String loginId, Social social, String password, String nickname, String url, String aboutMe,
+            String profileImage, LocalDateTime loginTime, LocalDateTime logoutTime, Role role) {
+        this.loginId = loginId;
+        this.social = social;
+        this.password = password;
+        this.nickname = nickname;
+        this.url = url;
+        this.aboutMe = aboutMe;
+        this.profileImage = profileImage;
+        this.loginTime = loginTime;
+        this.logoutTime = logoutTime;
+        this.role = role;
+    }
+//fixme 소셜로그인 전용임으로 password 불필요하나,
     // 스프링시큐리티 특성상 암호화된 password 를 넣어야한다. updatePassword()를 통해 암호화된 비밀번호를 넣자.
     // 추후 일반 회원가입 기능이 생긴다면, 패스워드 검증 룰을 재정의 하여야한다.
 
