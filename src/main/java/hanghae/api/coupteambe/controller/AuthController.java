@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghae.api.coupteambe.domain.dto.JwtTokenDto;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
+import hanghae.api.coupteambe.service.AuthGoogleService;
 import hanghae.api.coupteambe.service.AuthKakaoService;
 import hanghae.api.coupteambe.service.AuthNaverService;
 import hanghae.api.coupteambe.service.AuthService;
@@ -27,6 +28,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthKakaoService authKakaoService;
+    private final AuthGoogleService authGoogleService;
     private final AuthNaverService authNaverService;
 
     /**
@@ -55,7 +57,7 @@ public class AuthController {
                 socialUserInfoDto = authKakaoService.kakao(code);
                 break;
             case "google":
-                socialUserInfoDto = authService.google(code);
+                socialUserInfoDto = authGoogleService.google(code);
                 break;
             case "naver":
                 socialUserInfoDto = authNaverService.naver(code, state);
