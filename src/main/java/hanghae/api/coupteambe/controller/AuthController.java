@@ -78,27 +78,22 @@ public class AuthController {
     public ResponseEntity<ResResultDto> reissue(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
-        String accessToken = null;
         String refreshToken = null;
 
         if (cookies == null) {
             throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
         }
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("accessToken")) {
-                accessToken = cookie.getValue();
-            }
             if (cookie.getName().equals("refreshToken")) {
                 refreshToken = cookie.getValue();
             }
         }
 
-        if (accessToken == null || refreshToken == null) {
+        if (refreshToken == null) {
             throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
         }
 
         JwtTokenDto jwtTokenDto = authService.reissue(JwtTokenDto.builder()
-                                                                 .accessToken(accessToken)
                                                                  .refreshToken(refreshToken)
                                                                  .build());
 
@@ -129,7 +124,7 @@ public class AuthController {
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", jwtTokenDto.getAccessToken())
                                                       .domain("localhost")
                                                       .httpOnly(true)
-                                                      .maxAge(60)
+                                                      .maxAge(60 * 5)
                                                       .sameSite("None")
                                                       .secure(false)
                                                       .path("/").build();
@@ -139,7 +134,7 @@ public class AuthController {
         responseCookie = ResponseCookie.from("refreshToken", jwtTokenDto.getRefreshToken())
                                        .domain("localhost")
                                        .httpOnly(true)
-                                       .maxAge(60 * 5)
+                                       .maxAge(60 * 15)
                                        .sameSite("None")
                                        .secure(false)
                                        .path("/").build();

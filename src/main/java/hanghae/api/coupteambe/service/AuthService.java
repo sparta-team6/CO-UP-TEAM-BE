@@ -33,6 +33,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public JwtTokenDto login(SocialUserInfoDto socialUserInfoDto) {
 
         Member member = new Member(socialUserInfoDto);
@@ -46,8 +47,7 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(member.getLoginId(), member.getLoginId());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        //XXX stateless 임을 생각하면 로그인 직후 contextholder 에서 보관할 이유가 없을것 같다.
-        //SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         JwtTokenDto jwtTokenDto = tokenProvider.generateTokenDto(authentication);
 
@@ -71,33 +71,35 @@ public class AuthService {
      *     재발급 요청을 하여 해당 메소드로 재발급을 진행한다.
      * </pre>
      */
+    @Transactional
     public JwtTokenDto reissue(JwtTokenDto jwtTokenDto) {
 
         //fixme refresh 토큰이 만료일 경우 쿠키 삭제, 데이터베이스 삭제 등 처리가 필요하다.
-        if (!tokenProvider.validateToken(jwtTokenDto.getRefreshToken())) {
-            String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String refreshToken = jwtTokenDto.getRefreshToken();
+        if (!tokenProvider.validateToken(refreshToken)) {
+            String loginId = tokenProvider.getLoginId(refreshToken);
             refreshTokenRepository.deleteByLoginId(loginId);
 
             throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
         }
 
         // 사용자의 데이터베이스에 저장된 토큰 조회
-        Authentication authentication = tokenProvider.getAuthentication(jwtTokenDto.getRefreshToken());
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByLoginId(authentication.getName());
+        Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByLoginId(authentication.getName());
 
         // 데이터베이스에 토큰이 없다면, 로그아웃된 사용자
-        if (!refreshToken.isPresent()) {
+        if (!optionalRefreshToken.isPresent()) {
             throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
         }
 
         // 토큰정보 불일치.
-        if (!refreshToken.get().getRefreshToken().equals(jwtTokenDto.getRefreshToken())) {
+        if (!optionalRefreshToken.get().getRefreshToken().equals(refreshToken)) {
             throw new RequestException(ErrorCode.JWT_NOT_ALLOWED_405);
         }
 
         JwtTokenDto newJwtTokenDto = tokenProvider.generateTokenDto(authentication);
 
-        refreshToken.get().updateToken(newJwtTokenDto.getRefreshToken());
+        optionalRefreshToken.get().updateToken(newJwtTokenDto.getRefreshToken());
 
         return newJwtTokenDto;
     }
