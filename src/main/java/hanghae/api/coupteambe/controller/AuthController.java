@@ -6,6 +6,7 @@ import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
 import hanghae.api.coupteambe.service.AuthGoogleService;
 import hanghae.api.coupteambe.service.AuthKakaoService;
+import hanghae.api.coupteambe.service.AuthNaverService;
 import hanghae.api.coupteambe.service.AuthService;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -28,6 +29,7 @@ public class AuthController {
     private final AuthService authService;
     private final AuthKakaoService authKakaoService;
     private final AuthGoogleService authGoogleService;
+    private final AuthNaverService authNaverService;
 
     /**
      * <pre>
@@ -42,7 +44,7 @@ public class AuthController {
      */
     @PostMapping("/{social}")
     public ResponseEntity<ResResultDto> login(
-            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code,
+            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
         /**
@@ -57,8 +59,8 @@ public class AuthController {
             case "google":
                 socialUserInfoDto = authGoogleService.google(code);
                 break;
-            case "github":
-                socialUserInfoDto = authService.github(code);
+            case "naver":
+                socialUserInfoDto = authNaverService.naver(code, state);
                 break;
         }
         if (socialUserInfoDto == null) {
