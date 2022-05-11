@@ -15,11 +15,17 @@ public class CardInfoDto {
     // 카드 ID
     private String kbcId;
 
+    // 버킷 ID
+    private String kbbId;
+
     // 카드 담당자 (카드 배당업무 담당자)
     private String manager;
 
     // 카드 제목
     private String title;
+
+    // 카드 내용
+    private String contents;
 
     // 배치 순서
     private int position;
@@ -28,8 +34,9 @@ public class CardInfoDto {
 
         this.kbcId = kanbanCard.getId().toString();
         this.manager = kanbanCard.getManager();
-        this.title = getTitle();
-        this.position = getPosition();
+        this.title = kanbanCard.getTitle();
+        this.contents = kanbanCard.getContents();
+        this.position = kanbanCard.getPosition();
     }
 
 }
