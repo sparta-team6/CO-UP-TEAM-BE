@@ -42,7 +42,7 @@ public class AuthController {
      */
     @PostMapping("/{social}")
     public ResponseEntity<ResResultDto> login(
-            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code,
+            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
         /**
@@ -58,7 +58,7 @@ public class AuthController {
                 socialUserInfoDto = authService.google(code);
                 break;
             case "naver":
-                socialUserInfoDto = authNaverService.naver(code);
+                socialUserInfoDto = authNaverService.naver(code, state);
                 break;
         }
         if (socialUserInfoDto == null) {

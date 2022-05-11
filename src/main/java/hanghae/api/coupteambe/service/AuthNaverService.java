@@ -23,29 +23,33 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class AuthNaverService {
 
-    public SocialUserInfoDto naver(String code) throws JsonProcessingException {
-    String accessToken = getAccessToken(code);
+    public SocialUserInfoDto naver(String code, String state) throws JsonProcessingException {
+    String accessToken = getAccessToken(code, state);
     return getnaverUserInfo(accessToken);
 }
 
         @Value("${auth.naver.client-id}")
         private String naverClientKId;
 
+        @Value("${auth.naver.client-secret}")
+        private String naverClientSecret;
+
         @Value("${auth.naver.redirect-uri}")
         private String naverRedirectUri;
 
-        private String getAccessToken(String code) throws JsonProcessingException {
+        private String getAccessToken(String code, String state) throws JsonProcessingException {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "authorization_code");
             body.add("client_id", naverClientKId);
+            body.add("client_secret", naverClientSecret);
             body.add("redirect_uri", naverRedirectUri);
             body.add("code", code);
+            body.add("state", state);
 
-            HttpEntity<MultiValueMap<String, String>> naverTokenRequest =
-                    new HttpEntity<>(body, headers);
+            HttpEntity<MultiValueMap<String, String>> naverTokenRequest = new HttpEntity<>(body, headers);
             RestTemplate rt = new RestTemplate();
             try {
                 ResponseEntity<String> response = rt.exchange(
@@ -58,7 +62,6 @@ public class AuthNaverService {
 
                 // HTTP 응답 (JSON) -> 액세스 토큰 파싱
                 String responseBody = response.getBody();
-
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(responseBody);
                 String access_token = jsonNode.get("access_token").asText();
@@ -89,7 +92,7 @@ public class AuthNaverService {
             String responseBody = response.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
-            String  id = jsonNode.get("response").get("id").asText();
+            String id = jsonNode.get("response").get("id").asText();
             String nickname = jsonNode.get("response").get("nickname").asText();
             String email = jsonNode.get("response").get("email").asText();
             String profile_image = jsonNode.get("response").get("profile_image").asText();
