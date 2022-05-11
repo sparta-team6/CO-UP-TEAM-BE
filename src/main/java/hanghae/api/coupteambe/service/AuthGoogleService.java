@@ -102,7 +102,7 @@ public class AuthGoogleService {
         String providerId = googleUserInfo.get("sub").asText();
         String email = googleUserInfo.get("email").asText();
         String nickname = googleUserInfo.get("name").asText();
-        String profile_image = googleUserInfo.get("imageURL").asText();
+        String profile_image = googleUserInfo.get("picture").asText();
 
         log.debug("로그인 이용자 정보");
         log.debug("구글 고유 ID : " + providerId);
