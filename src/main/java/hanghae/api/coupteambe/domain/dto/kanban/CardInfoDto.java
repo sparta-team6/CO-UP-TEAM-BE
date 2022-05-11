@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CardInfoDto {
 
-    // 소속 버킷 ID
-    private String kbbId;
+    // 카드 ID
+    private String kbcId;
 
     // 카드 담당자 (카드 배당업무 담당자)
     private String manager;
