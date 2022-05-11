@@ -1,8 +1,14 @@
 package hanghae.api.coupteambe.domain.dto.kanban;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CardInfoDto {
 
     // 소속 버킷 ID
