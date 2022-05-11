@@ -8,6 +8,7 @@ import hanghae.api.coupteambe.service.KanbanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KanbanController {
 
+    //todo 1차 구현물은 버킷에 대한 객체들이 적합한 사용자의 요청을 처리하는지 검증하는 과정이 없다.
+    // 즉, 프로젝트에 참가하지 않은 사용자가 임의로 버킷내용을 조작할 수 있는 상태이다.
+    // 그러므로, 2차 구현물에서는 컨트롤러에서 프로젝트에 참가한 사용자인지 검증하는 과정이 추가되어야한다.
+
     private final KanbanService kanbanService;
 
     /**
@@ -25,6 +30,7 @@ public class KanbanController {
     @PostMapping("/")
     public ResponseEntity<ResResultDto> createBuckets(@RequestBody BucketInfoDto bucketInfoDto) {
 
+        isValidMember();
         // 버킷 생성 서비스 호출
         kanbanService.createBucket(bucketInfoDto);
 
@@ -134,4 +140,14 @@ public class KanbanController {
 //        // 반환값 : 담당자별 카드 정보, 상태값(200)
 //        return ResponseEntity.ok(managerWorks);
 //    }
+
+    private boolean isValidMember() {
+
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //todo 프로젝트에 참가한 멤버인지 확인 로직 작성해야함
+        // 권한이 없는 멤버라면 '프로젝트 권한이 없습니다' 예외 처리.
+
+        return true;
+    }
 }

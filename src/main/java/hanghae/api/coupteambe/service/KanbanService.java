@@ -3,13 +3,26 @@ package hanghae.api.coupteambe.service;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketDto;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.dto.kanban.CardInfoDto;
+import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
+import hanghae.api.coupteambe.domain.entity.project.Project;
+import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
+import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
+import hanghae.api.coupteambe.util.exception.ErrorCode;
+import hanghae.api.coupteambe.util.exception.RequestException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class KanbanService {
+
+    private final KanbanBucketRepository kanbanBucketRepository;
+    private final ProjectRepository projectRepository;
 
     /**
      * M2-1 버킷 생성
@@ -17,10 +30,19 @@ public class KanbanService {
     public void createBucket(BucketInfoDto bucketInfoDto) {
 
         // 1. 파라매터로 받은 버킷 객체에서 필요한 데이터를 추출한다.
+        String projectId = bucketInfoDto.getPjId();
+        Optional<Project> optionalProject = projectRepository.findById(UUID.fromString(projectId));
+        Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 새 버킷 객체를 생성한다.
+        KanbanBucket newBucket = KanbanBucket.builder()
+                                             .project(project)
+                                             .title(bucketInfoDto.getTitle())
+                                             .position(bucketInfoDto.getPosition())
+                                             .build();
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
+        kanbanBucketRepository.save(newBucket);
 
     }
 
