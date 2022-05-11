@@ -99,13 +99,13 @@ public class AuthGoogleService {
         JsonNode googleUserInfo = objectMapper.readTree(responseBody);
 
         // 유저정보 작성
-        String providerId = googleUserInfo.get("sub").asText();
+        String id = googleUserInfo.get("sub").asText();
         String email = googleUserInfo.get("email").asText();
         String nickname = googleUserInfo.get("name").asText();
         String profile_image = googleUserInfo.get("picture").asText();
 
         log.debug("로그인 이용자 정보");
-        log.debug("구글 고유 ID : " + providerId);
+        log.debug("구글 고유 ID : " + id);
         log.debug("닉네임 : " + nickname);
         log.debug("이메일 : " + email);
         log.debug("프로필이미지 URL : " + profile_image);
