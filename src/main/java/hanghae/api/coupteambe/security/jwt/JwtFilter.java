@@ -33,9 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
             Authentication authentication = tokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Security Context에 Member: '{}' 인증 정보를 저장했습니다. URI: '{}'", authentication.getName(), requestURI);
-        } else {
-            log.debug("유효한 JWT 토큰이 없습니다. URI: '{}'", requestURI);
-            throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
+        } else if (StringUtils.hasText(accessToken)){
+            log.debug("access 토큰이 만료되었습니다.");
+            throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
         }
 
         filterChain.doFilter(request, response);

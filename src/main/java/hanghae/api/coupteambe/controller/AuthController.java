@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghae.api.coupteambe.domain.dto.JwtTokenDto;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
+import hanghae.api.coupteambe.service.AuthKakaoService;
 import hanghae.api.coupteambe.service.AuthService;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
 
     private final AuthService authService;
+    private final AuthKakaoService authKakaoService;
 
     /**
      * <pre>
@@ -48,7 +50,7 @@ public class AuthController {
         SocialUserInfoDto socialUserInfoDto = null;
         switch (socialPath) {
             case "kakao":
-                socialUserInfoDto = authService.kakao(code);
+                socialUserInfoDto = authKakaoService.kakao(code);
                 break;
             case "google":
                 socialUserInfoDto = authService.google(code);

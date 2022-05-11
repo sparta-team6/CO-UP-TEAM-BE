@@ -128,7 +128,8 @@ public class TokenProvider implements InitializingBean {
             throw new RequestException(ErrorCode.JWT_BAD_TOKEN_400);
         } catch (ExpiredJwtException e) {
             log.debug("만료된 JWT 토큰입니다.");
-            throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
+//            throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
+            return false;
         }
     }
 }
