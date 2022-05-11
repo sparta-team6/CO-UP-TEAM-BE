@@ -8,7 +8,6 @@ import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
 import hanghae.api.coupteambe.domain.entity.kanban.KanbanCard;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,4 +52,5 @@ public class Project extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
+
 }
