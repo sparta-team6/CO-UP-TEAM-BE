@@ -2,7 +2,7 @@ package hanghae.api.coupteambe.domain;
 
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.member.Member;
-import hanghae.api.coupteambe.domain.repository.MemberRepository;
+import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
