@@ -2,6 +2,7 @@ package hanghae.api.coupteambe.domain.entity.kanban;
 
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -32,4 +33,12 @@ public class KanbanBucket extends BaseEntity {
 
     @OneToMany(mappedBy = "kanbanBucket", cascade = CascadeType.ALL)
     private List<KanbanCard> cards = new ArrayList<>();
+
+    @Builder
+    public KanbanBucket(Project project, String title, int position, List<KanbanCard> cards) {
+        this.project = project;
+        this.title = title;
+        this.position = position;
+        this.cards = cards;
+    }
 }
