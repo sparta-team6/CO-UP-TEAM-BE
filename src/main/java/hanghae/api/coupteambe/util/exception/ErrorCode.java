@@ -28,25 +28,29 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // 공통
-    COMMON_INTERNAL_ERROR_500(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생하였습니다."),
     COMMON_BAD_REQUEST_400(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    COMMON_INTERNAL_ERROR_500(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생하였습니다."),
 
     // JWT 관련
     JWT_BAD_TOKEN_400(HttpStatus.BAD_REQUEST, "잘못된 JWT 토큰입니다."),
-    JWT_NOT_ALLOWED_405(HttpStatus.METHOD_NOT_ALLOWED, "지원되지 않는 JWT 토큰입니다."),
     JWT_UNAUTHORIZED_401(HttpStatus.UNAUTHORIZED, "만료된 JWT 토큰입니다."),
     JWT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "유효한 JWT 토큰이 없습니다."),
+    JWT_NOT_ALLOWED_405(HttpStatus.METHOD_NOT_ALLOWED, "지원되지 않는 JWT 토큰입니다."),
 
     // Member 관련
-    MEMBER_LOGINID_DUPLICATION_409(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
     MEMBER_LOGINID_NOT_FOUND_404(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다."),
+    MEMBER_LOGINID_DUPLICATION_409(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
 
 
     // Project 관련
-
+    PROJECT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 프로젝트 ID가 없습니다."),
+    PROJECT_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 프로젝트 ID 입니다."),
 
     // Kanban 관련
-
+    KANBAN_BOARD_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 칸반보드 ID가 없습니다."),
+    KANBAN_CARD_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 칸반카드 ID가 없습니다."),
+    KANBAN_BOARD_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 보드 ID 입니다."),
+    KANBAN_CARD_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 카드 ID 입니다."),
 
     // Document 관련
 
