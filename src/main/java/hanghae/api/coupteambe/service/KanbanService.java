@@ -4,6 +4,7 @@ import hanghae.api.coupteambe.domain.dto.kanban.BucketDto;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.dto.kanban.CardInfoDto;
 import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
+import hanghae.api.coupteambe.domain.entity.kanban.KanbanCard;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
@@ -11,6 +12,7 @@ import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,11 @@ public class KanbanService {
 
     /**
      * M2-1 버킷 생성
+     *
+     * @return
      */
-    public void createBucket(BucketInfoDto bucketInfoDto) {
+    @Transactional
+    public KanbanBucket createBucket(BucketInfoDto bucketInfoDto) {
 
         // 1. 파라매터로 받은 버킷 객체에서 필요한 데이터를 추출한다.
         String projectId = bucketInfoDto.getPjId();
@@ -42,23 +47,26 @@ public class KanbanService {
                                              .build();
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
-        kanbanBucketRepository.save(newBucket);
-
+        return kanbanBucketRepository.save(newBucket);
     }
 
     /**
      * M2-2 버킷 수정
      */
+    @Transactional
     public void modifyBucket(BucketInfoDto bucketInfoDto) {
 
         // 1. 파라매터로 받은 버킷 객체에서 필요한 데이터를 추출한다.
+        String bucketId = bucketInfoDto.getKbbId();
 
         // 2. 버킷 ID를 key 로 해당 버킷을 DB 에서 조회한다. Repository(JPA)이용
+        Optional<KanbanBucket> optionalKanbanBucket = kanbanBucketRepository.findById(UUID.fromString(bucketId));
+        KanbanBucket kanbanBucket = optionalKanbanBucket.orElseThrow(
+                () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
         // 3. 새 버킷 객체를 생성하고 조회한 버킷으로 초기화 한다.
-
         // 4. 버킷을 업데이트 시킨다.
-
+        kanbanBucket.updateBucket(bucketInfoDto);
     }
 
     /**
@@ -67,20 +75,34 @@ public class KanbanService {
     public void deleteBucket(String kbbId) {
 
         // 파라매터로 받은 버킷 ID를 key 로 DB 에서 해당 버킷을 삭제한다.
-        // Repository(JPA)이용
+        kanbanBucketRepository.deleteById(UUID.fromString(kbbId));
 
     }
 
     /**
      * M2-4 전체 버킷, 카드 조회
      */
-    public List<BucketDto> getAllBucketsAndCards(String pjId) {
+    public List<BucketDto> getAllBucketsAndCards(String projectId) {
 
         // 1. 파라매터로 받은 프로젝트 ID 를 가지고 있는 모든 버킷들을 조회한다.
 
         // 2. 순차적으로 조회된 버킷의 버킷 ID를 가지고 있는 모든 카드들을 조회한다.
+        List<KanbanBucket> buckets = kanbanBucketRepository.findBucketsAndCardsByProject_Id_DSL(projectId);
+        List<BucketDto> bucketDtos = new ArrayList<>();
 
-        return new ArrayList<>();
+        buckets.forEach(kanbanBucket -> {
+            List<CardInfoDto> cardDtos = new ArrayList<>();
+            List<KanbanCard> cards = kanbanBucket.getCards();
+            cards.forEach(kanbanCard -> {
+                cardDtos.add(new CardInfoDto(kanbanCard));
+            });
+            bucketDtos.add(BucketDto.builder()
+                                    .kbbId(kanbanBucket.getId().toString())
+                                    .title(kanbanBucket.getTitle())
+                                    .cards(cardDtos).build());
+        });
+
+        return bucketDtos;
     }
 
     /**

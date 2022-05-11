@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.dto.kanban;
 
+import hanghae.api.coupteambe.domain.entity.kanban.KanbanCard;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,13 @@ public class CardInfoDto {
 
     // 배치 순서
     private int position;
+
+    public CardInfoDto(KanbanCard kanbanCard) {
+
+        this.kbcId = kanbanCard.getId().toString();
+        this.manager = kanbanCard.getManager();
+        this.title = getTitle();
+        this.position = getPosition();
+    }
 
 }

@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.entity.kanban;
 
+import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import lombok.Builder;
@@ -40,5 +41,10 @@ public class KanbanBucket extends BaseEntity {
         this.title = title;
         this.position = position;
         this.cards = cards;
+    }
+
+    public void updateBucket(BucketInfoDto bucketInfoDto) {
+        this.title = bucketInfoDto.getTitle();
+        this.position = bucketInfoDto.getPosition();
     }
 }

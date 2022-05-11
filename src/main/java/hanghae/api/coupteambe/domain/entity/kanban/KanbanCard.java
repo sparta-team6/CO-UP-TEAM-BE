@@ -32,6 +32,9 @@ public class KanbanCard extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
+    // 담당자
+    private String manager;
+
     // 배치순서
     @Column(nullable = false)
     @ColumnDefault("0")
