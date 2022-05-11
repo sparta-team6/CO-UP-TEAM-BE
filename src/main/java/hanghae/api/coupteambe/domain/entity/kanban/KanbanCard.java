@@ -1,7 +1,10 @@
 package hanghae.api.coupteambe.domain.entity.kanban;
 
+import hanghae.api.coupteambe.domain.dto.kanban.CardInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -11,6 +14,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class KanbanCard extends BaseEntity {
 
     // 버킷 번호
@@ -39,4 +44,11 @@ public class KanbanCard extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("0")
     private int position = 0;
+
+    public void updateKanbanCard(CardInfoDto cardInfoDto) {
+        this.title = cardInfoDto.getTitle();
+        this.contents = cardInfoDto.getContents();
+        this.position = cardInfoDto.getPosition();
+        this.manager = cardInfoDto.getManager();
+    }
 }
