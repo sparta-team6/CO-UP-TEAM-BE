@@ -2,9 +2,15 @@ package hanghae.api.coupteambe.domain.dto.member;
 
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.enumerate.Social;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ResMemberInfoDto {
 
     // 로그인 아이디 (email) *소셜 회원가입 시 이메일 중복가입 불허인 관계로, 로그인 ID는 유니크함

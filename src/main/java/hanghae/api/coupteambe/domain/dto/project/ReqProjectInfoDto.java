@@ -1,5 +1,8 @@
 package hanghae.api.coupteambe.domain.dto.project;
 
+import lombok.Getter;
+
+@Getter
 public class ReqProjectInfoDto {
 
     //프로젝트번호

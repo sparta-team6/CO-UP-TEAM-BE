@@ -1,7 +1,7 @@
 package hanghae.api.coupteambe.domain.model.member;
 
 import hanghae.api.coupteambe.domain.entity.member.Member;
-import hanghae.api.coupteambe.domain.repository.MemberRepository;
+import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.enumerate.Social;
 import hanghae.api.coupteambe.enumerate.StatusFlag;
 import org.junit.jupiter.api.Test;
