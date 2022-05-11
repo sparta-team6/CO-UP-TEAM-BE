@@ -1,7 +1,7 @@
 package hanghae.api.coupteambe.service.member;
 
 import hanghae.api.coupteambe.domain.entity.member.Member;
-import hanghae.api.coupteambe.domain.repository.MemberRepository;
+import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;

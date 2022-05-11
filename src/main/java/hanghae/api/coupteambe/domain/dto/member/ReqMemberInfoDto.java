@@ -1,5 +1,8 @@
 package hanghae.api.coupteambe.domain.dto.member;
 
+import lombok.Getter;
+
+@Getter
 public class ReqMemberInfoDto {
 
     // 로그인ID

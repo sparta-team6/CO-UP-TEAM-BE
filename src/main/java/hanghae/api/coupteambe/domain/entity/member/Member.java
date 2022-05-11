@@ -1,6 +1,7 @@
 package hanghae.api.coupteambe.domain.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import hanghae.api.coupteambe.domain.dto.member.ReqMemberInfoDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
@@ -76,6 +77,14 @@ public class Member extends BaseEntity {
         this.social = socialUserInfoDto.getSocial();
         this.role = Role.ROLE_USER;
 //        this.password = socialUserInfoDto.getLoginId() + socialUserInfoDto.getSocial().toString();
+    }
+
+    public void updateMember(ReqMemberInfoDto reqMemberInfoDto) {
+
+        this.profileImage = reqMemberInfoDto.getProfileImage();
+        this.nickname = reqMemberInfoDto.getNickname();
+        this.url = reqMemberInfoDto.getUrl();
+        this.aboutMe = reqMemberInfoDto.getAboutMe();
     }
 
     public void updatePassword(String newPassword) {
