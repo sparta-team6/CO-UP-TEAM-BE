@@ -118,14 +118,14 @@ public class AuthService {
         return generateSocialUserInfoDto(null, null, null, social);
     }
 
-    public SocialUserInfoDto github(String code) {
+    public SocialUserInfoDto naver(String code) {
 
         //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
         // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
 
 
 
-        Social social = Social.GITHUB;
+        Social social = Social.NAVER;
         return generateSocialUserInfoDto(null, null, null, social);
     }
 
