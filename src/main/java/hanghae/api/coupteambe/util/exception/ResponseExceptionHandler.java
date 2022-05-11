@@ -1,6 +1,8 @@
 package hanghae.api.coupteambe.util.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,5 +23,12 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.debug("Exception : '{}'", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    protected ResponseEntity<String> jsonProcessingException(JsonProcessingException e) {
+
+        log.debug("Exception : '{}'", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
