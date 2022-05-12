@@ -34,7 +34,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public JwtTokenDto login(SocialUserInfoDto socialUserInfoDto) {
+    public String login(SocialUserInfoDto socialUserInfoDto) {
 
         Member member = new Member(socialUserInfoDto);
 
@@ -44,20 +44,26 @@ public class AuthService {
             memberRepository.save(member);
         }
 
+        return member.getLoginId();
+    }
+
+    @Transactional
+    public JwtTokenDto getJwtTokenDto(String loginId) {
+
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(member.getLoginId(), member.getLoginId());
+                new UsernamePasswordAuthenticationToken(loginId, loginId);
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         JwtTokenDto jwtTokenDto = tokenProvider.generateTokenDto(authentication);
 
         // refresh 토큰이 데이터베이스에 있다면 갱신하고, 없다면 새로 저장.
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByLoginId(member.getLoginId());
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByLoginId(loginId);
         if (refreshToken.isPresent()) {
             refreshToken.get().updateToken(jwtTokenDto.getRefreshToken());
         } else {
             refreshTokenRepository.save(RefreshToken.builder()
-                                                    .loginId(member.getLoginId())
+                                                    .loginId(loginId)
                                                     .refreshToken(jwtTokenDto.getRefreshToken())
                                                     .build());
         }
@@ -115,7 +121,6 @@ public class AuthService {
         // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
 
 
-
         Social social = Social.GOOGLE;
         return generateSocialUserInfoDto(null, null, null, social);
     }
@@ -124,7 +129,6 @@ public class AuthService {
 
         //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
         // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
-
 
 
         Social social = Social.NAVER;

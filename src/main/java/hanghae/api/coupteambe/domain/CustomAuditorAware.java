@@ -28,7 +28,7 @@ public class CustomAuditorAware implements AuditorAware<UUID> {
         Optional<String> optionalLoginid = SecurityUtil.getCurrentUsername();
 
         if (optionalLoginid.isPresent()) {
-            Optional<Member> optionalMember = memberRepository.findByLoginId(optionalLoginid.get());
+            Optional<Member> optionalMember = memberRepository.findRequires_NewByLoginId(optionalLoginid.get());
             Member member = optionalMember.orElseThrow(
                     () -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
