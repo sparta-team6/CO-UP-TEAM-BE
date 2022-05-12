@@ -30,8 +30,8 @@ public class JwtFilter extends OncePerRequestFilter {
         log.debug("doFilterInternal()");
 
         JwtTokenDto jwtTokenDto = getAccessToken(request);
-        String accessToken = jwtTokenDto.getAccessToken();
-        String refreshToken = jwtTokenDto.getRefreshToken();
+        String accessToken = jwtTokenDto == null ? null : jwtTokenDto.getAccessToken();
+        String refreshToken = jwtTokenDto == null ? null : jwtTokenDto.getRefreshToken();
         String requestURI = request.getRequestURI();
 
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
