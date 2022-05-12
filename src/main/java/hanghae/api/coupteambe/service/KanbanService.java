@@ -124,6 +124,7 @@ public class KanbanService {
                                           .kanbanBucket(kanbanBucket)
                                           .manager(cardInfoDto.getManager())
                                           .title(cardInfoDto.getTitle())
+                                          .contents(cardInfoDto.getContents())
                                           .position(cardInfoDto.getPosition()).build();
 
 
