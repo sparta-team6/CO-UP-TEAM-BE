@@ -2,7 +2,7 @@ package hanghae.api.coupteambe.domain.entity.project;
 
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseTimeEntity;
 import hanghae.api.coupteambe.domain.entity.member.Member;
-import hanghae.api.coupteambe.enumerate.Role;
+import hanghae.api.coupteambe.enumerate.ProjectRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,11 +27,11 @@ public class ProjectMember extends BaseTimeEntity {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "pjId")
     private Project project;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mbId")
     private Member member;
 
@@ -40,5 +40,15 @@ public class ProjectMember extends BaseTimeEntity {
     private int position = 0;
 
     @Column(nullable = false)
-    private Role role;
+    private ProjectRole role;
+
+    public ProjectMember(Member member, Project project) {
+        this.member = member;
+        member.addProjects(this);
+
+        this.project = project;
+        project.addMembers(this);
+
+        this.role = ProjectRole.READ_WRITE;
+    }
 }

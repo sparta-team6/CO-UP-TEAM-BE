@@ -98,4 +98,20 @@ public class Member extends BaseEntity {
     public void updateLogoutTime(LocalDateTime currentTime) {
         this.logoutTime = currentTime;
     }
+
+    /**
+     * 객체지향 목적성으로 등록하는 것이며,
+     * 프로젝트를 추가하더라도 데이터베이스에 추가되지 않습니다.
+     */
+    public void addProjects(ProjectMember projectMember) {
+        this.projectMembers.add(projectMember);
+    }
+
+    /**
+     * 객체지향 목적성으로 등록하는 것이며,
+     * 프로젝트를 추가하더라도 데이터베이스에 추가되지 않습니다.
+     */
+    public void removeProject(ProjectMember projectMember) {
+        this.projectMembers.remove(projectMember);
+    }
 }

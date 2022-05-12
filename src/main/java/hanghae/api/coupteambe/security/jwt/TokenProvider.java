@@ -77,14 +77,24 @@ public class TokenProvider implements InitializingBean {
 
         String refreshToken = Jwts.builder()
                                   .setExpiration(refreshValidity)
+                                  .setSubject(authentication.getName())
+                                  .claim(AUTHORITIES_KEY, authorities)
                                   .signWith(key, SignatureAlgorithm.HS512)
                                   .compact();
 
         return JwtTokenDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpiresIn(accessValidity.getTime())
-                .build();
+                          .accessToken(accessToken)
+                          .refreshToken(refreshToken)
+                          .accessTokenExpiresIn(accessValidity.getTime())
+                          .build();
+    }
+
+    public String getLoginId(String token) {
+        return Jwts.parserBuilder()
+                   .setSigningKey(key)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody().getSubject();
     }
 
     public Authentication getAuthentication(String token) {
@@ -100,6 +110,8 @@ public class TokenProvider implements InitializingBean {
                       .map(SimpleGrantedAuthority::new)
                       .collect(Collectors.toList());
 
+        log.debug(claims.getSubject());
+        log.debug(authorities.toString());
         UserDetails principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
