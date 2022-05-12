@@ -24,23 +24,34 @@ import org.springframework.web.client.RestTemplate;
 public class AuthNaverService {
 
     public SocialUserInfoDto naver(String code, String state) throws JsonProcessingException {
+    //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
+    // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
+
+    //프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
     String accessToken = getAccessToken(code, state);
+
+    //인증받은 사용자의 정보를 이용하여 SocialUserInfoDto 를 생성하여 반환한다.
     return getnaverUserInfo(accessToken);
 }
 
         @Value("${auth.naver.client-id}")
         private String naverClientKId;
-
+        /**
+         * 네이버는 타 소셜과 다르게 secret키가 필요하다
+         */
         @Value("${auth.naver.client-secret}")
         private String naverClientSecret;
 
         @Value("${auth.naver.redirect-uri}")
         private String naverRedirectUri;
 
+    // 1. "인가 코드"로 "액세스 토큰" 요청 (네이버는 state를 추가로 사용한다)
         private String getAccessToken(String code, String state) throws JsonProcessingException {
+            // HTTP Header 생성
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
+            // HTTP Body 생성 (네이버는 secret key가 필요하다)
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "authorization_code");
             body.add("client_id", naverClientKId);
@@ -49,6 +60,7 @@ public class AuthNaverService {
             body.add("code", code);
             body.add("state", state);
 
+            // HTTP 요청 보내기
             HttpEntity<MultiValueMap<String, String>> naverTokenRequest = new HttpEntity<>(body, headers);
             RestTemplate rt = new RestTemplate();
             try {
@@ -58,7 +70,6 @@ public class AuthNaverService {
                         naverTokenRequest,
                         String.class
                 );
-
 
                 // HTTP 응답 (JSON) -> 액세스 토큰 파싱
                 String responseBody = response.getBody();
@@ -75,11 +86,14 @@ public class AuthNaverService {
             }
         }
 
+        // 2. "액세스 토큰"으로 "네이버 사용자 정보" 가져오기
         private SocialUserInfoDto getnaverUserInfo(String accessToken) throws JsonProcessingException {
+            // HTTP Header 생성
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + accessToken);
             headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
+            // HTTP 요청 보내기
             HttpEntity<MultiValueMap<String, String>> naverUserInfoRequest = new HttpEntity<>(headers);
             RestTemplate rt = new RestTemplate();
             ResponseEntity<String> response = rt.exchange(
@@ -88,7 +102,7 @@ public class AuthNaverService {
                     naverUserInfoRequest,
                     String.class
             );
-
+            // jackson 라이브러리의 JsonNode를 사용하여 응답을 파싱
             String responseBody = response.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
