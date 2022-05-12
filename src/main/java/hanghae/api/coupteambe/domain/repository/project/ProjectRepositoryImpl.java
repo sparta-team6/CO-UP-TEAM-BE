@@ -12,7 +12,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Project> findProjectsFromMemberByLoginId(String loginId) {
+    public List<Project> findProjectsFromMemberByLoginId_DSL(String loginId) {
         return null;
     }
 
