@@ -12,5 +12,5 @@ public interface ProjectRepositoryCustom {
     /**
      * 멤버가 참가한 프로젝트들 조회
      */
-    List<Project> findProjectsFromMemberByLoginId(String loginId);
+    List<Project> findProjectsFromMemberByLoginId_DSL(String loginId);
 }
