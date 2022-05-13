@@ -90,9 +90,8 @@ public class FolderService {
         // 1. 파라미터로 받은 프로젝트 ID를 가지고 있는 모든 폴더를 조회한다.
 
         // 2. 순차적으로 조회된 폴더의 폴더 ID를 가지고있는 모든 문서들을 조회한다.
-        List<Folder> folders = documentFolderRepository.findFoldersAndDocumentsByProject_Id(projectId);
+        List<Folder> folders = documentFolderRepository.findFoldersAndDocumentsByProject_Id_DSL(projectId);
         List<FolderDto> folderDtos = new ArrayList<>();
-//여기까지 확인
         folders.forEach(folder -> {
 
             List<DocumentDto> documentDtos = new ArrayList<>();
@@ -102,7 +101,7 @@ public class FolderService {
                 documentDtos.add(new DocumentDto(document));
             });
             folderDtos.add(FolderDto.builder()
-//                            .pjId(folder.getProject().getId().toString())
+                    .pjId(folder.getProject().getId().toString())
                     .dfId(folder.getId().toString())
                     .title(folder.getTitle())
                     .position(folder.getPosition())
