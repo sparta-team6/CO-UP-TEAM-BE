@@ -54,16 +54,28 @@ jobs:
 
       - name: Add Google_client_id Application Property
         run: |
-          echo ${{ secrets.AUTH_GOOGLE_CLIENT_ID }} >> ./src/test/resources/application.properties
+          echo ${{ secrets.AUTH_GOOGLE_CLIENT_ID }} >> ./src/main/resources/application.properties
 
       - name: Add Google_client_secret Application Property
         run: |
-          echo ${{ secrets.AUTH_GOOGLE_CLIENT_SECRET }} >> ./src/test/resources/application.properties
+          echo ${{ secrets.AUTH_GOOGLE_CLIENT_SECRET }} >> ./src/main/resources/application.properties
 
       - name: Add Google_redirect_uri Application Property
         run: |
-          echo ${{ secrets.AUTH_GOOGLE_REDIRECT_URI }} >> ./src/test/resources/application.properties
+          echo ${{ secrets.AUTH_GOOGLE_REDIRECT_URI }} >> ./src/main/resources/application.properties
 
+      - name: Add Naver_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_CLIENT_ID }} >> ./src/main/resources/application.properties
+
+      - name: Add Naver_client_secret Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_CLIENT_SECRET }} >> ./src/main/resources/application.properties
+
+      - name: Add Naver_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/main/resources/application.properties
+          
       - name: cat application.properties
         run: |
           cat ./src/main/resources/application.properties
