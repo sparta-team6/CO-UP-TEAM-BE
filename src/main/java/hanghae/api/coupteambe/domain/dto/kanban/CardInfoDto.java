@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class CardInfoDto {
 
     // 카드 ID
-    private String kbcId;
+    private UUID kbcId;
 
     // 버킷 ID
-    private String kbbId;
+    private UUID kbbId;
 
     // 카드 담당자 (카드 배당업무 담당자)
     private String manager;
@@ -32,11 +34,16 @@ public class CardInfoDto {
 
     public CardInfoDto(KanbanCard kanbanCard) {
 
-        this.kbcId = kanbanCard.getId().toString();
+        this.kbcId = kanbanCard.getId();
         this.manager = kanbanCard.getManager();
         this.title = kanbanCard.getTitle();
         this.contents = kanbanCard.getContents();
         this.position = kanbanCard.getPosition();
     }
 
+    public CardInfoDto(String title, String contents, int position) {
+        this.title = title;
+        this.contents = contents;
+        this.position = position;
+    }
 }
