@@ -1,6 +1,5 @@
 package hanghae.api.coupteambe.service;
 
-import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.project.CreateProjectDto;
 import hanghae.api.coupteambe.domain.dto.project.ReqProjectInfoDto;
 import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
@@ -14,7 +13,6 @@ import hanghae.api.coupteambe.domain.repository.project.ProjectRepositoryImpl;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +68,7 @@ public class ProjectService {
     /**
      * M5-3 프로젝트 초대코드로 참가
      */
-    public ResponseEntity<ResResultDto> inviteProject(String inviteCode) {
+    public void inviteProject(String inviteCode) {
 
         // 1. 초대 코드를 가진 프로젝트를 조회한다.
         Optional<Project> optionalProject = projectRepository.findByInviteCode(inviteCode);
@@ -91,12 +89,11 @@ public class ProjectService {
             ProjectMember projectMember = new ProjectMember(member, project);
             // 3-2. 프로젝트 저장
             projectMemberRepository.save(projectMember);
-            // 반환값 : 결과 메시지(참가 성공), 상태값(200)
-            return ResponseEntity.ok(new ResResultDto("프로젝트 참가완료"));
+        } else {
+            // 3-3. 프로젝트에 이미 참가한 경우, 예외처리
+            throw new RequestException(ErrorCode.PROJECT_MEMBER_DUPLICATION_409);
         }
 
-        // 반환값 : 결과 메시지(이미 참가한 유저), 상태값(200)
-        return ResponseEntity.ok(new ResResultDto("프로젝트에 이미 참가한 유저입니다."));
     }
 
     /**
