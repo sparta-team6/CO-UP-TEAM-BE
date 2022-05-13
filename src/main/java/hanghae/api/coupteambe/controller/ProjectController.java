@@ -48,11 +48,8 @@ public class ProjectController {
      */
     @PostMapping("/invite")
     public ResponseEntity<ResResultDto> postInvite(@RequestParam("inviteCode") String inviteCode) {
-
-        projectService.inviteProject(inviteCode);
-
         // 반환값 : 결과 메시지, 상태값(200)
-        return ResponseEntity.ok(new ResResultDto("프로젝트 참가완료"));
+        return projectService.inviteProject(inviteCode);
     }
 
     /**
