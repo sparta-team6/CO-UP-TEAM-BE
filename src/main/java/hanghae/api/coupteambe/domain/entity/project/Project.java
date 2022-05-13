@@ -1,6 +1,7 @@
 package hanghae.api.coupteambe.domain.entity.project;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import hanghae.api.coupteambe.domain.dto.project.CreateProjectDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
@@ -15,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -31,7 +33,7 @@ public class Project extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String summary;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String inviteCode;
 
     @JsonIgnore
@@ -53,4 +55,27 @@ public class Project extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
+
+    public Project(CreateProjectDto createPJrojectDto) {
+        this.thumbnail = createPJrojectDto.getThumbnail();
+        this.title = createPJrojectDto.getTitle();
+        this.summary = createPJrojectDto.getSummary();
+        this.inviteCode = UUID.randomUUID().toString();
+    }
+
+    /**
+     * 객체지향 목적성으로 등록하는 것이며,
+     * 프로젝트를 추가하더라도 데이터베이스에 추가되지 않습니다.
+     */
+    public void addMembers(ProjectMember projectMember) {
+        this.projectMembers.add(projectMember);
+    }
+
+    /**
+     * 객체지향 목적성으로 등록하는 것이며,
+     * 프로젝트를 추가하더라도 데이터베이스에 추가되지 않습니다.
+     */
+    public void removeMembers(ProjectMember projectMember) {
+        this.projectMembers.remove(projectMember);
+    }
 }

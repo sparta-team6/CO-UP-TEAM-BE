@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghae.api.coupteambe.domain.dto.JwtTokenDto;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
+import hanghae.api.coupteambe.service.AuthGoogleService;
 import hanghae.api.coupteambe.service.AuthKakaoService;
+import hanghae.api.coupteambe.service.AuthNaverService;
 import hanghae.api.coupteambe.service.AuthService;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -26,6 +28,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthKakaoService authKakaoService;
+    private final AuthGoogleService authGoogleService;
+    private final AuthNaverService authNaverService;
 
     /**
      * <pre>
@@ -40,7 +44,7 @@ public class AuthController {
      */
     @PostMapping("/{social}")
     public ResponseEntity<ResResultDto> login(
-            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code,
+            @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
         /**
@@ -53,10 +57,10 @@ public class AuthController {
                 socialUserInfoDto = authKakaoService.kakao(code);
                 break;
             case "google":
-                socialUserInfoDto = authService.google(code);
+                socialUserInfoDto = authGoogleService.google(code);
                 break;
-            case "github":
-                socialUserInfoDto = authService.github(code);
+            case "naver":
+                socialUserInfoDto = authNaverService.naver(code, state);
                 break;
         }
         if (socialUserInfoDto == null) {
@@ -67,7 +71,8 @@ public class AuthController {
          * 5번 수행
          * socialUserInfoDto 를 이용하여 자체 서비스의 사용자 인증을 처리한다.
          */
-        JwtTokenDto jwtTokenDto = authService.login(socialUserInfoDto);
+        String loginId = authService.login(socialUserInfoDto);
+        JwtTokenDto jwtTokenDto = authService.getJwtTokenDto(loginId);
 
         setJwtCookie(response, jwtTokenDto);
 
@@ -78,27 +83,22 @@ public class AuthController {
     public ResponseEntity<ResResultDto> reissue(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
-        String accessToken = null;
         String refreshToken = null;
 
         if (cookies == null) {
             throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
         }
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("accessToken")) {
-                accessToken = cookie.getValue();
-            }
             if (cookie.getName().equals("refreshToken")) {
                 refreshToken = cookie.getValue();
             }
         }
 
-        if (accessToken == null || refreshToken == null) {
+        if (refreshToken == null) {
             throw new RequestException(ErrorCode.JWT_NOT_FOUND_404);
         }
 
         JwtTokenDto jwtTokenDto = authService.reissue(JwtTokenDto.builder()
-                                                                 .accessToken(accessToken)
                                                                  .refreshToken(refreshToken)
                                                                  .build());
 
@@ -129,7 +129,7 @@ public class AuthController {
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", jwtTokenDto.getAccessToken())
                                                       .domain("localhost")
                                                       .httpOnly(true)
-                                                      .maxAge(60)
+                                                      .maxAge(60 * 5)
                                                       .sameSite("None")
                                                       .secure(false)
                                                       .path("/").build();
@@ -139,7 +139,7 @@ public class AuthController {
         responseCookie = ResponseCookie.from("refreshToken", jwtTokenDto.getRefreshToken())
                                        .domain("localhost")
                                        .httpOnly(true)
-                                       .maxAge(60 * 5)
+                                       .maxAge(60 * 15)
                                        .sameSite("None")
                                        .secure(false)
                                        .path("/").build();

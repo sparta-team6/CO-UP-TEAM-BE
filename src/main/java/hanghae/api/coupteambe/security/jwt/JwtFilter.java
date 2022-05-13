@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.security.jwt;
 
+import hanghae.api.coupteambe.domain.dto.JwtTokenDto;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -26,40 +27,54 @@ public class JwtFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
 
-        String accessToken = getAccessToken(request);
+        log.debug("doFilterInternal()");
+
+        JwtTokenDto jwtTokenDto = getAccessToken(request);
+        String accessToken = jwtTokenDto == null ? null : jwtTokenDto.getAccessToken();
+        String refreshToken = jwtTokenDto == null ? null : jwtTokenDto.getRefreshToken();
         String requestURI = request.getRequestURI();
 
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
             Authentication authentication = tokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("Security Context에 Member: '{}' 인증 정보를 저장했습니다. URI: '{}'", authentication.getName(), requestURI);
-        } else if (StringUtils.hasText(accessToken)){
+            log.debug("AccessToken으로 Security Context에 Member: '{}' 인증 정보를 저장했습니다. URI: '{}'", authentication.getName(),
+                    requestURI);
+        } else if (StringUtils.hasText(accessToken)) {
             log.debug("access 토큰이 만료되었습니다.");
+            throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
+        } else if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
+            Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("RefreshToken으로 Security Context에 Member: '{}' 인증 정보를 저장했습니다. URI: '{}'",
+                    authentication.getName(), requestURI);
+        } else if (StringUtils.hasText(refreshToken)) {
+            log.debug("refresh 토큰이 만료되었습니다.");
             throw new RequestException(ErrorCode.JWT_UNAUTHORIZED_401);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String getAccessToken(HttpServletRequest request) {
+    private JwtTokenDto getAccessToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+        if (cookies == null || cookies.length == 0) {
             return null;
         }
 
         String accessToken = null;
+        String refreshToken = null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("accessToken")) {
                 accessToken = cookie.getValue();
-                break;
+            }
+            if (cookie.getName().equals("refreshToken")) {
+                refreshToken = cookie.getValue();
             }
         }
 
-        if (!StringUtils.hasText(accessToken)) {
-            return null;
-        }
-
-        return accessToken;
+        return JwtTokenDto.builder()
+                          .accessToken(accessToken)
+                          .refreshToken(refreshToken).build();
     }
 }
