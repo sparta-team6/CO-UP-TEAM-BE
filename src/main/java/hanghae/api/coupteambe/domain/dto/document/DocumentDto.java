@@ -1,9 +1,13 @@
 package hanghae.api.coupteambe.domain.dto.document;
 
+import hanghae.api.coupteambe.domain.entity.document.Document;
+import hanghae.api.coupteambe.domain.entity.document.Folder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,4 +24,13 @@ public class DocumentDto {
     private String contents;
     //배치순서
     private int position;
+
+    public DocumentDto(Document document) {
+        this.docId = document.getId().toString();
+        this.title = document.getTitle();
+        this.contents = document.getContents();
+        this.position = document.getPosition();
+    }
+
+
 }
