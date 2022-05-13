@@ -82,11 +82,18 @@ public class ProjectService {
         // 2-2. 해당 멤버가 존재하지 않는 경우 예외처리
         Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
-        // 3. 프로젝트에 멤버를 추가한다.
-        ProjectMember projectMember = new ProjectMember(member, project);
+        // 3. 프로젝트에 참가하려는 멤버가 프로젝트 멤버 테이블에 존재하는지 확인한다.
+        // 존재하지 않는 경우에만 참가 시키도록 한다.
+        if (!projectMemberRepository.existsByMember(member)) {
+            // 3-1. 프로젝트에 유저를 참가시킨다.
+            ProjectMember projectMember = new ProjectMember(member, project);
+            // 3-2. 프로젝트 저장
+            projectMemberRepository.save(projectMember);
+        } else {
+            // 3-3. 프로젝트에 이미 참가한 경우, 예외처리
+            throw new RequestException(ErrorCode.PROJECT_MEMBER_DUPLICATION_409);
+        }
 
-        // 4. 프로젝트 저장
-        projectMemberRepository.save(projectMember);
     }
 
     /**

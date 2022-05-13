@@ -31,7 +31,7 @@ public class ProjectMember extends BaseTimeEntity {
     @JoinColumn(name = "pjId")
     private Project project;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mbId")
     private Member member;
 
