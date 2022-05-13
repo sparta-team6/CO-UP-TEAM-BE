@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -37,7 +38,7 @@ public class ProjectController {
     @PatchMapping("/{pjId}")
     public ResponseEntity<ResResultDto> patchPj(@PathVariable String pjId, @RequestBody ReqProjectInfoDto reqProjectInfoDto) {
 
-        projectService.modify(pjId, reqProjectInfoDto);
+        projectService.modify(UUID.fromString(pjId), reqProjectInfoDto);
 
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("프로젝트 수정완료"));
@@ -61,7 +62,7 @@ public class ProjectController {
     @DeleteMapping("/{pjId}")
     public ResponseEntity<ResResultDto> deletePj(@PathVariable String pjId) {
 
-        projectService.delete(pjId);
+        projectService.delete(UUID.fromString(pjId));
 
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("프로젝트 삭제완료"));

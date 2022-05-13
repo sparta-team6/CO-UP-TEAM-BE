@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ResProjectInfoDto {
 
     //프로젝트번호
-    private String pjId;
+    private UUID pjId;
     // 이미지주소
     private String thumbnail;
     //프로젝트제목
