@@ -2,6 +2,7 @@ package hanghae.api.coupteambe.domain.entity.project;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import hanghae.api.coupteambe.domain.dto.project.CreateProjectDto;
+import hanghae.api.coupteambe.domain.dto.project.ReqProjectInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
@@ -38,29 +39,35 @@ public class Project extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Folder> forders = new ArrayList<>();
+    private final List<Folder> folders = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Document> documents = new ArrayList<>();
+    private final List<Document> documents = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<KanbanBucket> kanbanBuckets = new ArrayList<>();
+    private final List<KanbanBucket> kanbanBuckets = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<KanbanCard> kanbanCards = new ArrayList<>();
+    private final List<KanbanCard> kanbanCards = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<ProjectMember> projectMembers = new ArrayList<>();
+    private final List<ProjectMember> projectMembers = new ArrayList<>();
 
-    public Project(CreateProjectDto createPJrojectDto) {
-        this.thumbnail = createPJrojectDto.getThumbnail();
-        this.title = createPJrojectDto.getTitle();
-        this.summary = createPJrojectDto.getSummary();
+    public Project(CreateProjectDto createProjectDto) {
+        this.thumbnail = createProjectDto.getThumbnail();
+        this.title = createProjectDto.getTitle();
+        this.summary = createProjectDto.getSummary();
         this.inviteCode = UUID.randomUUID().toString();
+    }
+
+    public void updateProject(ReqProjectInfoDto reqProjectInfoDto) {
+        this.thumbnail = reqProjectInfoDto.getThumbnail();
+        this.title = reqProjectInfoDto.getTitle();
+        this.summary = reqProjectInfoDto.getSummary();
     }
 
     /**
