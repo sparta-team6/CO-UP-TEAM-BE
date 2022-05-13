@@ -71,7 +71,8 @@ public class AuthController {
          * 5번 수행
          * socialUserInfoDto 를 이용하여 자체 서비스의 사용자 인증을 처리한다.
          */
-        JwtTokenDto jwtTokenDto = authService.login(socialUserInfoDto);
+        String loginId = authService.login(socialUserInfoDto);
+        JwtTokenDto jwtTokenDto = authService.getJwtTokenDto(loginId);
 
         setJwtCookie(response, jwtTokenDto);
 

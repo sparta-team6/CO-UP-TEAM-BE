@@ -10,7 +10,8 @@ import java.util.Optional;
 @Slf4j
 public class SecurityUtil {
 
-    public static Optional<String> getCurrentUsername(){
+    public static Optional<String> getCurrentUsername() {
+
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -23,9 +24,8 @@ public class SecurityUtil {
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails authenticationMember = (UserDetails) authentication.getPrincipal();
             username = authenticationMember.getUsername();
-        } else if (authentication.getPrincipal() instanceof String) {
-            username = (String) authentication.getPrincipal();
         }
+        log.debug("getCurrentUsername, username: '{}'", username);
 
         return Optional.ofNullable(username);
     }
