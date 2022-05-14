@@ -1,4 +1,4 @@
-package hanghae.api.coupteambe.domain.entity.document;
+package hanghae.api.coupteambe.domain.dto.document;
 
 import hanghae.api.coupteambe.domain.entity.document.Document;
 import lombok.AllArgsConstructor;

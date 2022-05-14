@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.entity.document;
 
+import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.enumerate.MStatus;
