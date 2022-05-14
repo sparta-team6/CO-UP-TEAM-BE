@@ -32,17 +32,21 @@ public class Document extends BaseEntity {
 
     @Column(nullable = false, length = 20)
     @ColumnDefault("'untitle'")
+    @Builder.Default
     private String title = "untitle";
 
     @Column(nullable = false, columnDefinition = "TEXT")
     @ColumnDefault("''")
+    @Builder.Default
     private String contents = "";
 
     @Column(nullable = false)
     @ColumnDefault("0")
+    @Builder.Default
     private int position = 0;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private MStatus mStatus = MStatus.M_STATUS_SUCCESS;
 
     public void updateDocument(DocumentDto documentDto) {
