@@ -43,7 +43,8 @@ public class AuthController {
      * </pre>
      */
     @PostMapping("/{social}")
-    public ResponseEntity<ResResultDto> login(
+//    public ResponseEntity<ResResultDto> login(
+    public ResponseEntity<JwtTokenDto> login(
             @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
@@ -76,7 +77,8 @@ public class AuthController {
 
         setJwtCookie(response, jwtTokenDto);
 
-        return ResponseEntity.ok(new ResResultDto("로그인 성공"));
+//        return ResponseEntity.ok(new ResResultDto("로그인 성공"));
+        return ResponseEntity.ok(jwtTokenDto);
     }
 
     @PostMapping("/reissue")
