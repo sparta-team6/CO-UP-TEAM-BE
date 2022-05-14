@@ -1,7 +1,10 @@
 package hanghae.api.coupteambe.domain.entity.document;
 
+import hanghae.api.coupteambe.domain.dto.document.FolderDto;
+import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -30,4 +33,19 @@ public class Folder extends BaseEntity {
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
     private List<Document> documents = new ArrayList<>();
+
+
+    @Builder
+    public Folder(Project project, String title, int position, List<Document> documents) {
+        this.project = project;
+        this.title = title;
+        this.position = position;
+        this.documents = documents;
+    }
+
+    public void updateFolder(FolderDto folderDto) {
+        this.title = folderDto.getTitle();
+        this.position = folderDto.getPosition();
+    }
 }
+
