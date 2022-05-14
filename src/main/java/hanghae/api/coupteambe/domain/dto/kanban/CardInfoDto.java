@@ -46,4 +46,11 @@ public class CardInfoDto {
         this.contents = contents;
         this.position = position;
     }
+
+    public CardInfoDto(UUID kbcId, String title, String contents, int position) {
+        this.kbcId = kbcId;
+        this.title = title;
+        this.contents = contents;
+        this.position = position;
+    }
 }

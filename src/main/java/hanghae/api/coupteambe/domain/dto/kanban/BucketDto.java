@@ -1,6 +1,6 @@
 package hanghae.api.coupteambe.domain.dto.kanban;
 
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class BucketDto {
 
@@ -25,4 +24,11 @@ public class BucketDto {
     // 해당 버킷 내 카드 정보
     private List<CardInfoDto> cards;
 
+    @QueryProjection
+    public BucketDto(UUID kbbId, String title, int position, List<CardInfoDto> cards) {
+        this.kbbId = kbbId;
+        this.title = title;
+        this.position = position;
+        this.cards = cards;
+    }
 }

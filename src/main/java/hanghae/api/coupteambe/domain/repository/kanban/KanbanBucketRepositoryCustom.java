@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.repository.kanban;
 
+import hanghae.api.coupteambe.domain.dto.kanban.ManagerBucketCardsDto;
 import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface KanbanBucketRepositoryCustom {
     // 예, [void updateEntityById_DSL]
 
     List<KanbanBucket> findBucketsAndCardsByProject_Id_DSL(String projectId);
+
+    List<ManagerBucketCardsDto> findManagersBucketsByProject_Id_DSL(String projectId);
 }
