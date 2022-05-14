@@ -3,6 +3,7 @@ package hanghae.api.coupteambe.service;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketDto;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.dto.kanban.CardInfoDto;
+import hanghae.api.coupteambe.domain.dto.kanban.ManagerBucketCardsDto;
 import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
 import hanghae.api.coupteambe.domain.entity.kanban.KanbanCard;
 import hanghae.api.coupteambe.domain.entity.project.Project;
@@ -35,8 +36,8 @@ public class KanbanService {
     public void createBucket(BucketInfoDto bucketInfoDto) {
 
         // 1. 파라매터로 받은 버킷 객체에서 필요한 데이터를 추출한다.
-        String projectId = bucketInfoDto.getPjId();
-        Optional<Project> optionalProject = projectRepository.findById(UUID.fromString(projectId));
+        UUID projectId = bucketInfoDto.getPjId();
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 새 버킷 객체를 생성한다.
@@ -57,10 +58,10 @@ public class KanbanService {
     public void modifyBucket(BucketInfoDto bucketInfoDto) {
 
         // 1. 파라매터로 받은 버킷 객체에서 필요한 데이터를 추출한다.
-        String bucketId = bucketInfoDto.getKbbId();
+        UUID bucketId = bucketInfoDto.getKbbId();
 
         // 2. 버킷 ID를 key 로 해당 버킷을 DB 에서 조회한다. Repository(JPA)이용
-        Optional<KanbanBucket> optionalKanbanBucket = kanbanBucketRepository.findById(UUID.fromString(bucketId));
+        Optional<KanbanBucket> optionalKanbanBucket = kanbanBucketRepository.findById(bucketId);
         KanbanBucket kanbanBucket = optionalKanbanBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
@@ -99,7 +100,7 @@ public class KanbanService {
                 cardDtos.add(new CardInfoDto(kanbanCard));
             });
             bucketDtos.add(BucketDto.builder()
-                                    .kbbId(kanbanBucket.getId().toString())
+                                    .kbbId(kanbanBucket.getId())
                                     .title(kanbanBucket.getTitle())
                                     .cards(cardDtos).build());
         });
@@ -114,8 +115,8 @@ public class KanbanService {
     public void createCard(CardInfoDto cardInfoDto) {
 
         // 1. 파라매터로 받은 카드 객체에서 필요한 데이터를 추출한다.
-        String bucketId = cardInfoDto.getKbbId();
-        Optional<KanbanBucket> optionalBucket = kanbanBucketRepository.findById(UUID.fromString(bucketId));
+        UUID bucketId = cardInfoDto.getKbbId();
+        Optional<KanbanBucket> optionalBucket = kanbanBucketRepository.findById(bucketId);
         KanbanBucket kanbanBucket = optionalBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
@@ -140,10 +141,10 @@ public class KanbanService {
     public void modifyCard(CardInfoDto cardInfoDto) {
 
         // 1. 파라매터로 받은 카드 객체에서 필요한 데이터를 추출한다.
-        String cardId = cardInfoDto.getKbcId();
+        UUID cardId = cardInfoDto.getKbcId();
 
         // 2. 카드 ID를 key 로 해당 카드를 DB 에서 조회한다. Repository(JPA)이용
-        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(UUID.fromString(cardId));
+        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(cardId);
         KanbanCard kanbanCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
@@ -182,4 +183,16 @@ public class KanbanService {
         return new CardInfoDto(kanbanCard);
     }
 
+    @Transactional
+    public List<ManagerBucketCardsDto> getAllManagersBucketsAndCards(String projectId) {
+
+        // 1. 파라매터로 받은 프로젝트 ID 를 가지고 있는 모든 버킷들을 조회한다.
+
+        // 2. 순차적으로 조회된 버킷의 버킷 ID를 가지고 있는 모든 카드들을 조회한다.
+
+        List<ManagerBucketCardsDto> managersBuckets = kanbanBucketRepository.findManagersBucketsByProject_Id_DSL(
+                projectId);
+
+        return managersBuckets;
+    }
 }
