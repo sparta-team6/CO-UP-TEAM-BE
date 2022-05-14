@@ -3,23 +3,28 @@ package hanghae.api.coupteambe.controller;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.member.ReqMemberInfoDto;
 import hanghae.api.coupteambe.domain.dto.member.ResMemberInfoDto;
+import hanghae.api.coupteambe.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class MemberController {
 
+    private final MemberService memberService;
+
     /**
      * M4-5 회원 정보 수정
      */
     @PutMapping("/update")
     public ResponseEntity<ResResultDto> modifyMember(@RequestBody ReqMemberInfoDto reqMemberInfoDto) {
+
+        memberService.updateMemberInfo(reqMemberInfoDto);
 
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("회원 정보 수정 성공"));
@@ -30,7 +35,8 @@ public class MemberController {
      */
     @GetMapping("/projects")
     public ResponseEntity<List<ResMemberInfoDto>> getProjectMembersInfo(@RequestParam("pjId") String pjId) {
-        List<ResMemberInfoDto> membersInfo = new ArrayList<>();
+
+        List<ResMemberInfoDto> membersInfo = memberService.getProjectMembers(UUID.fromString(pjId));
 
         // 반환값 : 프로젝트 멤버들 정보, 상태값(200)
         return ResponseEntity.ok(membersInfo);
