@@ -1,24 +1,16 @@
 package hanghae.api.coupteambe.service;
 
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
+import hanghae.api.coupteambe.domain.entity.document.DocumentDto;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
-import hanghae.api.coupteambe.domain.entity.member.Member;
-import hanghae.api.coupteambe.domain.entity.project.Project;
-import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
 import hanghae.api.coupteambe.domain.repository.document.DocumentRepository;
-import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
-import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import hanghae.api.coupteambe.domain.entity.document.Document;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.print.Doc;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package hanghae.api.coupteambe.service;
 
-import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
-import hanghae.api.coupteambe.domain.dto.document.FolderDto;
+import hanghae.api.coupteambe.domain.entity.document.DocumentDto;
+import hanghae.api.coupteambe.domain.entity.document.FolderDto;
 import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.entity.project.Project;

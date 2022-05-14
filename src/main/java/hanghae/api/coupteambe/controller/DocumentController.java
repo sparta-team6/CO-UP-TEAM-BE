@@ -1,18 +1,16 @@
 package hanghae.api.coupteambe.controller;
 
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
-import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
-import hanghae.api.coupteambe.domain.dto.document.FolderDto;
+import hanghae.api.coupteambe.domain.entity.document.DocumentDto;
+import hanghae.api.coupteambe.domain.entity.document.FolderDto;
 import hanghae.api.coupteambe.service.DocumentService;
 import hanghae.api.coupteambe.service.FolderService;
-import hanghae.api.coupteambe.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
