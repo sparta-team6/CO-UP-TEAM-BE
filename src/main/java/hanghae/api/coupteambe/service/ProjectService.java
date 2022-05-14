@@ -54,10 +54,10 @@ public class ProjectService {
      * M5-2 프로젝트 수정
      */
     @Transactional
-    public void modify(String pjId, ReqProjectInfoDto reqProjectInfoDto) {
+    public void modify(UUID pjId, ReqProjectInfoDto reqProjectInfoDto) {
 
         // 1. 프로젝트 ID 를 key 로 해당 프로젝트 조회
-        Optional<Project> optionalProject = projectRepository.findById(UUID.fromString(pjId));
+        Optional<Project> optionalProject = projectRepository.findById(pjId);
         // 1-1. 프로젝트가 존재하지 않는 경우, 예외 처리
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
@@ -102,19 +102,21 @@ public class ProjectService {
      *  해당 프로젝트와 연관되는 버킷 및 카드들도 삭제처리되도록 변경해야 한다.
      */
     @Transactional
-    public void delete(String pjId) {
+    public void delete(UUID pjId) {
         // 파라매터로 받은 프로젝트 ID를 key 로 DB 에서 해당 프로젝트를 삭제한다.
-        projectRepository.deleteById(UUID.fromString(pjId));
+        projectRepository.deleteById(pjId);
     }
 
     /**
      * M5-5 내 프로젝트 조회
      */
     public List<ResProjectInfoDto> getMyProject() {
-        // 현재 로그인한 유저의 ID 조회
+        // 1. 현재 로그인한 유저의 ID 조회
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // 유저 ID 를 가지고 있는 프로젝트 리스트 조회 후 반환
-        return projectRepositoryImpl.findProjectsFromMemberByLoginId_DSL(loginId);
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 해당 멤버가 속한 프로젝트 조회 후 반환
+        return projectRepositoryImpl.findProjectsFromMemberByLoginId_DSL(member.getId());
     }
 }
