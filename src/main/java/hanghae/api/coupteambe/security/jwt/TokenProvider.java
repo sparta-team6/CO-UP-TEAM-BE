@@ -38,8 +38,8 @@ public class TokenProvider implements InitializingBean {
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-token-validity-in-milliseconds}") long accessTokenValidityInMilliseconds,
-            @Value("${jwt.refresh-token-validity-in-milliseconds}") long refreshTokenValidityInMilliseconds) {
+            @Value("${jwt.access-token-validity-in-milliseconds}00000") long accessTokenValidityInMilliseconds,
+            @Value("${jwt.refresh-token-validity-in-milliseconds}00000") long refreshTokenValidityInMilliseconds) {
 
         this.secret = secret;
         this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds;

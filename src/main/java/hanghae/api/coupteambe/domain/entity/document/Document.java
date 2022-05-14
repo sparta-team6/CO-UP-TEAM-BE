@@ -1,17 +1,22 @@
 package hanghae.api.coupteambe.domain.entity.document;
 
+import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.enumerate.MStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
+@Entity
 @Getter
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
+@Builder
 @Table(name = "DOCUMENTS")
 public class Document extends BaseEntity {
 
@@ -39,4 +44,10 @@ public class Document extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MStatus mStatus = MStatus.M_STATUS_SUCCESS;
+
+    public void updateDocument(DocumentDto documentDto) {
+        this.title = documentDto.getTitle();
+        this.contents = documentDto.getContents();
+        this.position = documentDto.getPosition();
+    }
 }

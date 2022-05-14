@@ -56,6 +56,14 @@ public enum ErrorCode {
     KANBAN_CARD_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 카드 ID 입니다."),
 
     // Document 관련
+    DOCUMENT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 문서 ID가 없습니다."),
+    DOCUMENT_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 문서 ID 입니다."),
+
+
+    // Folder 관련
+    FOLDER_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 폴더 ID가 없습니다."),
+    FOLDER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 폴더 ID 입니다."),
+
 
 
     /**
