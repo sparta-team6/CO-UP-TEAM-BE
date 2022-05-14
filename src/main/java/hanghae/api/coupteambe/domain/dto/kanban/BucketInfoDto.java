@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class BucketInfoDto {
 
     // 소속 프로젝트 ID
-    private String pjId;
+    private UUID pjId;
 
     // 버킷 ID
-    private String kbbId;
+    private UUID kbbId;
 
     // 버킷 제목
     private String title;

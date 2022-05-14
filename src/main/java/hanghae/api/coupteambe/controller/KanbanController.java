@@ -4,6 +4,7 @@ import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketDto;
 import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.dto.kanban.CardInfoDto;
+import hanghae.api.coupteambe.domain.dto.kanban.ManagerBucketCardsDto;
 import hanghae.api.coupteambe.service.KanbanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -129,17 +130,18 @@ public class KanbanController {
         return ResponseEntity.ok(cardInfo);
     }
 
-//    /**
-//     * M2-13 담당자별 카드 조회
-//     */
-//    @GetMapping("/cards")
-//    public ResponseEntity<List<ManagerWorks>> getManagersWorks() {
-//
-//        List<ManagerWorks> managerWorks = new ArrayList<>();
-//
-//        // 반환값 : 담당자별 카드 정보, 상태값(200)
-//        return ResponseEntity.ok(managerWorks);
-//    }
+    /**
+     * M2-13 담당자별 카드 조회
+     */
+    @GetMapping("/cards/managers")
+    public ResponseEntity<List<ManagerBucketCardsDto>> getAllManagersBucketsAndCards(
+            @RequestParam("pjId") String pjId) {
+
+        List<ManagerBucketCardsDto> ManagerBucketCardsDto = kanbanService.getAllManagersBucketsAndCards(pjId);
+
+        // 반환값 : 담당자별 카드 정보, 상태값(200)
+        return ResponseEntity.ok(ManagerBucketCardsDto);
+    }
 
     private boolean isValidMember() {
 
