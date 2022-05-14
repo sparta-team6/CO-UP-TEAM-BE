@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -26,7 +26,6 @@ public class ProjectController {
      */
     @PostMapping("/")
     public ResponseEntity<ResResultDto> postPj(@RequestBody CreateProjectDto createProjectDto) {
-
         projectService.create(createProjectDto);
 
         // 반환값 : 결과 메시지, 상태값(201)
@@ -37,7 +36,10 @@ public class ProjectController {
      * M5-2 프로젝트 수정
      */
     @PatchMapping("/{pjId}")
-    public ResponseEntity<ResResultDto> patchPj(@RequestBody ReqProjectInfoDto reqProjectInfoDto) {
+    public ResponseEntity<ResResultDto> patchPj(@PathVariable String pjId, @RequestBody ReqProjectInfoDto reqProjectInfoDto) {
+
+        projectService.modify(UUID.fromString(pjId), reqProjectInfoDto);
+
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("프로젝트 수정완료"));
     }
@@ -47,6 +49,9 @@ public class ProjectController {
      */
     @PostMapping("/invite")
     public ResponseEntity<ResResultDto> postInvite(@RequestParam("inviteCode") String inviteCode) {
+
+        projectService.inviteProject(inviteCode);
+
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("프로젝트 참가완료"));
     }
@@ -55,7 +60,10 @@ public class ProjectController {
      * M5-4 프로젝트 삭제
      */
     @DeleteMapping("/{pjId}")
-    public ResponseEntity<ResResultDto> deletePj(@RequestParam("pjId") String pjId) {
+    public ResponseEntity<ResResultDto> deletePj(@PathVariable String pjId) {
+
+        projectService.delete(UUID.fromString(pjId));
+
         // 반환값 : 결과 메시지, 상태값(200)
         return ResponseEntity.ok(new ResResultDto("프로젝트 삭제완료"));
     }
@@ -65,9 +73,11 @@ public class ProjectController {
      */
     @GetMapping("/")
     public ResponseEntity<List<ResProjectInfoDto>> getProjects() {
+
+        List<ResProjectInfoDto> resProjectInfoDtoList = projectService.getMyProject();
+
         // 반환값 : 결과 메시지, 상태값(200)
-        List<ResProjectInfoDto> resProjectInfoDtos = new ArrayList<>();
-        return ResponseEntity.ok(resProjectInfoDtos);
+        return ResponseEntity.ok(resProjectInfoDtoList);
     }
 
 }

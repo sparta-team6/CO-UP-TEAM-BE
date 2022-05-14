@@ -46,6 +46,9 @@ public enum ErrorCode {
     PROJECT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 프로젝트 ID가 없습니다."),
     PROJECT_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 프로젝트 ID 입니다."),
 
+    // ProjectMember 관련
+    PROJECT_MEMBER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 프로젝트에 참가되어 있는 회원입니다."),
+
     // Kanban 관련
     KANBAN_BUCKET_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 칸반보드 ID가 없습니다."),
     KANBAN_CARD_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 칸반카드 ID가 없습니다."),
@@ -53,6 +56,14 @@ public enum ErrorCode {
     KANBAN_CARD_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 카드 ID 입니다."),
 
     // Document 관련
+    DOCUMENT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 문서 ID가 없습니다."),
+    DOCUMENT_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 문서 ID 입니다."),
+
+
+    // Folder 관련
+    FOLDER_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 폴더 ID가 없습니다."),
+    FOLDER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 폴더 ID 입니다."),
+
 
 
     /**

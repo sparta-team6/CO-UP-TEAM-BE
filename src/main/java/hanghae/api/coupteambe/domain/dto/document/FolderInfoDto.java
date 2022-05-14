@@ -1,32 +1,28 @@
 package hanghae.api.coupteambe.domain.dto.document;
 
+import hanghae.api.coupteambe.domain.entity.document.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FolderDto {
+public class FolderInfoDto {
 
-    // 프로젝트 ID
+    // 소속 프로젝트 ID
     private String pjId;
 
     // 폴더 ID
     private String dfId;
 
-    //폴더이름
+    // 폴더 제목
     private String title;
 
-    //배치순서
+    // 배치 순서
     private int position;
-
-    private List<DocumentDto> docs;
 
 
 }

@@ -1,8 +1,9 @@
 package hanghae.api.coupteambe.domain.repository.project;
 
-import hanghae.api.coupteambe.domain.entity.project.Project;
+import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProjectRepositoryCustom {
 
@@ -12,5 +13,5 @@ public interface ProjectRepositoryCustom {
     /**
      * 멤버가 참가한 프로젝트들 조회
      */
-    List<Project> findProjectsFromMemberByLoginId_DSL(String loginId);
+    List<ResProjectInfoDto> findProjectsFromMemberByLoginId_DSL(UUID mbId);
 }
