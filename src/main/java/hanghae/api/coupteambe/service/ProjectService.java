@@ -38,7 +38,8 @@ public class ProjectService {
         // 1. 프로젝트 생성 사용자 추출
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
         // 2. 프로젝트 생성
         Project project = new Project(createProjectDto);
@@ -59,7 +60,8 @@ public class ProjectService {
         // 1. 프로젝트 ID 를 key 로 해당 프로젝트 조회
         Optional<Project> optionalProject = projectRepository.findById(pjId);
         // 1-1. 프로젝트가 존재하지 않는 경우, 예외 처리
-        Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+        Project project = optionalProject
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 프로젝트가 존재하는 경우, 프로젝트 정보 수정
         project.updateProject(reqProjectInfoDto);
@@ -73,14 +75,16 @@ public class ProjectService {
         // 1. 초대 코드를 가진 프로젝트를 조회한다.
         Optional<Project> optionalProject = projectRepository.findByInviteCode(inviteCode);
         // 1-1. 프로젝트가 존재하지 않는 경우 예외처리한다.
-        Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+        Project project = optionalProject
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 프로젝트가 존재하는 경우
         // 2-1. 현재 로그인한 유저의 멤버 ID 로 멤버 정보(객체)를 조회한다.
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
         // 2-2. 해당 멤버가 존재하지 않는 경우 예외처리
-        Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
         // 3. 프로젝트에 참가하려는 멤버가 프로젝트 멤버 테이블에 존재하는지 확인한다.
         // 존재하지 않는 경우에만 참가 시키도록 한다.
@@ -115,8 +119,28 @@ public class ProjectService {
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 2. 해당 멤버가 존재하지 않는 경우 예외처리
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
         // 3. 해당 멤버가 속한 프로젝트 조회 후 반환
         return projectRepositoryImpl.findProjectsFromMemberByLoginId_DSL(member.getId());
+    }
+
+    /**
+     * M5-8 선택 프로젝트 조회
+     */
+    public ResProjectInfoDto getProject(UUID pjId) {
+        // 1. 프로젝트 ID 를 key 로 해당 프로젝트 조회
+        Project project = projectRepository.findById(pjId)
+                // 1-1. 존재하지 않는 경우 예외 처리
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+
+        // 2. 프로젝트가 존재하는 경우, 프로젝트 객체 리턴
+        return ResProjectInfoDto.builder()
+                .pjId(project.getId())
+                .thumbnail(project.getThumbnail())
+                .title(project.getTitle())
+                .summary(project.getSummary())
+                .inviteCode(project.getInviteCode())
+                .build();
     }
 }
