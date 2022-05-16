@@ -21,7 +21,7 @@ public class DocumentFolderRepositoryImpl implements DocumentFolderRepositoryCus
 
         return jpaQueryFactory.select(folder)
                 .from(folder)
-                .innerJoin(folder.documents, document)
+                .leftJoin(folder.documents, document)
                 .fetchJoin()
                 .where(folder.project.id.eq(UUID.fromString(projectId)))
                 .distinct().fetch();
