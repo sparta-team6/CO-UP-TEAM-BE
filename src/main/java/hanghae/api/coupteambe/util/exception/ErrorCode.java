@@ -64,6 +64,11 @@ public enum ErrorCode {
     FOLDER_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 폴더 ID가 없습니다."),
     FOLDER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 폴더 ID 입니다."),
 
+    // Notice 관련
+    NOTICE_NOT_FOUND_404(HttpStatus.NOT_FOUND, "해당 공지사항이 존재하지 않습니다."),
+
+    // Role 관련
+    PERMISSION_DENIED_403(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
 
     /**
