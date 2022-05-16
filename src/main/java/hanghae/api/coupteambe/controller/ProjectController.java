@@ -80,4 +80,15 @@ public class ProjectController {
         return ResponseEntity.ok(resProjectInfoDtoList);
     }
 
+    /**
+     * M5-6 선택 프로젝트 조회
+     */
+    @GetMapping("/{pjId}")
+    public ResponseEntity<ResProjectInfoDto> getProject(@PathVariable String pjId) {
+
+        ResProjectInfoDto projectInfoDto = projectService.getProject(UUID.fromString(pjId));
+
+        return ResponseEntity.ok(projectInfoDto);
+    }
+
 }
