@@ -30,7 +30,7 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
 
         return jpaQueryFactory.select(bucket)
                               .from(bucket)
-                              .innerJoin(bucket.cards, card)
+                              .leftJoin(bucket.cards, card)
                               .fetchJoin()
                               .where(bucket.project.id.eq(UUID.fromString(projectId)))
                               .distinct().fetch();
