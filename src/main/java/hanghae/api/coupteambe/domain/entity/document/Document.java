@@ -36,9 +36,7 @@ public class Document extends BaseEntity {
     private String title = "untitle";
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    @ColumnDefault("''")
-    @Builder.Default
-    private String contents = "";
+    private String contents;
 
     @Column(nullable = false)
     @ColumnDefault("0")
