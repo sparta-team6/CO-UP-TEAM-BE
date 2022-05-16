@@ -37,8 +37,8 @@ public class FolderService {
     public void createFolders(FolderDto folderDto) {
 
         // 1. 파라미터로 받은 폴더 객체에서 필요한 데이터를 추출한다.
-        String projectId = folderDto.getPjId();
-        Optional<Project> optionalProject = projectRepository.findById(UUID.fromString(projectId));
+        UUID projectId = folderDto.getPjId();
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 새 폴더 객체를 생성한다.
@@ -101,7 +101,7 @@ public class FolderService {
                 documentDtos.add(new DocumentDto(document));
             });
             folderDtos.add(FolderDto.builder()
-                    .pjId(folder.getProject().getId().toString())
+                    .pjId(folder.getProject().getId())
                     .dfId(folder.getId().toString())
                     .title(folder.getTitle())
                     .position(folder.getPosition())
