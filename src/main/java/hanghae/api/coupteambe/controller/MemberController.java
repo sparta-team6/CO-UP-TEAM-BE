@@ -3,6 +3,7 @@ package hanghae.api.coupteambe.controller;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
 import hanghae.api.coupteambe.domain.dto.member.ReqMemberInfoDto;
 import hanghae.api.coupteambe.domain.dto.member.ResMemberInfoDto;
+import hanghae.api.coupteambe.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class MemberController {
+
+    private final MemberService memberService;
 
     /**
      * M4-5 회원 정보 수정
@@ -40,10 +43,13 @@ public class MemberController {
      * M4-8 멤버 검색 (1인)
      */
     @GetMapping("/")
-    public ResponseEntity<ResMemberInfoDto> getMemberInfo(@RequestParam("loginId") String loginId) {
+    public ResponseEntity<ResMemberInfoDto> getOneMember(@RequestParam("loginId") String loginId) {
+
+        //선택멤버 상세 조회 서비스 호출
+        ResMemberInfoDto resMemberInfoDto = memberService.getOneMemberInfo(loginId);
 
         // 반환값 : 멤버 정보, 상태값(200)
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(resMemberInfoDto);
     }
 
     /**
@@ -53,7 +59,9 @@ public class MemberController {
     public ResponseEntity<ResMemberInfoDto> getMyInfo() {
         // 로그인한 유저의 유효한 jwt 토큰 값으로 정보 조회할 예정이므로 파라매터 안받아옴
 
+        ResMemberInfoDto memberInfoDto = memberService.getMyInfo();
+
         // 반환값 : 본인 정보, 상태값(200)
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(memberInfoDto);
     }
 }

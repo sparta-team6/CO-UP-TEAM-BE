@@ -1,8 +1,9 @@
 package hanghae.api.coupteambe.domain.repository.member;
 
-import hanghae.api.coupteambe.domain.entity.member.Member;
+import hanghae.api.coupteambe.domain.dto.member.ResMemberInfoDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MemberRepositoryCustom {
 
@@ -12,6 +13,6 @@ public interface MemberRepositoryCustom {
     /**
      * 프로젝트에 참가한 멤버들 조회
      */
-    List<Member> findMembersFromProjectByProjectId_DSL(String projectId);
+    List<ResMemberInfoDto> findMembersFromProjectByProjectId_DSL(UUID pjId);
 
 }
