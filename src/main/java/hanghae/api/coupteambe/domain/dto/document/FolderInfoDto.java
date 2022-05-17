@@ -1,10 +1,11 @@
 package hanghae.api.coupteambe.domain.dto.document;
 
-import hanghae.api.coupteambe.domain.entity.document.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -13,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class FolderInfoDto {
 
     // 소속 프로젝트 ID
-    private String pjId;
+    private UUID pjId;
 
     // 폴더 ID
-    private String dfId;
+    private UUID dfId;
 
     // 폴더 제목
     private String title;
