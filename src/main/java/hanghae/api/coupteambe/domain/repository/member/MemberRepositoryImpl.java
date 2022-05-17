@@ -21,15 +21,22 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         QProjectMember projectMember = QProjectMember.projectMember;
         QMember member = QMember.member;
 
+//         SELECT m.*
+//         FROM project_member pm
+//            LEFT OUTER JOIN member m
+//                ON (m.id = pm.mb_id)
+//         WHERE pm.pj_id = '프로젝트 ID(PK)';
+//         -- WHERE pm.pj_id = :pjId
+
         return jpaQueryFactory
                 .select(Projections.constructor(
                         ResMemberInfoDto.class,
                         member.loginId,
                         member.social,
-                        member.profileImage,
-                        member.url,
                         member.nickname,
-                        member.aboutMe))
+                        member.url,
+                        member.aboutMe,
+                        member.profileImage))
                 .from(projectMember)
                 .leftJoin(member)
                 .on(member.id.eq(projectMember.member.id))
@@ -37,6 +44,4 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .where(projectMember.project.id.eq(pjId))
                 .distinct().fetch();
     }
-
-
 }
