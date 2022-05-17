@@ -34,7 +34,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                         project.thumbnail,
                         project.title,
                         project.summary,
-                        project.inviteCode))
+                        project.inviteCode,
+                        projectMember.role))
                 .from(projectMember)
                 .leftJoin(project)
                 .on(project.id.eq(projectMember.project.id))
