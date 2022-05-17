@@ -17,8 +17,11 @@ public class NoticeInfoDto {
     // 공지사항 번호
     private UUID noticeId;
 
-    // 프로젝트 멤버 ID
-    private UUID pjMbId;
+    // 프로젝트 ID
+    private UUID pjId;
+
+    // 멤버 ID
+    private UUID mbId;
 
     // 공지사항 제목
     private String title;
@@ -28,8 +31,13 @@ public class NoticeInfoDto {
 
     public NoticeInfoDto(Notice notice) {
         this.noticeId = notice.getId();
-        this.pjMbId = notice.getProjectMember().getId();
         this.title = notice.getTitle();
         this.contents = notice.getContents();
+    }
+
+    public NoticeInfoDto(UUID pjId, String title, String contents) {
+        this.pjId = pjId;
+        this.title = title;
+        this.contents = contents;
     }
 }

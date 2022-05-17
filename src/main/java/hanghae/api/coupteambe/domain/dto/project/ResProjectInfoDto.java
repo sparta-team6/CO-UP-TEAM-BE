@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.dto.project;
 
+import hanghae.api.coupteambe.enumerate.ProjectRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,4 +24,10 @@ public class ResProjectInfoDto {
     private String summary;
     //초대코드
     private String inviteCode;
+    // 현재 사용자 권한
+    private ProjectRole projectRole;
+
+    public void updateRole(ProjectRole projectRole) {
+        this.projectRole = projectRole;
+    }
 }

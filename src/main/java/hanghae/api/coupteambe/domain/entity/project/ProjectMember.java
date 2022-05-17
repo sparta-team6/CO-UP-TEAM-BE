@@ -40,15 +40,16 @@ public class ProjectMember extends BaseTimeEntity {
     private int position = 0;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProjectRole role;
 
-    public ProjectMember(Member member, Project project) {
+    public ProjectMember(Member member, Project project, ProjectRole projectRole) {
         this.member = member;
         member.addProjects(this);
 
         this.project = project;
         project.addMembers(this);
 
-        this.role = ProjectRole.READ_WRITE;
+        this.role = projectRole;
     }
 }

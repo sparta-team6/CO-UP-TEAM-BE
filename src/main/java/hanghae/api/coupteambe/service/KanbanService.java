@@ -42,10 +42,10 @@ public class KanbanService {
 
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket newBucket = KanbanBucket.builder()
-                                             .project(project)
-                                             .title(bucketInfoDto.getTitle())
-                                             .position(bucketInfoDto.getPosition())
-                                             .build();
+                .project(project)
+                .title(bucketInfoDto.getTitle())
+                .position(bucketInfoDto.getPosition())
+                .build();
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
         kanbanBucketRepository.save(newBucket);
@@ -100,9 +100,10 @@ public class KanbanService {
                 cardDtos.add(new CardInfoDto(kanbanCard));
             });
             bucketDtos.add(BucketDto.builder()
-                                    .kbbId(kanbanBucket.getId())
-                                    .title(kanbanBucket.getTitle())
-                                    .cards(cardDtos).build());
+                    .kbbId(kanbanBucket.getId())
+                    .title(kanbanBucket.getTitle())
+                    .position(kanbanBucket.getPosition())
+                    .cards(cardDtos).build());
         });
 
         return bucketDtos;
