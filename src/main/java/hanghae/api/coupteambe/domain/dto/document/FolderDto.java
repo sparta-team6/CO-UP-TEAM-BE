@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -15,7 +16,7 @@ import java.util.List;
 public class FolderDto {
 
     // 프로젝트 ID
-    private String pjId;
+    private UUID pjId;
 
     // 폴더 ID
     private String dfId;

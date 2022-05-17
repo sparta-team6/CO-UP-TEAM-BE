@@ -53,4 +53,16 @@ public class KanbanCard extends BaseEntity {
         this.position = cardInfoDto.getPosition();
         this.manager = cardInfoDto.getManager();
     }
+
+    public void updateBucket(KanbanBucket kanbanBucket) {
+        this.kanbanBucket = kanbanBucket;
+    }
+
+    public void plusPosition() {
+        this.position += 1;
+    }
+
+    public void minusPosition() {
+        this.position -= 1;
+    }
 }

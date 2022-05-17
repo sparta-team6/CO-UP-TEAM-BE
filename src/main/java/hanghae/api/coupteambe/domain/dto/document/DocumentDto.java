@@ -1,13 +1,12 @@
 package hanghae.api.coupteambe.domain.dto.document;
 
 import hanghae.api.coupteambe.domain.entity.document.Document;
-import hanghae.api.coupteambe.domain.entity.document.Folder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -15,9 +14,9 @@ import java.util.List;
 @Builder
 public class DocumentDto {
     //폴더번호
-    private String dfId;
+    private UUID dfId;
     //문서번호
-    private String docId;
+    private UUID docId;
     //제목
     private String title;
     //본문
@@ -26,7 +25,7 @@ public class DocumentDto {
     private int position;
 
     public DocumentDto(Document document) {
-        this.docId = document.getId().toString();
+        this.docId = document.getId();
         this.title = document.getTitle();
         this.contents = document.getContents();
         this.position = document.getPosition();

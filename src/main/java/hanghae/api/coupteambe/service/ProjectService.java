@@ -3,13 +3,15 @@ package hanghae.api.coupteambe.service;
 import hanghae.api.coupteambe.domain.dto.project.CreateProjectDto;
 import hanghae.api.coupteambe.domain.dto.project.ReqProjectInfoDto;
 import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
+import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
+import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
-import hanghae.api.coupteambe.domain.repository.project.ProjectRepositoryImpl;
+import hanghae.api.coupteambe.enumerate.ProjectRole;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static hanghae.api.coupteambe.util.SecurityUtil.getCurrentUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +33,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final MemberRepository memberRepository;
-    private final ProjectRepositoryImpl projectRepositoryImpl;
+    private final KanbanBucketRepository kanbanBucketRepository;
 
     /**
      * M5-1 프로젝트 생성
@@ -44,11 +49,32 @@ public class ProjectService {
         // 2. 프로젝트 생성
         Project project = new Project(createProjectDto);
 
-        // 3. 프로젝트 연관관계 설정
-        ProjectMember projectMember = new ProjectMember(member, project);
+        // 3. 프로젝트 연관관계 설정 (관리자 권한 유저)
+        ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.ADMIN);
+
+        // 2. 새 버킷 객체를 생성한다.
+        KanbanBucket todoBucket = KanbanBucket.builder()
+                                              .project(project)
+                                              .title("ToDo")
+                                              .position(0)
+                                              .build();
+        KanbanBucket inProgressBucket = KanbanBucket.builder()
+                                                    .project(project)
+                                                    .title("In Progress")
+                                                    .position(1)
+                                                    .build();
+        KanbanBucket doneBucket = KanbanBucket.builder()
+                                              .project(project)
+                                              .title("Done")
+                                              .position(2)
+                                              .build();
+        List<KanbanBucket> buckets = Arrays.asList(todoBucket, inProgressBucket, doneBucket);
 
         // 4. 프로젝트 저장
         projectMemberRepository.save(projectMember);
+
+        // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
+        kanbanBucketRepository.saveAll(buckets);
     }
 
     /**
@@ -89,8 +115,8 @@ public class ProjectService {
         // 3. 프로젝트에 참가하려는 멤버가 프로젝트 멤버 테이블에 존재하는지 확인한다.
         // 존재하지 않는 경우에만 참가 시키도록 한다.
         if (!projectMemberRepository.existsByMember(member)) {
-            // 3-1. 프로젝트에 유저를 참가시킨다.
-            ProjectMember projectMember = new ProjectMember(member, project);
+            // 3-1. 프로젝트에 일반유저를 참가시킨다.
+            ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.READ_WRITE);
             // 3-2. 프로젝트 저장
             projectMemberRepository.save(projectMember);
         } else {
@@ -122,25 +148,60 @@ public class ProjectService {
         Member member = optionalMember
                 .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
         // 3. 해당 멤버가 속한 프로젝트 조회 후 반환
-        return projectRepositoryImpl.findProjectsFromMemberByLoginId_DSL(member.getId());
+        return projectRepository.findProjectsFromMemberByLoginId_DSL(member.getId());
     }
 
     /**
      * M5-8 선택 프로젝트 조회
      */
     public ResProjectInfoDto getProject(UUID pjId) {
+        //todo 리팩토링 때 세 개 쿼리 한 번에 조인해서 가져올 수 있도록 변경할 것
+        String loginId = getCurrentUsername().orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+
         // 1. 프로젝트 ID 를 key 로 해당 프로젝트 조회
         Project project = projectRepository.findById(pjId)
                 // 1-1. 존재하지 않는 경우 예외 처리
                 .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
+
+        ResProjectInfoDto resProjectInfoDto = null;
+        // 내가 참가한 플젝 접근 -> read & write
+        if (optionalProjectMember.isPresent()) {
         // 2. 프로젝트가 존재하는 경우, 프로젝트 객체 리턴
-        return ResProjectInfoDto.builder()
+        resProjectInfoDto = ResProjectInfoDto.builder()
                 .pjId(project.getId())
                 .thumbnail(project.getThumbnail())
                 .title(project.getTitle())
                 .summary(project.getSummary())
                 .inviteCode(project.getInviteCode())
+                .projectRole(optionalProjectMember.get().getRole())
                 .build();
+
+        // 내가 참가하지 않은 플젝 접근 ( 퍼블릭 vs 프라이빗 )
+        } else {
+            // 퍼블릭 : role -> 읽기전용 read
+            if (isPublic(project)) {
+                resProjectInfoDto = ResProjectInfoDto.builder()
+                        .pjId(project.getId())
+                        .thumbnail(project.getThumbnail())
+                        .title(project.getTitle())
+                        .summary(project.getSummary())
+                        .inviteCode(project.getInviteCode())
+                        .projectRole(ProjectRole.READ)
+                        .build();
+            } else {
+                // private : 접근오류
+                throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
+            }
+        }
+        return resProjectInfoDto;
+    }
+
+    private boolean isPublic(Project project) {
+        return true;
     }
 }

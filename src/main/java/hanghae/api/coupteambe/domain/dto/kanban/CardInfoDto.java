@@ -35,6 +35,7 @@ public class CardInfoDto {
     public CardInfoDto(KanbanCard kanbanCard) {
 
         this.kbcId = kanbanCard.getId();
+        this.kbbId = kanbanCard.getKanbanBucket().getId();
         this.manager = kanbanCard.getManager();
         this.title = kanbanCard.getTitle();
         this.contents = kanbanCard.getContents();
@@ -47,10 +48,4 @@ public class CardInfoDto {
         this.position = position;
     }
 
-    public CardInfoDto(UUID kbcId, String title, String contents, int position) {
-        this.kbcId = kbcId;
-        this.title = title;
-        this.contents = contents;
-        this.position = position;
-    }
 }
