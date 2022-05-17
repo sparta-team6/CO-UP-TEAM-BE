@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface KanbanCardRepository extends JpaRepository<KanbanCard, UUID> {
 
     List<KanbanCard> findCardsByKanbanBucketIdAndPositionGreaterThanEqual(UUID bucketId, int position);
+
+    long countAllByKanbanBucket_Id(UUID bucketId);
 }

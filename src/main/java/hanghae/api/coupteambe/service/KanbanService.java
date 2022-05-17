@@ -121,13 +121,15 @@ public class KanbanService {
         KanbanBucket kanbanBucket = optionalBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
+        long cntCards = kanbanCardRepository.countAllByKanbanBucket_Id(bucketId);
+
         // 2. 새 카드 객체를 생성한다.
         KanbanCard kanbanCard = KanbanCard.builder()
                                           .kanbanBucket(kanbanBucket)
                                           .manager(cardInfoDto.getManager())
                                           .title(cardInfoDto.getTitle())
                                           .contents(cardInfoDto.getContents())
-                                          .position(cardInfoDto.getPosition()).build();
+                                          .position((int) cntCards).build();
 
 
         // 3. 새로 생성한 카드를 Repository 를 이용하여 DB에 저장한다.
