@@ -28,8 +28,8 @@ public class DocumentService {
     public void createDocuments(DocumentDto documentDto) {
 
         // 1. 파라미터로 받은 문서 객체에서 필요한 데이터를 추출한다.
-        String folderId = documentDto.getDfId();
-        Optional<Folder> optionalFolder = documentFolderRepository.findById(UUID.fromString(folderId));
+        UUID folderId = documentDto.getDfId();
+        Optional<Folder> optionalFolder = documentFolderRepository.findById(folderId);
         Folder folder = optionalFolder.orElseThrow(
                 () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
 
@@ -52,10 +52,10 @@ public class DocumentService {
     public void modifyDocument(DocumentDto documentDto) {
 
         // 1. 파리미터로 받은 문서 객체에서 필요한 데이터를 추출한다
-        String documentId = documentDto.getDocId();
+        UUID documentId = documentDto.getDocId();
 
         // 2. 문서 ID를 key로 해당 문서를 DB에서 조회한다.
-        Optional<Document> optionalDocument = documentRepository.findById(UUID.fromString(documentId));
+        Optional<Document> optionalDocument = documentRepository.findById(documentId);
         Document document = optionalDocument.orElseThrow(
                 () -> new RequestException(ErrorCode.DOCUMENT_NOT_FOUND_404));
 
@@ -91,6 +91,5 @@ public class DocumentService {
 
         return new DocumentDto(document);
 
-        /// TODO: 2022/05/12 테스트해보자
     }
 }

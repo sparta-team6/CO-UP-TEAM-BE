@@ -29,11 +29,12 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
         QKanbanCard card = QKanbanCard.kanbanCard;
 
         return jpaQueryFactory.select(bucket)
-                              .from(bucket)
-                              .leftJoin(bucket.cards, card)
-                              .fetchJoin()
-                              .where(bucket.project.id.eq(UUID.fromString(projectId)))
-                              .distinct().fetch();
+                .from(bucket)
+                .leftJoin(bucket.cards, card)
+                .fetchJoin()
+                .where(bucket.project.id.eq(UUID.fromString(projectId)))
+                .orderBy(bucket.position.asc(), card.position.asc())
+                .distinct().fetch();
     }
 
     @Override
@@ -49,18 +50,18 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
 //        String projectId = "5526bcb0-5feb-4668-8893-d837083a1bc3";
 
         List<Tuple> result = jpaQueryFactory.from(projectMember)
-                                            .join(projectMember.project, project)
-                                            .join(bucket).on(projectMember.project.eq(bucket.project))
-                                            .join(card).on(bucket.eq(card.kanbanBucket))
-                                            .join(member).on(card.manager.eq(member.loginId))
-                                            .where(projectMember.project.id.eq(UUID.fromString(projectId)))
-                                            .select(
-                                                    member.loginId, member.profileImage, member.nickname,
-                                                    bucket.id, bucket.title, bucket.position,
-                                                    card.id, card.title, card.contents, card.position
-                                            )
-                                            .orderBy(member.loginId.asc(), bucket.position.asc(), card.position.asc())
-                                            .fetch();
+                .join(projectMember.project, project)
+                .join(bucket).on(projectMember.project.eq(bucket.project))
+                .join(card).on(bucket.eq(card.kanbanBucket))
+                .join(member).on(card.manager.eq(member.loginId))
+                .where(projectMember.project.id.eq(UUID.fromString(projectId)))
+                .select(
+                        member.loginId, member.profileImage, member.nickname,
+                        bucket.id, bucket.title, bucket.position,
+                        card.id, card.title, card.contents, card.position
+                )
+                .orderBy(member.loginId.asc(), bucket.position.asc(), card.position.asc())
+                .fetch();
 
         HashMap<String, ManagerBucketCardsDto> managerMap = new HashMap<>();
         HashMap<String, BucketDto> bucketMap = new HashMap<>();

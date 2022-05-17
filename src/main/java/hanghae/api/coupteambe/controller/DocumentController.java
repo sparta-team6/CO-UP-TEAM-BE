@@ -5,14 +5,12 @@ import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
 import hanghae.api.coupteambe.domain.dto.document.FolderDto;
 import hanghae.api.coupteambe.service.DocumentService;
 import hanghae.api.coupteambe.service.FolderService;
-import hanghae.api.coupteambe.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,7 +25,7 @@ public class DocumentController {
      * M1-1 폴더 생성
      */
     @PostMapping("/")
-    public ResponseEntity<ResResultDto> postFolders(@RequestBody FolderDto folderDto) {
+    public ResponseEntity<ResResultDto> createFolders(@RequestBody FolderDto folderDto) {
 
         isValidMember();
         // 폴더 생성 서비스 호출

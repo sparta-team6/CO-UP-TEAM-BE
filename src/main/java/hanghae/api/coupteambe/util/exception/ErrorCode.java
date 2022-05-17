@@ -41,10 +41,10 @@ public enum ErrorCode {
     MEMBER_LOGINID_NOT_FOUND_404(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다."),
     MEMBER_LOGINID_DUPLICATION_409(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
 
-
     // Project 관련
     PROJECT_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 프로젝트 ID가 없습니다."),
     PROJECT_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 프로젝트 ID 입니다."),
+    PROJECT_FORBIDDEN_403(HttpStatus.FORBIDDEN, "접근할 수 없는 프로젝트 입니다."),
 
     // ProjectMember 관련
     PROJECT_MEMBER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 프로젝트에 참가되어 있는 회원입니다."),
@@ -64,6 +64,13 @@ public enum ErrorCode {
     FOLDER_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 폴더 ID가 없습니다."),
     FOLDER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 등록된 폴더 ID 입니다."),
 
+    // Notice 관련
+    NOTICE_NOT_FOUND_404(HttpStatus.NOT_FOUND, "해당 공지사항이 존재하지 않습니다."),
+
+    // Role 관련
+    NO_PERMISSION_TO_WRITE_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 작성 권한이 없습니다."),
+    NO_PERMISSION_TO_MODIFY_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 수정 권한이 없습니다."),
+    NO_PERMISSION_TO_DELETE_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 삭제 권한이 없습니다."),
 
 
     /**
