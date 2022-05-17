@@ -143,6 +143,26 @@ public class KanbanController {
         return ResponseEntity.ok(ManagerBucketCardsDto);
     }
 
+    /**
+     * M2-14 전체 버킷,카드 수정
+     */
+    //xxx 잠시 보류, 한장의 카드만 수정하는 것으로 고려중, 성공한다면 이 메소드는 필요없음
+//    @PatchMapping("/cards/all")
+//    public ResponseEntity<ResResultDto> updateAllBucketsAndCards(@RequestBody List<BucketDto> bucketDtoList) {
+//
+//        for (BucketDto bucketDto : bucketDtoList) {
+//            System.out.println("bucketDto = " + bucketDto);
+//            List<CardInfoDto> cards = bucketDto.getCards();
+//            for (CardInfoDto card : cards) {
+//                System.out.println("card = " + card);
+//            }
+//        }
+//
+//        kanbanService.updateBucketAllCards(bucketDtoList);
+//
+//
+//        return ResponseEntity.ok(new ResResultDto("전체 카드 수정 성공"));
+//    }
     private boolean isValidMember() {
 
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
