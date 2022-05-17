@@ -3,9 +3,11 @@ package hanghae.api.coupteambe.service;
 import hanghae.api.coupteambe.domain.dto.project.CreateProjectDto;
 import hanghae.api.coupteambe.domain.dto.project.ReqProjectInfoDto;
 import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
+import hanghae.api.coupteambe.domain.entity.kanban.KanbanBucket;
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
+import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +33,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final MemberRepository memberRepository;
+    private final KanbanBucketRepository kanbanBucketRepository;
 
     /**
      * M5-1 프로젝트 생성
@@ -48,8 +52,29 @@ public class ProjectService {
         // 3. 프로젝트 연관관계 설정 (관리자 권한 유저)
         ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.ADMIN);
 
+        // 2. 새 버킷 객체를 생성한다.
+        KanbanBucket todoBucket = KanbanBucket.builder()
+                                              .project(project)
+                                              .title("ToDo")
+                                              .position(0)
+                                              .build();
+        KanbanBucket inProgressBucket = KanbanBucket.builder()
+                                                    .project(project)
+                                                    .title("In Progress")
+                                                    .position(1)
+                                                    .build();
+        KanbanBucket doneBucket = KanbanBucket.builder()
+                                              .project(project)
+                                              .title("Done")
+                                              .position(2)
+                                              .build();
+        List<KanbanBucket> buckets = Arrays.asList(todoBucket, inProgressBucket, doneBucket);
+
         // 4. 프로젝트 저장
         projectMemberRepository.save(projectMember);
+
+        // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
+        kanbanBucketRepository.saveAll(buckets);
     }
 
     /**
