@@ -42,10 +42,10 @@ public class KanbanService {
 
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket newBucket = KanbanBucket.builder()
-                .project(project)
-                .title(bucketInfoDto.getTitle())
-                .position(bucketInfoDto.getPosition())
-                .build();
+                                             .project(project)
+                                             .title(bucketInfoDto.getTitle())
+                                             .position(bucketInfoDto.getPosition())
+                                             .build();
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
         kanbanBucketRepository.save(newBucket);
@@ -100,10 +100,10 @@ public class KanbanService {
                 cardDtos.add(new CardInfoDto(kanbanCard));
             });
             bucketDtos.add(BucketDto.builder()
-                    .kbbId(kanbanBucket.getId())
-                    .title(kanbanBucket.getTitle())
-                    .position(kanbanBucket.getPosition())
-                    .cards(cardDtos).build());
+                                    .kbbId(kanbanBucket.getId())
+                                    .title(kanbanBucket.getTitle())
+                                    .position(kanbanBucket.getPosition())
+                                    .cards(cardDtos).build());
         });
 
         return bucketDtos;
@@ -151,23 +151,23 @@ public class KanbanService {
         KanbanCard targetCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
+        // 3. 새 카드 객체를 생성하고 조회한 카드로 초기화 한다.
+        // 4. 카드를 업데이트 시킨다.
         //todo 버킷ID만 바꿔주면 될것같은데, JPA에서는 꼭 객체를 조회한 다음 객체를 바꿔야하는것인지?
         List<KanbanCard> srcCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqual(
                 targetCard.getKanbanBucket().getId(),
                 targetCard.getPosition());
+        srcCards.forEach(KanbanCard::minusPosition);
+
         List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqual(
                 cardInfoDto.getKbbId(),
                 cardInfoDto.getPosition());
+        dstCards.forEach(KanbanCard::plusPosition);
 
         UUID dstBucketId = cardInfoDto.getKbbId();
         Optional<KanbanBucket> optTargetBucket = kanbanBucketRepository.findById(dstBucketId);
         KanbanBucket dstBucket = optTargetBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
-
-        // 3. 새 카드 객체를 생성하고 조회한 카드로 초기화 한다.
-        // 4. 카드를 업데이트 시킨다.
-        srcCards.forEach(KanbanCard::minusPosition);
-        dstCards.forEach(KanbanCard::plusPosition);
 
         targetCard.updateKanbanCard(cardInfoDto);
         targetCard.updateBucket(dstBucket);

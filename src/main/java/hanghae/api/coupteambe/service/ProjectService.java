@@ -55,17 +55,17 @@ public class ProjectService {
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket todoBucket = KanbanBucket.builder()
                                               .project(project)
-                                              .title("ToDo")
+                                              .title("대기")
                                               .position(0)
                                               .build();
         KanbanBucket inProgressBucket = KanbanBucket.builder()
                                                     .project(project)
-                                                    .title("In Progress")
+                                                    .title("진행 중")
                                                     .position(1)
                                                     .build();
         KanbanBucket doneBucket = KanbanBucket.builder()
                                               .project(project)
-                                              .title("Done")
+                                              .title("완료")
                                               .position(2)
                                               .build();
         List<KanbanBucket> buckets = Arrays.asList(todoBucket, inProgressBucket, doneBucket);
