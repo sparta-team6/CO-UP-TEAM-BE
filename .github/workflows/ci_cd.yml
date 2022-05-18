@@ -74,8 +74,8 @@ jobs:
 
       - name: Add Naver_redirect_uri Application Property
         run: |
-          echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/main/resources/application.properties     
-
+          echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/main/resources/application.properties
+          
       - name: cat application.properties
         run: |
           cat ./src/main/resources/application.properties
