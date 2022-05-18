@@ -43,8 +43,7 @@ public class AuthController {
      * </pre>
      */
     @PostMapping("/{social}")
-//    public ResponseEntity<ResResultDto> login(
-    public ResponseEntity<JwtTokenDto> login(
+    public ResponseEntity<ResResultDto> login(
             @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
@@ -77,8 +76,7 @@ public class AuthController {
 
         setJwtCookie(response, jwtTokenDto);
 
-//        return ResponseEntity.ok(new ResResultDto("로그인 성공"));
-        return ResponseEntity.ok(jwtTokenDto);
+        return ResponseEntity.ok(new ResResultDto("로그인 성공"));
     }
 
     @PostMapping("/reissue")
@@ -129,21 +127,21 @@ public class AuthController {
     private void setJwtCookie(HttpServletResponse response, JwtTokenDto jwtTokenDto) {
 
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", jwtTokenDto.getAccessToken())
-                                                      .domain("localhost")
+                                                      .domain("cooperate-up.com")
                                                       .httpOnly(true)
-                                                      .maxAge(60 * 5)
+                                                      .maxAge(60 * 30)
                                                       .sameSite("None")
-                                                      .secure(false)
+                                                      .secure(true)
                                                       .path("/").build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
         responseCookie = ResponseCookie.from("refreshToken", jwtTokenDto.getRefreshToken())
-                                       .domain("localhost")
+                                       .domain("cooperate-up.com")
                                        .httpOnly(true)
-                                       .maxAge(60 * 15)
+                                       .maxAge(60 * 60 * 24)
                                        .sameSite("None")
-                                       .secure(false)
+                                       .secure(true)
                                        .path("/").build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
