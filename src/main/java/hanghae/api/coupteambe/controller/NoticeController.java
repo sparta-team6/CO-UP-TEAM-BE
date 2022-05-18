@@ -29,8 +29,8 @@ public class NoticeController {
      * O1-2. 공지사항 전체 조회
      */
     @GetMapping("/all")
-    public List<NoticeInfoDto> getAllNotices(@RequestParam("pjMbId") String pjMbId) {
-        return noticeService.getAllNotices(pjMbId);
+    public List<NoticeInfoDto> getAllNotices(@RequestParam("pjId") String pjId) {
+        return noticeService.getAllNotices(pjId);
     }
 
     /**
