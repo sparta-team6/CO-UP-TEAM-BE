@@ -3,12 +3,12 @@ package hanghae.api.coupteambe.service;
 import hanghae.api.coupteambe.domain.dto.notice.NoticeInfoDto;
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.domain.entity.notice.Notice;
+import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.entity.project.ProjectMember;
 import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.notice.NoticeRepository;
-import hanghae.api.coupteambe.domain.repository.notice.NoticeRepositoryImpl;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
-import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepositoryImpl;
+import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -28,9 +28,8 @@ public class NoticeService {
 
     private final ProjectMemberRepository projectMemberRepository;
     private final NoticeRepository noticeRepository;
-    private final NoticeRepositoryImpl noticeRepositoryImpl;
     private final MemberRepository memberRepository;
-    private final ProjectMemberRepositoryImpl projectMemberRepositoryImpl;
+    private final ProjectRepository projectRepository;
 
     /**
      * O1-1. 공지사항 글 생성
@@ -54,7 +53,7 @@ public class NoticeService {
         UUID mbId = member.getId();
         UUID pjId = noticeInfoDto.getPjId();
 
-        ProjectMember projectMember = projectMemberRepositoryImpl.findProjectMemberFromProjectMemberByPjIdAndMbId_DSL(pjId, mbId);
+        ProjectMember projectMember = projectMemberRepository.findProjectMemberFromProjectMemberByPjIdAndMbId_DSL(pjId, mbId);
 
         // 3. 공지사항 객체 생성
         Notice notice = Notice.builder()
@@ -71,13 +70,16 @@ public class NoticeService {
     /**
      * O1-2. 공지사항 전체 조회
      */
-    public List<NoticeInfoDto> getAllNotices(String pjMbId) {
+    public List<NoticeInfoDto> getAllNotices(String pjId) {
         // 1. 프로젝트가 존재하는지 조회
-        ProjectMember projectMember = projectMemberRepository.findById(UUID.fromString(pjMbId))
+        Project project = projectRepository.findById(UUID.fromString(pjId))
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+
+        ProjectMember projectMember = projectMemberRepository.findTop1ByProjectId(UUID.fromString(pjId))
                 .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 2. 공지사항 전체 조회
-        return noticeRepositoryImpl.findNoticesFromProjectByProjectMbId_DSL(UUID.fromString(pjMbId));
+        return noticeRepository.findNoticesFromProjectByProjectMbId_DSL(projectMember.getId());
     }
 
     /**

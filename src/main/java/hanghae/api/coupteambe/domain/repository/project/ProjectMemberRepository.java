@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UUID>, ProjectMemberRepositoryCustom {
+    Optional<ProjectMember> findTop1ByProjectId(UUID pjID);
     Optional<ProjectMember> findByMember(Member member);
     boolean existsByMember(Member member);
     List<ProjectMember> findByMemberId(UUID mbId);

@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ProjectRepository extends JpaRepository<Project, UUID>, ProjectRepositoryCustom {
     // 초대코드로 프로젝트 찾기
     Optional<Project> findByInviteCode(String inviteCode);
+    Optional<Project> findById(UUID pjId);
 }
