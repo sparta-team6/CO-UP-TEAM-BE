@@ -24,7 +24,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .select(Projections.constructor(
                         NoticeInfoDto.class,
                         notice.id,
-                        notice.projectMember.id,
+                        projectMember.project.id,
+                        projectMember.member.id,
                         notice.title,
                         notice.contents))
                 .from(notice)
