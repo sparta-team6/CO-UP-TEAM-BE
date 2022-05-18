@@ -75,7 +75,39 @@ jobs:
       - name: Add Naver_redirect_uri Application Property
         run: |
           echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/main/resources/application.properties
-          
+
+      - name: Add TEST.properties Kakao_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_CLIENT_ID }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Kakao_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_KAKAO_REDIRECT_URI }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Google_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_GOOGLE_CLIENT_ID }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Google_client_secret Application Property
+        run: |
+          echo ${{ secrets.AUTH_GOOGLE_CLIENT_SECRET }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Google_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_GOOGLE_REDIRECT_URI }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Naver_client_id Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_CLIENT_ID }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Naver_client_secret Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_CLIENT_SECRET }} >> ./src/test/resources/application.properties
+
+      - name: Add TEST.properties Naver_redirect_uri Application Property
+        run: |
+          echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/test/resources/application.properties         
+
       - name: cat application.properties
         run: |
           cat ./src/main/resources/application.properties
