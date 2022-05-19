@@ -40,11 +40,14 @@ public class KanbanService {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
+        // 카운팅
+        long cntBuckets = kanbanBucketRepository.countAllByproject_Id(projectId);
+
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket newBucket = KanbanBucket.builder()
                                              .project(project)
                                              .title(bucketInfoDto.getTitle())
-                                             .position(bucketInfoDto.getPosition())
+                                             .position((int) cntBuckets)
                                              .build();
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
