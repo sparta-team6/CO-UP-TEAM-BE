@@ -16,7 +16,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<NoticeInfoDto> findNoticesFromProjectByProjectMbId_DSL(UUID pjMbId) {
+    public List<NoticeInfoDto> findAllNoticeByPjId_DSL(UUID pjId) {
         QProjectMember projectMember = QProjectMember.projectMember;
         QNotice notice = QNotice.notice;
 
@@ -32,7 +32,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .leftJoin(projectMember)
                 .on(projectMember.id.eq(notice.projectMember.id))
                 .fetchJoin()
-                .where(notice.projectMember.id.eq(pjMbId))
+                .where(projectMember.project.id.eq(pjId))
                 .distinct().fetch();
     }
+
 }

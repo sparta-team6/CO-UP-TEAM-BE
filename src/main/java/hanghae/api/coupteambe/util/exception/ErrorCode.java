@@ -68,9 +68,9 @@ public enum ErrorCode {
     NOTICE_NOT_FOUND_404(HttpStatus.NOT_FOUND, "해당 공지사항이 존재하지 않습니다."),
 
     // Role 관련
-    NO_PERMISSION_TO_WRITE_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 작성 권한이 없습니다."),
-    NO_PERMISSION_TO_MODIFY_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 수정 권한이 없습니다."),
-    NO_PERMISSION_TO_DELETE_NOTICE(HttpStatus.FORBIDDEN, "공지 사항 삭제 권한이 없습니다."),
+    NO_PERMISSION_TO_WRITE_NOTICE_400(HttpStatus.FORBIDDEN, "공지 사항 작성 권한이 없습니다."),
+    NO_PERMISSION_TO_MODIFY_NOTICE_400(HttpStatus.FORBIDDEN, "공지 사항 수정 권한이 없습니다."),
+    NO_PERMISSION_TO_DELETE_NOTICE_400(HttpStatus.FORBIDDEN, "공지 사항 삭제 권한이 없습니다."),
 
 
     /**
