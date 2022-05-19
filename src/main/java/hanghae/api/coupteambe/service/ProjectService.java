@@ -50,6 +50,7 @@ public class ProjectService {
         Project project = new Project(createProjectDto);
 
         // 3. 프로젝트 연관관계 설정 (관리자 권한 유저)
+
         ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.ADMIN);
 
         // 2. 새 버킷 객체를 생성한다.
@@ -60,7 +61,7 @@ public class ProjectService {
                                               .build();
         KanbanBucket inProgressBucket = KanbanBucket.builder()
                                                     .project(project)
-                                                    .title("진행 중")
+                                                    .title("진행")
                                                     .position(1)
                                                     .build();
         KanbanBucket doneBucket = KanbanBucket.builder()
