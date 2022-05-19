@@ -78,13 +78,12 @@ public class DocumentController {
      * M1-5 문서생성
      */
     @PostMapping("/docs")
-    public ResponseEntity<ResResultDto> createDocuments(@RequestBody DocumentDto documentDto) {
+    public ResponseEntity<DocumentDto> createDocuments(@RequestBody DocumentDto documentDto) {
 
-        // 카드 생성 서비스 호출
+        // 문서 생성 서비스 호출
         documentService.createDocuments(documentDto);
 
-        // 반환값 : 결과 메시지, 상태값(201)
-        return new ResponseEntity<>(new ResResultDto("문서 생성 성공"), HttpStatus.CREATED);
+        return ResponseEntity.ok(documentDto);
     }
 
     /**
