@@ -26,7 +26,5 @@ public class DocumentFolderRepositoryImpl implements DocumentFolderRepositoryCus
                 .where(folder.project.id.eq(UUID.fromString(projectId)))
                 .orderBy(folder.position.asc(), document.position.asc())
                 .distinct().fetch();
-
-
     }
 }
