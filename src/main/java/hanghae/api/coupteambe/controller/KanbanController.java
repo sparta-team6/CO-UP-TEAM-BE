@@ -137,10 +137,10 @@ public class KanbanController {
     public ResponseEntity<List<ManagerBucketCardsDto>> getAllManagersBucketsAndCards(
             @RequestParam("pjId") String pjId) {
 
-        List<ManagerBucketCardsDto> ManagerBucketCardsDto = kanbanService.getAllManagersBucketsAndCards(pjId);
+        List<ManagerBucketCardsDto> managerBucketCardsDto = kanbanService.getAllManagersBucketsAndCards(pjId);
 
         // 반환값 : 담당자별 카드 정보, 상태값(200)
-        return ResponseEntity.ok(ManagerBucketCardsDto);
+        return ResponseEntity.ok(managerBucketCardsDto);
     }
 
     /**
