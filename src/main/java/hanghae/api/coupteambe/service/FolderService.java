@@ -41,11 +41,14 @@ public class FolderService {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
+        // 카운팅
+        long cntFolders = documentFolderRepository.countAllByproject_Id(projectId);
+
         // 2. 새 폴더 객체를 생성한다.
         Folder newfolder = Folder.builder()
                 .project(project)
                 .title(folderDto.getTitle())
-                .position(folderDto.getPosition())
+                .position((int) cntFolders)
                 .build();
 
         // 3. 새로 생성한 폴더를 Repository 를 이용하여 DB에 저장한다.
