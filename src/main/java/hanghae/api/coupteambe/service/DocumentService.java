@@ -33,12 +33,15 @@ public class DocumentService {
         Folder folder = optionalFolder.orElseThrow(
                 () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
 
+        // 카운팅
+        long cntDocuments = documentRepository.countAllByfolder_Id(folderId);
+
         // 2. 새 문서 객체를 생성한다.
         Document document = Document.builder()
                                     .folder(folder)
                                     .title(documentDto.getTitle())
                                     .contents(documentDto.getContents())
-                                    .position(documentDto.getPosition())
+                                    .position((int) cntDocuments)
                                     .build();
 
         // 3. 새로 생성한 객체를 Repository 를 이용하여 DB에 저장한다
