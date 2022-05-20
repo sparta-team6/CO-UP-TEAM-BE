@@ -3,11 +3,13 @@ package hanghae.api.coupteambe.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghae.api.coupteambe.domain.dto.JwtTokenDto;
 import hanghae.api.coupteambe.domain.dto.ResResultDto;
+import hanghae.api.coupteambe.domain.dto.member.ResMemberInfoDto;
 import hanghae.api.coupteambe.domain.dto.social.SocialUserInfoDto;
 import hanghae.api.coupteambe.service.AuthGoogleService;
 import hanghae.api.coupteambe.service.AuthKakaoService;
 import hanghae.api.coupteambe.service.AuthNaverService;
 import hanghae.api.coupteambe.service.AuthService;
+import hanghae.api.coupteambe.service.member.MemberService;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class AuthController {
     private final AuthKakaoService authKakaoService;
     private final AuthGoogleService authGoogleService;
     private final AuthNaverService authNaverService;
+    private final MemberService memberService;
 
     /**
      * <pre>
@@ -43,7 +46,7 @@ public class AuthController {
      * </pre>
      */
     @PostMapping("/{social}")
-    public ResponseEntity<ResResultDto> login(
+    public ResponseEntity<ResMemberInfoDto> login(
             @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
@@ -75,8 +78,9 @@ public class AuthController {
         JwtTokenDto jwtTokenDto = authService.getJwtTokenDto(loginId);
 
         setJwtCookie(response, jwtTokenDto);
+        ResMemberInfoDto resMemberInfoDto = memberService.getOneMemberInfo(loginId);
 
-        return ResponseEntity.ok(new ResResultDto("로그인 성공"));
+        return ResponseEntity.ok(resMemberInfoDto);
     }
 
     @PostMapping("/reissue")
