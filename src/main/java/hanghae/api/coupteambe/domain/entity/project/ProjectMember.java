@@ -43,7 +43,7 @@ public class ProjectMember extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
 
-    public ProjectMember(Member member, Project project, ProjectRole projectRole) {
+    public ProjectMember(Member member, Project project, ProjectRole projectRole, int position) {
         this.member = member;
         member.addProjects(this);
 
@@ -51,5 +51,7 @@ public class ProjectMember extends BaseTimeEntity {
         project.addMembers(this);
 
         this.role = projectRole;
+
+        this.position = position;
     }
 }
