@@ -1,6 +1,7 @@
 package hanghae.api.coupteambe.service;
 
 import hanghae.api.coupteambe.domain.dto.document.DocumentDto;
+import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
 import hanghae.api.coupteambe.domain.repository.document.DocumentRepository;
@@ -8,7 +9,6 @@ import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import hanghae.api.coupteambe.domain.entity.document.Document;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class DocumentService {
      * M1-5 문서생성
      */
     @Transactional
-    public void createDocuments(DocumentDto documentDto) {
+    public DocumentDto createDocuments(DocumentDto documentDto) {
 
         // 1. 파라미터로 받은 문서 객체에서 필요한 데이터를 추출한다.
         UUID folderId = documentDto.getDfId();
@@ -46,6 +46,7 @@ public class DocumentService {
 
         // 3. 새로 생성한 객체를 Repository 를 이용하여 DB에 저장한다
         documentRepository.save(document);
+        return new DocumentDto(document);
     }
 
     /**

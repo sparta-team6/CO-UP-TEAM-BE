@@ -49,8 +49,10 @@ public class ProjectService {
         // 2. 프로젝트 생성
         Project project = new Project(createProjectDto);
 
+        // 카운팅
+        long cntProjects = projectMemberRepository.countAllByMember_Id(member.getId());
         // 3. 프로젝트 연관관계 설정 (관리자 권한 유저)
-        ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.ADMIN);
+        ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.ADMIN,((int) cntProjects));
 
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket todoBucket = KanbanBucket.builder()
@@ -60,7 +62,7 @@ public class ProjectService {
                                               .build();
         KanbanBucket inProgressBucket = KanbanBucket.builder()
                                                     .project(project)
-                                                    .title("진행 중")
+                                                    .title("진행")
                                                     .position(1)
                                                     .build();
         KanbanBucket doneBucket = KanbanBucket.builder()
@@ -111,6 +113,8 @@ public class ProjectService {
         // 2-2. 해당 멤버가 존재하지 않는 경우 예외처리
         Member member = optionalMember
                 .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 카운팅
+        long cntProjects = projectMemberRepository.countAllByMember_Id(member.getId());
 
         // 3. 프로젝트에 참가하려는 멤버가 프로젝트 멤버 테이블에 존재하는지 확인한다.
 
@@ -118,7 +122,7 @@ public class ProjectService {
         if (!projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId()).isPresent()) {
 
             // 3-1. 프로젝트에 일반유저를 참가시킨다.
-            ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.READ_WRITE);
+            ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.READ_WRITE,((int) cntProjects));
             // 3-2. 프로젝트 저장
             projectMemberRepository.save(projectMember);
         } else {
