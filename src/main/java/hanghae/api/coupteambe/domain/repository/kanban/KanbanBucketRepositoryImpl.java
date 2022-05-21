@@ -51,7 +51,7 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
 
         List<Tuple> result = jpaQueryFactory.from(projectMember)
                                             .leftJoin(bucket).on(projectMember.project.eq(bucket.project))
-                                            .leftJoin(card).on(bucket.eq(card.kanbanBucket))
+                                            .rightJoin(card).on(bucket.eq(card.kanbanBucket))
                                             .leftJoin(member).on(card.manager.eq(member.loginId))
                                             .where(projectMember.project.id.eq(UUID.fromString(projectId)))
                                             .select(
