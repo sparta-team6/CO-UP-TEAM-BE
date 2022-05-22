@@ -140,7 +140,7 @@ public class NoticeService {
      * O1-5. 공지사항 글 삭제
      */
     @Transactional
-    public void deleteNotice(String noticeId) {
+    public void deleteNotice(NoticeInfoDto noticeInfoDto) {
 
         // 1. 로그인 한 유저의 로그인 ID 추출
         String loginId = getCurrentUsername()
@@ -152,29 +152,23 @@ public class NoticeService {
                 // 2-1. 존재하지 않는 경우 예외처리
                 .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
-        //TODO 삭제하려는 유저의 해당 프로젝트 권한(관리자 or 일반유저)을 확인하기 위해서는
-        // 프로젝트 ID(pjId) 를 Request 에서 파라매터로 받아야 함.
+        // 3. 프로젝트 조회
+        Project project = projectRepository.findById(noticeInfoDto.getPjId())
+                // 3-1. 존재하지 않는 경우 예외처리
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
-//        // 3. 프로젝트 조회
-//        Project project = projectRepository.findById(프로젝트ID)
-//                // 3-1. 존재하지 않는 경우 예외처리
-//                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
-//
-//        // 4. 유저 권한 조회
-//        Optional<ProjectMember> projectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
-//        if (projectMember.isPresent()) {
-//            // 4-1. 관리자인 경우에만 공지 삭제 가능
-//            if (projectMember.get().getRole().equals(ProjectRole.ADMIN)) {
-//                noticeRepository.deleteById(UUID.fromString(noticeId));
-//            } else {
-//                // 4-2. 관리자가 아닌 경우, 예외처리
-//                throw new RequestException(ErrorCode.NO_PERMISSION_TO_WRITE_NOTICE_400);
-//            }
-//        } else {
-//            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
-//        }
-
-        // 공지사항 삭제
-        noticeRepository.deleteById(UUID.fromString(noticeId));
+        // 4. 유저 권한 조회
+        Optional<ProjectMember> projectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
+        if (projectMember.isPresent()) {
+            // 4-1. 관리자인 경우에만 공지 삭제 가능
+            if (projectMember.get().getRole().equals(ProjectRole.ADMIN)) {
+                noticeRepository.deleteById(noticeInfoDto.getNoticeId());
+            } else {
+                // 4-2. 관리자가 아닌 경우, 예외처리
+                throw new RequestException(ErrorCode.NO_PERMISSION_TO_DELETE_NOTICE_400);
+            }
+        } else {
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
     }
 }
