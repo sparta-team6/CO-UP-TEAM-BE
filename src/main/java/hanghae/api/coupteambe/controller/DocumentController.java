@@ -39,13 +39,13 @@ public class DocumentController {
      * M1-2 폴더 수정
      */
     @PatchMapping("/")
-    public ResponseEntity<FolderDto> modifyFolders(@RequestBody FolderDto folderDto) {
+    public ResponseEntity<ResResultDto> modifyFolders(@RequestBody FolderDto folderDto) {
 
         // 폴더 수정 서비스 호출
         folderService.modifyFolders(folderDto);
 
         // 반환값 : 결과 메시지, 상태값(200)
-        return ResponseEntity.ok(folderDto);
+        return ResponseEntity.ok(new ResResultDto("문서 수정 성공"));
     }
 
     /**
