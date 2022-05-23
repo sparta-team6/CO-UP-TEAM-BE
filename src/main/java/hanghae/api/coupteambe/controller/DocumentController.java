@@ -6,7 +6,6 @@ import hanghae.api.coupteambe.domain.dto.document.FolderDto;
 import hanghae.api.coupteambe.service.DocumentService;
 import hanghae.api.coupteambe.service.FolderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -25,27 +24,28 @@ public class DocumentController {
      * M1-1 폴더 생성
      */
     @PostMapping("/")
-    public ResponseEntity<ResResultDto> createFolders(@RequestBody FolderDto folderDto) {
+    public ResponseEntity<FolderDto> createFolders(@RequestBody FolderDto folderDto) {
 
         isValidMember();
         // 폴더 생성 서비스 호출
-        folderService.createFolders(folderDto);
+        folderDto = folderService.createFolders(folderDto);
+
 
         // 반환값 : 결과 메시지, 상태값(201)
-        return new ResponseEntity<>(new ResResultDto("폴더 생성 성공"), HttpStatus.CREATED);
+        return ResponseEntity.ok(folderDto);
     }
 
     /**
      * M1-2 폴더 수정
      */
     @PatchMapping("/")
-    public ResponseEntity<ResResultDto> modifyFolders(@RequestBody FolderDto folderDto) {
+    public ResponseEntity<FolderDto> modifyFolders(@RequestBody FolderDto folderDto) {
 
         // 폴더 수정 서비스 호출
         folderService.modifyFolders(folderDto);
 
         // 반환값 : 결과 메시지, 상태값(200)
-        return ResponseEntity.ok(new ResResultDto("폴더 수정 성공"));
+        return ResponseEntity.ok(folderDto);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DocumentController {
     public ResponseEntity<DocumentDto> createDocuments(@RequestBody DocumentDto documentDto) {
 
         // 문서 생성 서비스 호출
-        documentService.createDocuments(documentDto);
+        documentDto = documentService.createDocuments(documentDto);
 
         return ResponseEntity.ok(documentDto);
     }

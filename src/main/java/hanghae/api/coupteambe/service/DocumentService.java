@@ -45,8 +45,7 @@ public class DocumentService {
                                     .build();
 
         // 3. 새로 생성한 객체를 Repository 를 이용하여 DB에 저장한다
-        documentRepository.save(document);
-        return new DocumentDto(document);
+        return new DocumentDto(documentRepository.save(document));
     }
 
     /**
