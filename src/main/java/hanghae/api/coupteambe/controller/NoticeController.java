@@ -55,8 +55,8 @@ public class NoticeController {
      * O1-5. 공지사항 글 삭제
      */
     @DeleteMapping("/")
-    public ResponseEntity<ResResultDto> deleteNotice(@RequestParam("noticeId") String noticeId) {
-        noticeService.deleteNotice(noticeId);
+    public ResponseEntity<ResResultDto> deleteNotice(@RequestBody NoticeInfoDto noticeInfoDto) {
+        noticeService.deleteNotice(noticeInfoDto);
         return ResponseEntity.ok(new ResResultDto("공지사항 삭제 성공"));
     }
 
