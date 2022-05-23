@@ -34,7 +34,7 @@ public class FolderService {
      * M1-1 폴더 생성
      */
     @Transactional
-    public void createFolders(FolderDto folderDto) {
+    public FolderDto createFolders(FolderDto folderDto) {
 
         // 1. 파라미터로 받은 폴더 객체에서 필요한 데이터를 추출한다.
         UUID projectId = folderDto.getPjId();
@@ -52,7 +52,7 @@ public class FolderService {
                 .build();
 
         // 3. 새로 생성한 폴더를 Repository 를 이용하여 DB에 저장한다.
-        documentFolderRepository.save(newfolder);
+        return new FolderDto(documentFolderRepository.save(newfolder));
     }
 
     /**

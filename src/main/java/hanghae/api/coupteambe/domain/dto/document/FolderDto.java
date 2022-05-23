@@ -1,5 +1,6 @@
 package hanghae.api.coupteambe.domain.dto.document;
 
+import hanghae.api.coupteambe.domain.entity.document.Folder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +31,9 @@ public class FolderDto {
     private List<DocumentDto> docs;
 
 
+    public FolderDto(Folder folder) {
+        this.dfId = folder.getId().toString();
+        this.title = folder.getTitle();
+        this.position = folder.getPosition();
+    }
 }
