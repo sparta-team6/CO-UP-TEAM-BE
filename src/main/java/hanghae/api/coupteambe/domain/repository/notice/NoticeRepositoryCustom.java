@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface NoticeRepositoryCustom {
 
     // 프로젝트 내 공지사항 전체 조회
-    List<NoticeInfoDto> findNoticesFromProjectByProjectMbId_DSL(UUID pjMbId);
+    List<NoticeInfoDto> findAllNoticeByPjId_DSL(UUID pjId);
 }
