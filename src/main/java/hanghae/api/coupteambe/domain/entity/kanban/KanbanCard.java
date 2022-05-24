@@ -29,7 +29,7 @@ public class KanbanCard extends BaseEntity {
     private Project project;
 
     // 카드 제목
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     @ColumnDefault("'untitle'")
     @Builder.Default
     private String title = "untitle";

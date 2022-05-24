@@ -28,7 +28,7 @@ public class Project extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String thumbnail;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     private String title;
 
     @Column(nullable = false)

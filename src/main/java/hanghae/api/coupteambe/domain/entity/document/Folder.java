@@ -1,7 +1,6 @@
 package hanghae.api.coupteambe.domain.entity.document;
 
 import hanghae.api.coupteambe.domain.dto.document.FolderDto;
-import hanghae.api.coupteambe.domain.dto.kanban.BucketInfoDto;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseEntity;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import lombok.Builder;
@@ -24,7 +23,7 @@ public class Folder extends BaseEntity {
     @JoinColumn(name = "pjId")
     private Project project;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     @ColumnDefault("'untitle'")
     private String title = "title";
 

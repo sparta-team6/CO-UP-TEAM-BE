@@ -30,7 +30,7 @@ public class Document extends BaseEntity {
     @JoinColumn(name = "pjId")
     private Project project;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     @ColumnDefault("'untitle'")
     @Builder.Default
     private String title = "untitle";
