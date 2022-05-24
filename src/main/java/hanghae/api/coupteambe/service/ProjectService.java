@@ -216,6 +216,53 @@ public class ProjectService {
         return resProjectInfoDto;
     }
 
+    /**
+     * M5-9 선택 프로젝트 나가기
+     */
+    @Transactional
+    public void exitProject(UUID pjId) {
+        // 1. 현재 로그인한 유저의 ID 조회
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), pjId);
+        ProjectMember projectMember = optionalProjectMember
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
+        projectMember.delete();
+    }
+
+
+    /**
+     * M5-10 선택 프로젝트 추방
+     */
+    @Transactional
+    public void kickProject(UUID pjId, UUID memberId) {
+        // 1. 현재 로그인한 유저의 ID 조회
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), pjId);
+        ProjectMember projectMember = optionalProjectMember
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        if (projectMember.getRole().equals(ProjectRole.ADMIN)) {
+            // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
+            Optional<ProjectMember> optionalKickMember = projectMemberRepository.findByMemberIdAndProjectId(memberId, pjId);
+            ProjectMember kickMember = optionalKickMember
+                    .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+            projectMember.delete();
+        } else {
+            // private : 접근오류
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
+    }
+
     private boolean isPublic(Project project) {
         return true;
     }

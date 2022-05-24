@@ -81,7 +81,7 @@ public class ProjectController {
     }
 
     /**
-     * M5-6 선택 프로젝트 조회
+     * M5-8 선택 프로젝트 조회
      */
     @GetMapping("/{pjId}")
     public ResponseEntity<ResProjectInfoDto> getProject(@PathVariable String pjId) {
@@ -91,4 +91,28 @@ public class ProjectController {
         return ResponseEntity.ok(projectInfoDto);
     }
 
+    /**
+     * M5-9 선택 프로젝트 나가기
+     */
+    @DeleteMapping("/exit/{pjId}")
+    public ResponseEntity<ResResultDto> deleteProject(@PathVariable String pjId) {
+        System.out.println(pjId);
+        projectService.exitProject(UUID.fromString(pjId));
+
+        return ResponseEntity.ok(new ResResultDto("프로젝트 나가기 완료"));
+
+    }
+
+    /**
+     * M5-10 선택 프로젝트 추방
+     */
+    @DeleteMapping("/kick/{pjId}&{memberId}")
+    public ResponseEntity<ResResultDto> kickProject(@PathVariable String pjId, @PathVariable String memberId) {
+
+        projectService.kickProject(UUID.fromString(pjId), UUID.fromString(memberId));
+
+        return ResponseEntity.ok(new ResResultDto("프로젝트 추방 완료"));
+
+
+    }
 }
