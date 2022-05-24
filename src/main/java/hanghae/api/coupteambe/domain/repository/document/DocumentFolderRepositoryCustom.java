@@ -1,8 +1,10 @@
 package hanghae.api.coupteambe.domain.repository.document;
 
+import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface DocumentFolderRepositoryCustom {
 
@@ -10,4 +12,5 @@ public interface DocumentFolderRepositoryCustom {
     // 예, [void updateEntityById_DSL]
 
     List<Folder> findFoldersAndDocumentsByProject_Id_DSL(String projectId);
+    List<Document> findDocumentByFolder_Id_DSL(UUID folderId);
 }

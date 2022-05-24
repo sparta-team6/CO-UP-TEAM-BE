@@ -11,6 +11,7 @@ import hanghae.api.coupteambe.domain.entity.kanban.QKanbanCard;
 import hanghae.api.coupteambe.domain.entity.member.QMember;
 import hanghae.api.coupteambe.domain.entity.project.QProject;
 import hanghae.api.coupteambe.domain.entity.project.QProjectMember;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -24,16 +25,14 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<KanbanBucket> findBucketsAndCardsByProject_Id_DSL(String projectId) {
+    public List<KanbanBucket> findBucketsByProject_Id_DSL(String projectId) {
         QKanbanBucket bucket = QKanbanBucket.kanbanBucket;
-        QKanbanCard card = QKanbanCard.kanbanCard;
 
         return jpaQueryFactory.select(bucket)
                 .from(bucket)
-                .leftJoin(bucket.cards, card)
-                .fetchJoin()
-                .where(bucket.project.id.eq(UUID.fromString(projectId)))
-                .orderBy(bucket.position.asc(), card.position.asc())
+                .where(bucket.project.id.eq(UUID.fromString(projectId))
+                        .and(bucket.delFlag.eq(StatusFlag.NORMAL)))
+                .orderBy(bucket.position.asc())
                 .distinct().fetch();
     }
 
@@ -53,7 +52,9 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
                                             .leftJoin(bucket).on(projectMember.project.eq(bucket.project))
                                             .leftJoin(card).on(bucket.eq(card.kanbanBucket))
                                             .leftJoin(member).on(card.manager.eq(member.loginId))
-                                            .where(projectMember.project.id.eq(UUID.fromString(projectId)))
+                                            .where(projectMember.project.id.eq(UUID.fromString(projectId))
+                                                    .and(bucket.delFlag.eq(StatusFlag.NORMAL))
+                                                    .and(card.delFlag.eq(StatusFlag.NORMAL)))
                                             .select(
                                                     card.manager, member.profileImage, member.nickname,
                                                     bucket.id, bucket.title, bucket.position,

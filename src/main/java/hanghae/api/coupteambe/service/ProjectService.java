@@ -12,6 +12,7 @@ import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +107,11 @@ public class ProjectService {
         Project project = optionalProject
                 .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
+        // 1-2. 삭제 처리된 프로젝트에 참가 요청하는 경우, 예외 처리
+        if (project.getDelFlag().equals(StatusFlag.DELETED)) {
+            throw new RequestException(ErrorCode.PROJECT_NOT_FOUND_404);
+        }
+
         // 2. 프로젝트가 존재하는 경우
         // 2-1. 현재 로그인한 유저의 멤버 ID 로 멤버 정보(객체)를 조회한다.
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -139,8 +145,11 @@ public class ProjectService {
      */
     @Transactional
     public void delete(UUID pjId) {
-        // 파라매터로 받은 프로젝트 ID를 key 로 DB 에서 해당 프로젝트를 삭제한다.
-        projectRepository.deleteById(pjId);
+        Optional<Project> optionalProject = projectRepository.findById(pjId);
+        Project project = optionalProject
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+
+        project.delete();
     }
 
     /**

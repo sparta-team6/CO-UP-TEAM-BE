@@ -5,6 +5,7 @@ import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
 import hanghae.api.coupteambe.domain.repository.document.DocumentRepository;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -73,9 +74,12 @@ public class DocumentService {
     @Transactional
     public void deleteDocument(String docId) {
 
-        // 파라미터로 받은 문서 ID를 key 로 DB에서 해당 카드를 삭제한다.
-        // Repository(JPA)이용
-        documentRepository.deleteById(UUID.fromString(docId));
+        Optional<Document> optionalDocument = documentRepository.findById(UUID.fromString(docId));
+        Document document = optionalDocument.orElseThrow(
+                () -> new RequestException(ErrorCode.DOCUMENT_NOT_FOUND_404));
+
+        document.delete();
+
     }
 
     /**
