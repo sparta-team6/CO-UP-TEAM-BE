@@ -11,6 +11,5 @@ public interface KanbanBucketRepositoryCustom {
     // 예, [void updateEntityById_DSL]
 
     List<KanbanBucket> findBucketsAndCardsByProject_Id_DSL(String projectId);
-
     List<ManagerBucketCardsDto> findManagersBucketsByProject_Id_DSL(String projectId);
 }

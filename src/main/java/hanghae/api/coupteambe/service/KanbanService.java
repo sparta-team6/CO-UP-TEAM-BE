@@ -10,6 +10,7 @@ import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanCardRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -79,9 +80,11 @@ public class KanbanService {
     @Transactional
     public void deleteBucket(String kbbId) {
 
-        // 파라매터로 받은 버킷 ID를 key 로 DB 에서 해당 버킷을 삭제한다.
-        kanbanBucketRepository.deleteById(UUID.fromString(kbbId));
+        Optional<KanbanBucket> optionalKanbanBucket = kanbanBucketRepository.findById(UUID.fromString(kbbId));
+        KanbanBucket kanbanBucket = optionalKanbanBucket.orElseThrow(
+                () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
+        kanbanBucket.updateDelFlag(StatusFlag.DELETED);
     }
 
     /**
@@ -98,7 +101,7 @@ public class KanbanService {
 
         buckets.forEach(kanbanBucket -> {
             List<CardInfoDto> cardDtos = new ArrayList<>();
-            List<KanbanCard> cards = kanbanBucket.getCards();
+            List<KanbanCard> cards = kanbanCardRepository.findCardsByKanbanBucket_Id_DSL(kanbanBucket.getId());
             cards.forEach(kanbanCard -> {
                 cardDtos.add(new CardInfoDto(kanbanCard));
             });
@@ -182,9 +185,11 @@ public class KanbanService {
     @Transactional
     public void deleteCard(String kbcId) {
 
-        // 파라매터로 받은 카드 ID를 key 로 DB 에서 해당 카드를 삭제한다.
-        // Repository(JPA)이용
-        kanbanCardRepository.deleteById(UUID.fromString(kbcId));
+        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(UUID.fromString(kbcId));
+        KanbanCard targetCard = optionalKanbanCard.orElseThrow(
+                () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
+
+        targetCard.updateDelFlag(StatusFlag.DELETED);
 
     }
 
@@ -205,6 +210,9 @@ public class KanbanService {
         return new CardInfoDto(kanbanCard);
     }
 
+    /**
+     * M2-13 담당자별 카드 조회
+     */
     @Transactional
     public List<ManagerBucketCardsDto> getAllManagersBucketsAndCards(String projectId) {
 

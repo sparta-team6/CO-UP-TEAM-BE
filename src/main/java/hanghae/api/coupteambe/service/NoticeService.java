@@ -10,6 +10,7 @@ import hanghae.api.coupteambe.domain.repository.notice.NoticeRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -162,7 +163,12 @@ public class NoticeService {
         if (projectMember.isPresent()) {
             // 4-1. 관리자인 경우에만 공지 삭제 가능
             if (projectMember.get().getRole().equals(ProjectRole.ADMIN)) {
-                noticeRepository.deleteById(noticeInfoDto.getNoticeId());
+
+                Notice notice = noticeRepository.findById(noticeInfoDto.getNoticeId())
+                        .orElseThrow(() -> new RequestException(ErrorCode.NOTICE_NOT_FOUND_404));
+
+                notice.updateDelFlag(StatusFlag.DELETED);
+
             } else {
                 // 4-2. 관리자가 아닌 경우, 예외처리
                 throw new RequestException(ErrorCode.NO_PERMISSION_TO_DELETE_NOTICE_400);

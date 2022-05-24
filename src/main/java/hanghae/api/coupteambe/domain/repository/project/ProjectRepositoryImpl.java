@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
 import hanghae.api.coupteambe.domain.entity.project.QProject;
 import hanghae.api.coupteambe.domain.entity.project.QProjectMember;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .leftJoin(project)
                 .on(project.id.eq(projectMember.project.id))
                 .fetchJoin()
-                .where(projectMember.member.id.eq(mbId))
+                .where(projectMember.member.id.eq(mbId)
+                        .and(project.delFlag.eq(StatusFlag.NORMAL)))
                 .distinct().fetch();
     }
 

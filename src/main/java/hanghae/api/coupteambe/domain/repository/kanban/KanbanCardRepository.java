@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface KanbanCardRepository extends JpaRepository<KanbanCard, UUID> {
+public interface KanbanCardRepository extends JpaRepository<KanbanCard, UUID>, KanbanCardRepositoryCustom {
 
     List<KanbanCard> findCardsByKanbanBucketIdAndPositionGreaterThanEqual(UUID bucketId, int position);
 
