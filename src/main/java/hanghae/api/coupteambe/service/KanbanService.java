@@ -10,7 +10,6 @@ import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanCardRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
-import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +83,7 @@ public class KanbanService {
         KanbanBucket kanbanBucket = optionalKanbanBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
-        kanbanBucket.updateDelFlag(StatusFlag.DELETED);
+        kanbanBucket.delete();
     }
 
     /**
@@ -96,7 +95,7 @@ public class KanbanService {
         // 1. 파라매터로 받은 프로젝트 ID 를 가지고 있는 모든 버킷들을 조회한다.
 
         // 2. 순차적으로 조회된 버킷의 버킷 ID를 가지고 있는 모든 카드들을 조회한다.
-        List<KanbanBucket> buckets = kanbanBucketRepository.findBucketsAndCardsByProject_Id_DSL(projectId);
+        List<KanbanBucket> buckets = kanbanBucketRepository.findBucketsByProject_Id_DSL(projectId);
         List<BucketDto> bucketDtos = new ArrayList<>();
 
         buckets.forEach(kanbanBucket -> {
@@ -189,7 +188,7 @@ public class KanbanService {
         KanbanCard targetCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
-        targetCard.updateDelFlag(StatusFlag.DELETED);
+        targetCard.delete();
 
     }
 

@@ -149,7 +149,7 @@ public class ProjectService {
         Project project = optionalProject
                 .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
-        project.updateDelFlag(StatusFlag.DELETED);
+        project.delete();
     }
 
     /**

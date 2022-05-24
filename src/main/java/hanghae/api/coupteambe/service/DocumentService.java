@@ -78,7 +78,7 @@ public class DocumentService {
         Document document = optionalDocument.orElseThrow(
                 () -> new RequestException(ErrorCode.DOCUMENT_NOT_FOUND_404));
 
-        document.updateDelFlag(StatusFlag.DELETED);
+        document.delete();
 
     }
 

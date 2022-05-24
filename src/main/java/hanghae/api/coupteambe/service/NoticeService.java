@@ -167,7 +167,7 @@ public class NoticeService {
                 Notice notice = noticeRepository.findById(noticeInfoDto.getNoticeId())
                         .orElseThrow(() -> new RequestException(ErrorCode.NOTICE_NOT_FOUND_404));
 
-                notice.updateDelFlag(StatusFlag.DELETED);
+                notice.delete();
 
             } else {
                 // 4-2. 관리자가 아닌 경우, 예외처리

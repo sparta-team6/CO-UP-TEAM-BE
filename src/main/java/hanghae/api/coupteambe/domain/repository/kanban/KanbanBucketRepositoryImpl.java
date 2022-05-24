@@ -25,7 +25,7 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<KanbanBucket> findBucketsAndCardsByProject_Id_DSL(String projectId) {
+    public List<KanbanBucket> findBucketsByProject_Id_DSL(String projectId) {
         QKanbanBucket bucket = QKanbanBucket.kanbanBucket;
 
         return jpaQueryFactory.select(bucket)

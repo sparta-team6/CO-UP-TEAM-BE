@@ -81,7 +81,7 @@ public class FolderService {
         Folder folder = optionalFolder.orElseThrow(
                 () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
 
-        folder.updateDelFlag(StatusFlag.DELETED);
+        folder.delete();
     }
 
 

@@ -40,7 +40,7 @@ public abstract class BaseEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StatusFlag delFlag = StatusFlag.NORMAL;
 
-    public void updateDelFlag(StatusFlag statusFlag) {
-        this.delFlag = statusFlag;
+    public void delete() {
+        this.delFlag = StatusFlag.DELETED;
     }
 }
