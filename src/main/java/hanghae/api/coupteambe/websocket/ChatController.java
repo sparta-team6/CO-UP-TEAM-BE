@@ -10,9 +10,14 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
 
     private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final ChattingService chattingService;
 
-    @MessageMapping("/chatting")
-    public void message(Message message) {
-        simpMessageSendingOperations.convertAndSend("/sub/chatting/project/" + message.getProjectId(), message);
+    @MessageMapping("/chatting/project")
+    public void broadcastProject(MessageDto messageDto) {
+
+        chattingService.saveChattting(messageDto);
+
+        simpMessageSendingOperations.convertAndSend(
+                "/sub/chatting/" + messageDto.getPjId(), messageDto);
     }
 }
