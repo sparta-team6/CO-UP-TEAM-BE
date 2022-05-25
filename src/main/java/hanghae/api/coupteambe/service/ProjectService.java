@@ -260,7 +260,7 @@ public class ProjectService {
             Optional<ProjectMember> optionalKickMember = projectMemberRepository.findByMemberIdAndProjectId(findKickMember.getId(), pjId);
             ProjectMember kickMember = optionalKickMember
                     .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
-            projectMember.delete();
+            kickMember.delete();
         } else {
             // private : 접근오류
             throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
