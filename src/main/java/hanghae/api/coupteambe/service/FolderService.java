@@ -7,7 +7,6 @@ import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
-import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -108,6 +107,8 @@ public class FolderService {
                     .dfId(folder.getId().toString())
                     .title(folder.getTitle())
                     .position(folder.getPosition())
+                    .createdTime(folder.getCreatedTime())
+                    .modifiedTime(folder.getModifiedTime())
                     .docs(documentDtos)
                     .build());
 

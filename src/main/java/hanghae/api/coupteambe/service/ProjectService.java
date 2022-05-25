@@ -20,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static hanghae.api.coupteambe.util.SecurityUtil.getCurrentUsername;
 
@@ -40,7 +37,7 @@ public class ProjectService {
      * M5-1 프로젝트 생성
      */
     @Transactional
-    public void create(CreateProjectDto createProjectDto) {
+    public ResProjectInfoDto create(CreateProjectDto createProjectDto) {
         // 1. 프로젝트 생성 사용자 추출
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
@@ -74,10 +71,12 @@ public class ProjectService {
         List<KanbanBucket> buckets = Arrays.asList(todoBucket, inProgressBucket, doneBucket);
 
         // 4. 프로젝트 저장
-        projectMemberRepository.save(projectMember);
+        projectMember = projectMemberRepository.save(projectMember);
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
         kanbanBucketRepository.saveAll(buckets);
+
+        return new ResProjectInfoDto(projectMember);
     }
 
     /**
@@ -194,6 +193,9 @@ public class ProjectService {
                 .summary(project.getSummary())
                 .inviteCode(project.getInviteCode())
                 .projectRole(optionalProjectMember.get().getRole())
+                .createdTime(project.getCreatedTime())
+                .modifiedTime(project.getModifiedTime())
+                .position(optionalProjectMember.get().getPosition())
                 .build();
 
         // 내가 참가하지 않은 플젝 접근 ( 퍼블릭 vs 프라이빗 )

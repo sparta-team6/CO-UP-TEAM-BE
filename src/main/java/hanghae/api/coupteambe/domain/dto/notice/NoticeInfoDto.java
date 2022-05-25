@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -29,10 +30,19 @@ public class NoticeInfoDto {
     // 공지사항 본문
     private String contents;
 
+    //생성시간
+    private LocalDateTime createdTime;
+    //수정시간
+    private LocalDateTime modifiedTime;
+
     public NoticeInfoDto(Notice notice) {
+        this.pjId = notice.getProjectMember().getProject().getId();
+        this.mbId = notice.getProjectMember().getMember().getId();
         this.noticeId = notice.getId();
         this.title = notice.getTitle();
         this.contents = notice.getContents();
+        this.createdTime = notice.getCreatedTime();
+        this.modifiedTime = notice.getModifiedTime();
     }
 
     public NoticeInfoDto(UUID pjId, String title, String contents) {

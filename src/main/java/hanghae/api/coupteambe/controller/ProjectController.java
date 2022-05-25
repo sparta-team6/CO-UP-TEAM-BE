@@ -6,7 +6,6 @@ import hanghae.api.coupteambe.domain.dto.project.ReqProjectInfoDto;
 import hanghae.api.coupteambe.domain.dto.project.ResProjectInfoDto;
 import hanghae.api.coupteambe.service.ProjectService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +24,13 @@ public class ProjectController {
      * M5-1 프로젝트 생성
      */
     @PostMapping("/")
-    public ResponseEntity<ResResultDto> postPj(@RequestBody CreateProjectDto createProjectDto) {
-        projectService.create(createProjectDto);
+    public ResponseEntity<ResProjectInfoDto> postPj(@RequestBody CreateProjectDto createProjectDto) {
+
+        ResProjectInfoDto resProjectInfoDto = projectService.create(createProjectDto);
 
         // 반환값 : 결과 메시지, 상태값(201)
-        return new ResponseEntity<>(new ResResultDto("프로젝트 생성완료"), HttpStatus.CREATED);
-    }
+        return ResponseEntity.ok(resProjectInfoDto);
+        }
 
     /**
      * M5-2 프로젝트 수정

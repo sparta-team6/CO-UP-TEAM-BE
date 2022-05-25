@@ -10,7 +10,6 @@ import hanghae.api.coupteambe.domain.repository.notice.NoticeRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
-import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class NoticeService {
      * O1-1. 공지사항 글 생성
      */
     @Transactional
-    public void createNotice(NoticeInfoDto noticeInfoDto) {
+    public NoticeInfoDto createNotice(NoticeInfoDto noticeInfoDto) {
         // 1. 로그인 한 유저의 로그인 ID 추출
         String loginId = getCurrentUsername()
                 // 1-1. 로그인 안된 경우 예외처리
@@ -62,9 +61,11 @@ public class NoticeService {
                         .title(noticeInfoDto.getTitle())
                         .contents(noticeInfoDto.getContents())
                         .projectMember(projectMember.get())
+
                         .build();
                 // 6. 공지사항 저장
-                noticeRepository.save(notice);
+                notice = noticeRepository.save(notice);
+                return new NoticeInfoDto(notice);
             } else {
                 // 4-2. 관리자가 아닌 경우, 예외처리
                 throw new RequestException(ErrorCode.NO_PERMISSION_TO_WRITE_NOTICE_400);
