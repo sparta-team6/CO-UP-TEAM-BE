@@ -30,12 +30,12 @@ jobs:
 
       - name: Add Application Property
         run: |
-          echo ${{ srcrets.RELEASE_APP_PROPERTIES }} > ./src/main/resources/application.properties
+          echo ${{ secrets.RELEASE_APP_PROPERTIES }} > ./src/main/resources/application.properties
           base64 -d -i ./src/main/resources/application.properties > ./src/main/resources/application.properties
 
       - name: Add Test Application Property
         run: |
-          echo ${{ srcrets.TEST_APP_PROPERTIES }} > ./src/test/resources/application.properties
+          echo ${{ secrets.TEST_APP_PROPERTIES }} > ./src/test/resources/application.properties
           base64 -d -i ./src/test/resources/application.properties > ./src/test/resources/application.properties
 
       # application.properties 추가정보 입력 끝
