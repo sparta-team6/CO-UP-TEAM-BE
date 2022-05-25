@@ -23,8 +23,8 @@ while :; do
 
   if [ $COUNT -eq 0 ]; then
     COUNT=10
-    echo "> kill -9 $CURRENT_PID" >>/home/ubuntu/deploy.log
-    kill -9 "$CURRENT_PID"
+    echo "> sudo kill -9 $CURRENT_PID" >>/home/ubuntu/deploy.log
+  if [ $COUNT -eq 0 ]; then
     echo "> 현재 구동중인 애플리케이션을 종료합니다." >>/home/ubuntu/deploy.log
   fi
   sleep 5
