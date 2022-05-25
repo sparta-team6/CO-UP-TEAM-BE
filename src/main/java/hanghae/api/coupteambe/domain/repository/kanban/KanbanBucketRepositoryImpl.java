@@ -53,13 +53,13 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
                                             .rightJoin(card).on(bucket.eq(card.kanbanBucket))
                                             .leftJoin(member).on(card.manager.eq(member.loginId))
                                             .where(projectMember.project.id.eq(UUID.fromString(projectId))
-                                                    .and(bucket.delFlag.eq(StatusFlag.NORMAL))
-                                                    .and(card.delFlag.eq(StatusFlag.NORMAL)))
+                                                                           .and(bucket.delFlag.eq(StatusFlag.NORMAL))
+                                                                           .and(card.delFlag.eq(StatusFlag.NORMAL)))
                                             .select(
                                                     card.manager, member.profileImage, member.nickname,
                                                     bucket.id, bucket.title, bucket.position,
                                                     card.id, card.title, card.contents, card.position
-                                            )
+                                            ).distinct()
                                             .orderBy(card.manager.asc(), bucket.position.asc(), card.position.asc())
                                             .fetch();
 
