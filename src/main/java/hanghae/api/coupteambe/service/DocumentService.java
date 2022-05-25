@@ -5,7 +5,6 @@ import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
 import hanghae.api.coupteambe.domain.repository.document.DocumentRepository;
-import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;

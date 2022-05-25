@@ -39,9 +39,7 @@ public class Document extends BaseEntity {
     private String contents;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    @Builder.Default
-    private int position = 0;
+    private int position;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -50,6 +48,5 @@ public class Document extends BaseEntity {
     public void updateDocument(DocumentDto documentDto) {
         this.title = documentDto.getTitle();
         this.contents = documentDto.getContents();
-        this.position = documentDto.getPosition();
     }
 }
