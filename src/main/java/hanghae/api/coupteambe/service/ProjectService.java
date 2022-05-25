@@ -240,11 +240,11 @@ public class ProjectService {
      * M5-10 선택 프로젝트 추방
      */
     @Transactional
-    public void kickProject(UUID pjId, UUID memberId) {
+    public void kickProject(UUID pjId, String loginId) {
         // 1. 현재 로그인한 유저의 ID 조회
-        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String adminLoginId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 2. 해당 멤버가 존재하지 않는 경우 예외처리
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Optional<Member> optionalMember = memberRepository.findByLoginId(adminLoginId);
         Member member = optionalMember
                 .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
         // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
@@ -253,7 +253,9 @@ public class ProjectService {
                 .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
         if (projectMember.getRole().equals(ProjectRole.ADMIN)) {
             // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
-            Optional<ProjectMember> optionalKickMember = projectMemberRepository.findByMemberIdAndProjectId(memberId, pjId);
+            Member findKickMember = memberRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+            Optional<ProjectMember> optionalKickMember = projectMemberRepository.findByMemberIdAndProjectId(findKickMember.getId(), pjId);
             ProjectMember kickMember = optionalKickMember
                     .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
             projectMember.delete();

@@ -96,7 +96,7 @@ public class ProjectController {
      */
     @DeleteMapping("/exit/{pjId}")
     public ResponseEntity<ResResultDto> deleteProject(@PathVariable String pjId) {
-        System.out.println(pjId);
+
         projectService.exitProject(UUID.fromString(pjId));
 
         return ResponseEntity.ok(new ResResultDto("프로젝트 나가기 완료"));
@@ -106,10 +106,10 @@ public class ProjectController {
     /**
      * M5-10 선택 프로젝트 추방
      */
-    @DeleteMapping("/kick/{pjId}&{memberId}")
-    public ResponseEntity<ResResultDto> kickProject(@PathVariable String pjId, @PathVariable String memberId) {
+    @DeleteMapping("/kick/{pjId}&{loginId}")
+    public ResponseEntity<ResResultDto> kickProject(@PathVariable String pjId, @PathVariable String loginId) {
 
-        projectService.kickProject(UUID.fromString(pjId), UUID.fromString(memberId));
+        projectService.kickProject(UUID.fromString(pjId),(loginId));
 
         return ResponseEntity.ok(new ResResultDto("프로젝트 추방 완료"));
 
