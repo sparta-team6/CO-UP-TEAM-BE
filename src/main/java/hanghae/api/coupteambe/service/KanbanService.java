@@ -10,6 +10,7 @@ import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanBucketRepository;
 import hanghae.api.coupteambe.domain.repository.kanban.KanbanCardRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class KanbanService {
         Project project = optionalProject.orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 카운팅
-        long cntBuckets = kanbanBucketRepository.countAllByproject_Id(projectId);
+        long cntBuckets = kanbanBucketRepository.countAllByproject_IdAndDelFlag(projectId, StatusFlag.NORMAL);
 
         // 2. 새 버킷 객체를 생성한다.
         KanbanBucket newBucket = KanbanBucket.builder()
@@ -126,7 +127,7 @@ public class KanbanService {
         KanbanBucket kanbanBucket = optionalBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
-        long cntCards = kanbanCardRepository.countAllByKanbanBucket_Id(bucketId);
+        long cntCards = kanbanCardRepository.countAllByKanbanBucket_IdAndDelFlag(bucketId, StatusFlag.NORMAL);
 
         // 2. 새 카드 객체를 생성한다.
         KanbanCard kanbanCard = KanbanCard.builder()
@@ -152,25 +153,26 @@ public class KanbanService {
         UUID cardId = cardInfoDto.getKbcId();
 
         // 2. 카드 ID를 key 로 해당 카드를 DB 에서 조회한다. Repository(JPA)이용
-        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(cardId);
+        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findByIdAndDelFlag(cardId, StatusFlag.NORMAL);
         KanbanCard targetCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
         // 3. 새 카드 객체를 생성하고 조회한 카드로 초기화 한다.
         // 4. 카드를 업데이트 시킨다.
         //todo 버킷ID만 바꿔주면 될것같은데, JPA에서는 꼭 객체를 조회한 다음 객체를 바꿔야하는것인지?
-        List<KanbanCard> srcCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqual(
+        List<KanbanCard> srcCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
                 targetCard.getKanbanBucket().getId(),
-                targetCard.getPosition());
+                targetCard.getPosition(), StatusFlag.NORMAL);
         srcCards.forEach(KanbanCard::minusPosition);
 
-        List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqual(
+        List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
                 cardInfoDto.getKbbId(),
-                cardInfoDto.getPosition());
+                cardInfoDto.getPosition(), StatusFlag.NORMAL);
         dstCards.forEach(KanbanCard::plusPosition);
 
         UUID dstBucketId = cardInfoDto.getKbbId();
-        Optional<KanbanBucket> optTargetBucket = kanbanBucketRepository.findById(dstBucketId);
+        Optional<KanbanBucket> optTargetBucket = kanbanBucketRepository.findByIdAndDelFlag(dstBucketId,
+                StatusFlag.NORMAL);
         KanbanBucket dstBucket = optTargetBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
@@ -187,6 +189,11 @@ public class KanbanService {
         Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(UUID.fromString(kbcId));
         KanbanCard targetCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
+
+        List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
+                targetCard.getKanbanBucket().getId(),
+                targetCard.getPosition(), StatusFlag.NORMAL);
+        dstCards.forEach(KanbanCard::minusPosition);
 
         targetCard.delete();
 
@@ -219,10 +226,7 @@ public class KanbanService {
 
         // 2. 순차적으로 조회된 버킷의 버킷 ID를 가지고 있는 모든 카드들을 조회한다.
 
-        List<ManagerBucketCardsDto> managersBuckets = kanbanBucketRepository.findManagersBucketsByProject_Id_DSL(
-                projectId);
-
-        return managersBuckets;
+        return kanbanBucketRepository.findManagersBucketsByProject_Id_DSL(projectId);
     }
 
     //todo 추후 모든카드 수정시 작성
