@@ -69,26 +69,26 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
 
             ManagerBucketCardsDto managerBucketCardsDto = null;
 
-            if (managerMap.containsKey(t.get(member.loginId))) {
-                managerBucketCardsDto = managerMap.get(t.get(member.loginId));
+            if (managerMap.containsKey(t.get(card.manager))) {
+                managerBucketCardsDto = managerMap.get(t.get(card.manager));
             } else {
                 managerBucketCardsDto = new ManagerBucketCardsDto(
-                        t.get(member.loginId),
+                        t.get(card.manager),
                         t.get(member.profileImage),
                         t.get(member.nickname)
                 );
-                managerMap.put(t.get(member.loginId), managerBucketCardsDto);
+                managerMap.put(t.get(card.manager), managerBucketCardsDto);
             }
 
             BucketDto bucketDto = null;
-            if (bucketMap.containsKey(t.get(bucket.id).toString() + t.get(member.loginId))) {
-                bucketDto = bucketMap.get(t.get(bucket.id).toString() + t.get(member.loginId));
+            if (bucketMap.containsKey(t.get(bucket.id).toString() + t.get(card.manager))) {
+                bucketDto = bucketMap.get(t.get(bucket.id).toString() + t.get(card.manager));
             } else {
                 bucketDto = new BucketDto(
                         t.get(bucket.id),
                         t.get(bucket.title),
                         t.get(bucket.position));
-                bucketMap.put(t.get(bucket.id).toString() + t.get(member.loginId), bucketDto);
+                bucketMap.put(t.get(bucket.id).toString() + t.get(card.manager), bucketDto);
 
                 managerBucketCardsDto.addBucket(bucketDto);
             }
@@ -96,7 +96,7 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
             CardInfoDto cardInfoDto = new CardInfoDto(
                     t.get(card.id),
                     t.get(bucket.id),
-                    t.get(member.loginId),
+                    t.get(card.manager),
                     t.get(card.title),
                     t.get(card.contents),
                     t.get(card.position)
