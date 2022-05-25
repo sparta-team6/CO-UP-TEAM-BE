@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,12 +29,22 @@ public class FolderDto {
     //배치순서
     private int position;
 
+    //생성시간
+    private LocalDateTime createdTime;
+
+    //수정시간
+    private LocalDateTime modifiedTime;
+
     private List<DocumentDto> docs;
+
 
 
     public FolderDto(Folder folder) {
         this.dfId = folder.getId().toString();
         this.title = folder.getTitle();
         this.position = folder.getPosition();
+        this.createdTime = folder.getCreatedTime();
+        this.modifiedTime = folder.getModifiedTime();
+
     }
 }

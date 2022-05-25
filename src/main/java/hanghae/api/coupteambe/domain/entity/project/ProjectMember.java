@@ -3,6 +3,7 @@ package hanghae.api.coupteambe.domain.entity.project;
 import hanghae.api.coupteambe.domain.entity.baseentity.BaseTimeEntity;
 import hanghae.api.coupteambe.domain.entity.member.Member;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -42,6 +43,13 @@ public class ProjectMember extends BaseTimeEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProjectRole role;
+
+    @Enumerated(EnumType.STRING)
+    private StatusFlag delFlag = StatusFlag.NORMAL;
+
+    public void delete() {
+        this.delFlag = StatusFlag.DELETED;
+    }
 
     public ProjectMember(Member member, Project project, ProjectRole projectRole, int position) {
         this.member = member;

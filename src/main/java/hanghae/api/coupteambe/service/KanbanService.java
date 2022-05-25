@@ -79,9 +79,11 @@ public class KanbanService {
     @Transactional
     public void deleteBucket(String kbbId) {
 
-        // 파라매터로 받은 버킷 ID를 key 로 DB 에서 해당 버킷을 삭제한다.
-        kanbanBucketRepository.deleteById(UUID.fromString(kbbId));
+        Optional<KanbanBucket> optionalKanbanBucket = kanbanBucketRepository.findById(UUID.fromString(kbbId));
+        KanbanBucket kanbanBucket = optionalKanbanBucket.orElseThrow(
+                () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
+        kanbanBucket.delete();
     }
 
     /**
@@ -93,12 +95,12 @@ public class KanbanService {
         // 1. 파라매터로 받은 프로젝트 ID 를 가지고 있는 모든 버킷들을 조회한다.
 
         // 2. 순차적으로 조회된 버킷의 버킷 ID를 가지고 있는 모든 카드들을 조회한다.
-        List<KanbanBucket> buckets = kanbanBucketRepository.findBucketsAndCardsByProject_Id_DSL(projectId);
+        List<KanbanBucket> buckets = kanbanBucketRepository.findBucketsByProject_Id_DSL(projectId);
         List<BucketDto> bucketDtos = new ArrayList<>();
 
         buckets.forEach(kanbanBucket -> {
             List<CardInfoDto> cardDtos = new ArrayList<>();
-            List<KanbanCard> cards = kanbanBucket.getCards();
+            List<KanbanCard> cards = kanbanCardRepository.findCardsByKanbanBucket_Id_DSL(kanbanBucket.getId());
             cards.forEach(kanbanCard -> {
                 cardDtos.add(new CardInfoDto(kanbanCard));
             });
@@ -182,9 +184,11 @@ public class KanbanService {
     @Transactional
     public void deleteCard(String kbcId) {
 
-        // 파라매터로 받은 카드 ID를 key 로 DB 에서 해당 카드를 삭제한다.
-        // Repository(JPA)이용
-        kanbanCardRepository.deleteById(UUID.fromString(kbcId));
+        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findById(UUID.fromString(kbcId));
+        KanbanCard targetCard = optionalKanbanCard.orElseThrow(
+                () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
+
+        targetCard.delete();
 
     }
 
@@ -205,6 +209,9 @@ public class KanbanService {
         return new CardInfoDto(kanbanCard);
     }
 
+    /**
+     * M2-13 담당자별 카드 조회
+     */
     @Transactional
     public List<ManagerBucketCardsDto> getAllManagersBucketsAndCards(String projectId) {
 

@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghae.api.coupteambe.domain.dto.notice.NoticeInfoDto;
 import hanghae.api.coupteambe.domain.entity.notice.QNotice;
 import hanghae.api.coupteambe.domain.entity.project.QProjectMember;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -27,12 +28,15 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                         projectMember.project.id,
                         projectMember.member.id,
                         notice.title,
-                        notice.contents))
+                        notice.contents,
+                        notice.createdTime,
+                        notice.modifiedTime))
                 .from(notice)
                 .leftJoin(projectMember)
                 .on(projectMember.id.eq(notice.projectMember.id))
                 .fetchJoin()
-                .where(projectMember.project.id.eq(pjId))
+                .where(projectMember.project.id.eq(pjId)
+                        .and(notice.delFlag.eq(StatusFlag.NORMAL)))
                 .distinct().fetch();
     }
 

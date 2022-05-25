@@ -6,8 +6,6 @@ import hanghae.api.coupteambe.domain.entity.document.Document;
 import hanghae.api.coupteambe.domain.entity.document.Folder;
 import hanghae.api.coupteambe.domain.entity.project.Project;
 import hanghae.api.coupteambe.domain.repository.document.DocumentFolderRepository;
-import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
-import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
@@ -25,8 +23,6 @@ import java.util.UUID;
 public class FolderService {
 
     private final DocumentFolderRepository documentFolderRepository;
-    private final ProjectMemberRepository projectMemberRepository;
-    private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
 
 
@@ -80,9 +76,13 @@ public class FolderService {
     @Transactional
     public void deleteFolders(String dfId) {
 
-        // 파라미터로 받은 폴더 ID를 key로 db에서 찾아 삭제한다.
-        documentFolderRepository.deleteById(UUID.fromString(dfId));
+        Optional<Folder> optionalFolder = documentFolderRepository.findById(UUID.fromString(dfId));
+        Folder folder = optionalFolder.orElseThrow(
+                () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
+
+        folder.delete();
     }
+
 
     /**
      * M1-4 전체 폴더, 문서 조회
@@ -96,9 +96,8 @@ public class FolderService {
         List<Folder> folders = documentFolderRepository.findFoldersAndDocumentsByProject_Id_DSL(projectId);
         List<FolderDto> folderDtos = new ArrayList<>();
         folders.forEach(folder -> {
-
             List<DocumentDto> documentDtos = new ArrayList<>();
-            List<Document> documents = folder.getDocuments();
+            List<Document> documents = documentFolderRepository.findDocumentByFolder_Id_DSL(folder.getId());
 
             documents.forEach(document -> {
                 documentDtos.add(new DocumentDto(document));
@@ -108,6 +107,8 @@ public class FolderService {
                     .dfId(folder.getId().toString())
                     .title(folder.getTitle())
                     .position(folder.getPosition())
+                    .createdTime(folder.getCreatedTime())
+                    .modifiedTime(folder.getModifiedTime())
                     .docs(documentDtos)
                     .build());
 

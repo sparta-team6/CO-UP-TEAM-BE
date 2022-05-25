@@ -73,9 +73,12 @@ public class DocumentService {
     @Transactional
     public void deleteDocument(String docId) {
 
-        // 파라미터로 받은 문서 ID를 key 로 DB에서 해당 카드를 삭제한다.
-        // Repository(JPA)이용
-        documentRepository.deleteById(UUID.fromString(docId));
+        Optional<Document> optionalDocument = documentRepository.findById(UUID.fromString(docId));
+        Document document = optionalDocument.orElseThrow(
+                () -> new RequestException(ErrorCode.DOCUMENT_NOT_FOUND_404));
+
+        document.delete();
+
     }
 
     /**

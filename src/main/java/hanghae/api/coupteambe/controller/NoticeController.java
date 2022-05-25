@@ -20,9 +20,9 @@ public class NoticeController {
      * O1-1. 공지사항 글 생성
      */
     @PostMapping("/")
-    public ResponseEntity<ResResultDto> createNotices(@RequestBody NoticeInfoDto noticeInfoDto) {
-        noticeService.createNotice(noticeInfoDto);
-        return ResponseEntity.ok(new ResResultDto("공지사항 작성 완료"));
+    public ResponseEntity<NoticeInfoDto> createNotices(@RequestBody NoticeInfoDto noticeInfoDto) {
+        NoticeInfoDto resNotice = noticeService.createNotice(noticeInfoDto);
+        return ResponseEntity.ok(resNotice);
     }
 
     /**

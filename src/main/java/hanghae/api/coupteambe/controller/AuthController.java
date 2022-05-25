@@ -108,15 +108,23 @@ public class AuthController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<ResResultDto> logout(HttpServletResponse response) {
+    public ResponseEntity<ResResultDto> logout(HttpServletRequest request, HttpServletResponse response) {
 
-        Cookie cookie = new Cookie("accessToken", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            return ResponseEntity.ok(new ResResultDto("로그아웃 성공"));
+        }
 
-        cookie = new Cookie("refreshToken", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("accessToken")) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+            if (cookie.getName().equals("refreshToken")) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
 
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         authService.logout(loginId);

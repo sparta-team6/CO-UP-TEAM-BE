@@ -68,7 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
 
         web.ignoring()
-           .antMatchers("/h2-console/**");
+           .antMatchers("/h2-console/**")
+           .antMatchers("/ws");
 
     }
 
@@ -92,11 +93,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .apply(new JwtSecurityConfig(tokenProvider))
 
             .and()
+            .headers().frameOptions().disable()
+
+            .and()
             .authorizeRequests()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/auth/kakao", "/auth/google", "/auth/naver", "/auth/reissue", "/").permitAll()
-//            .antMatchers("/**").permitAll()
+            .antMatchers("/auth/kakao", "/auth/google", "/auth/naver", "/auth/reissue").permitAll()
             .anyRequest().authenticated();
     }
 }

@@ -35,7 +35,7 @@ public class NoticeService {
      * O1-1. 공지사항 글 생성
      */
     @Transactional
-    public void createNotice(NoticeInfoDto noticeInfoDto) {
+    public NoticeInfoDto createNotice(NoticeInfoDto noticeInfoDto) {
         // 1. 로그인 한 유저의 로그인 ID 추출
         String loginId = getCurrentUsername()
                 // 1-1. 로그인 안된 경우 예외처리
@@ -61,9 +61,11 @@ public class NoticeService {
                         .title(noticeInfoDto.getTitle())
                         .contents(noticeInfoDto.getContents())
                         .projectMember(projectMember.get())
+
                         .build();
                 // 6. 공지사항 저장
-                noticeRepository.save(notice);
+                notice = noticeRepository.save(notice);
+                return new NoticeInfoDto(notice);
             } else {
                 // 4-2. 관리자가 아닌 경우, 예외처리
                 throw new RequestException(ErrorCode.NO_PERMISSION_TO_WRITE_NOTICE_400);
@@ -162,7 +164,12 @@ public class NoticeService {
         if (projectMember.isPresent()) {
             // 4-1. 관리자인 경우에만 공지 삭제 가능
             if (projectMember.get().getRole().equals(ProjectRole.ADMIN)) {
-                noticeRepository.deleteById(noticeInfoDto.getNoticeId());
+
+                Notice notice = noticeRepository.findById(noticeInfoDto.getNoticeId())
+                        .orElseThrow(() -> new RequestException(ErrorCode.NOTICE_NOT_FOUND_404));
+
+                notice.delete();
+
             } else {
                 // 4-2. 관리자가 아닌 경우, 예외처리
                 throw new RequestException(ErrorCode.NO_PERMISSION_TO_DELETE_NOTICE_400);

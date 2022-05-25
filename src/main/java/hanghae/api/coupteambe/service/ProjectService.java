@@ -12,6 +12,7 @@ import hanghae.api.coupteambe.domain.repository.member.MemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectMemberRepository;
 import hanghae.api.coupteambe.domain.repository.project.ProjectRepository;
 import hanghae.api.coupteambe.enumerate.ProjectRole;
+import hanghae.api.coupteambe.enumerate.StatusFlag;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static hanghae.api.coupteambe.util.SecurityUtil.getCurrentUsername;
 
@@ -39,7 +37,7 @@ public class ProjectService {
      * M5-1 프로젝트 생성
      */
     @Transactional
-    public void create(CreateProjectDto createProjectDto) {
+    public ResProjectInfoDto create(CreateProjectDto createProjectDto) {
         // 1. 프로젝트 생성 사용자 추출
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
@@ -73,10 +71,12 @@ public class ProjectService {
         List<KanbanBucket> buckets = Arrays.asList(todoBucket, inProgressBucket, doneBucket);
 
         // 4. 프로젝트 저장
-        projectMemberRepository.save(projectMember);
+        projectMember = projectMemberRepository.save(projectMember);
 
         // 3. 새로 생성한 버킷을 Repository 를 이용하여 DB에 저장한다.
         kanbanBucketRepository.saveAll(buckets);
+
+        return new ResProjectInfoDto(projectMember);
     }
 
     /**
@@ -105,6 +105,11 @@ public class ProjectService {
         // 1-1. 프로젝트가 존재하지 않는 경우 예외처리한다.
         Project project = optionalProject
                 .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+
+        // 1-2. 삭제 처리된 프로젝트에 참가 요청하는 경우, 예외 처리
+        if (project.getDelFlag().equals(StatusFlag.DELETED)) {
+            throw new RequestException(ErrorCode.PROJECT_NOT_FOUND_404);
+        }
 
         // 2. 프로젝트가 존재하는 경우
         // 2-1. 현재 로그인한 유저의 멤버 ID 로 멤버 정보(객체)를 조회한다.
@@ -139,8 +144,11 @@ public class ProjectService {
      */
     @Transactional
     public void delete(UUID pjId) {
-        // 파라매터로 받은 프로젝트 ID를 key 로 DB 에서 해당 프로젝트를 삭제한다.
-        projectRepository.deleteById(pjId);
+        Optional<Project> optionalProject = projectRepository.findById(pjId);
+        Project project = optionalProject
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+
+        project.delete();
     }
 
     /**
@@ -185,6 +193,9 @@ public class ProjectService {
                 .summary(project.getSummary())
                 .inviteCode(project.getInviteCode())
                 .projectRole(optionalProjectMember.get().getRole())
+                .createdTime(project.getCreatedTime())
+                .modifiedTime(project.getModifiedTime())
+                .position(optionalProjectMember.get().getPosition())
                 .build();
 
         // 내가 참가하지 않은 플젝 접근 ( 퍼블릭 vs 프라이빗 )
@@ -205,6 +216,55 @@ public class ProjectService {
             }
         }
         return resProjectInfoDto;
+    }
+
+    /**
+     * M5-9 선택 프로젝트 나가기
+     */
+    @Transactional
+    public void exitProject(UUID pjId) {
+        // 1. 현재 로그인한 유저의 ID 조회
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), pjId);
+        ProjectMember projectMember = optionalProjectMember
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
+        projectMember.delete();
+    }
+
+
+    /**
+     * M5-10 선택 프로젝트 추방
+     */
+    @Transactional
+    public void kickProject(UUID pjId, String loginId) {
+        // 1. 현재 로그인한 유저의 ID 조회
+        String adminLoginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(adminLoginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), pjId);
+        ProjectMember projectMember = optionalProjectMember
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        if (projectMember.getRole().equals(ProjectRole.ADMIN)) {
+            // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
+            Member findKickMember = memberRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+            Optional<ProjectMember> optionalKickMember = projectMemberRepository.findByMemberIdAndProjectId(findKickMember.getId(), pjId);
+            ProjectMember kickMember = optionalKickMember
+                    .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+            projectMember.delete();
+        } else {
+            // private : 접근오류
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
     }
 
     private boolean isPublic(Project project) {
