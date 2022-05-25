@@ -14,7 +14,8 @@ echo "> DEPLOY_JAR 배포" >>/home/ubuntu/deploy.log
 
 COUNT=0
 
-while :; do
+while :
+do
   CURRENT_PID=$(pgrep -f "$JAR_NAME")
   echo "> 현재 실행중인 애플리케이션 pid 확인 : $CURRENT_PID" >>/home/ubuntu/deploy.log
   if [ -z "$CURRENT_PID" ]; then
@@ -24,6 +25,8 @@ while :; do
   if [ $COUNT -eq 0 ]; then
     COUNT=10
     echo "> sudo kill -9 $CURRENT_PID" >>/home/ubuntu/deploy.log
+  fi
+
   if [ $COUNT -eq 0 ]; then
     echo "> 현재 구동중인 애플리케이션을 종료합니다." >>/home/ubuntu/deploy.log
   fi
