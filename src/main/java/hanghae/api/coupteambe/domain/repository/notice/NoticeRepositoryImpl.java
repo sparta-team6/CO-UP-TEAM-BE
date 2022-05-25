@@ -28,7 +28,9 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                         projectMember.project.id,
                         projectMember.member.id,
                         notice.title,
-                        notice.contents))
+                        notice.contents,
+                        notice.createdTime,
+                        notice.modifiedTime))
                 .from(notice)
                 .leftJoin(projectMember)
                 .on(projectMember.id.eq(notice.projectMember.id))
