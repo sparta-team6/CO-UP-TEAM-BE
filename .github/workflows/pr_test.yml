@@ -20,53 +20,24 @@ jobs:
           java-version: 1.8
 
       # application.properties 추가정보 입력 시작
+      - name: Create ./src/main/resources/
+        run: |
+          mkdir -p  ./src/main/resources/
+
       - name: Create ./src/test/resources/
         run: |
           mkdir -p  ./src/test/resources/
 
-      - name: touch Application Property
+      - name: Add Application Property
         run: |
-          touch ./src/test/resources/application.properties
+          echo ${{ srcrets.RELEASE_APP_PROPERTIES }} > ./src/main/resources/application.properties
+          base64 -d -i ./src/main/resources/application.properties > ./src/main/resources/application.properties
 
-      - name: cat application.properties
+      - name: Add Test Application Property
         run: |
-          cat ./src/test/resources/application.properties
+          echo ${{ srcrets.TEST_APP_PROPERTIES }} > ./src/test/resources/application.properties
+          base64 -d -i ./src/test/resources/application.properties > ./src/test/resources/application.properties
 
-      - name: Add Kakao_client_id Application Property
-        run: |
-          echo ${{ secrets.AUTH_KAKAO_CLIENT_ID }} >> ./src/test/resources/application.properties
-
-      - name: Add Kakao_redirect_uri Application Property
-        run: |
-          echo ${{ secrets.AUTH_KAKAO_REDIRECT_URI }} >> ./src/test/resources/application.properties
-
-      - name: Add Google_client_id Application Property
-        run: |
-          echo ${{ secrets.AUTH_GOOGLE_CLIENT_ID }} >> ./src/test/resources/application.properties
-
-      - name: Add Google_client_secret Application Property
-        run: |
-          echo ${{ secrets.AUTH_GOOGLE_CLIENT_SECRET }} >> ./src/test/resources/application.properties
-
-      - name: Add Google_redirect_uri Application Property
-        run: |
-          echo ${{ secrets.AUTH_GOOGLE_REDIRECT_URI }} >> ./src/test/resources/application.properties
-          
-      - name: Add Naver_client_id Application Property
-        run: |
-          echo ${{ secrets.AUTH_NAVER_CLIENT_ID }} >> ./src/test/resources/application.properties
-
-      - name: Add Naver_client_secret Application Property
-        run: |
-          echo ${{ secrets.AUTH_NAVER_CLIENT_SECRET }} >> ./src/test/resources/application.properties
-
-      - name: Add Naver_redirect_uri Application Property
-        run: |
-          echo ${{ secrets.AUTH_NAVER_REDIRECT_URI }} >> ./src/test/resources/application.properties         
-
-      - name: cat application.properties
-        run: |
-          cat ./src/test/resources/application.properties
       # application.properties 추가정보 입력 끝
 
       - name: Grant execute permission for gradlew
