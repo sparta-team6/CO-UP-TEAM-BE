@@ -69,9 +69,7 @@ public class AuthGoogleService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode responseToken = objectMapper.readTree(responseBody);
         String accessToken = responseToken.get("access_token").asText();
-        String refreshToken = responseToken.get("refresh_token").asText();
         log.debug("access token : " + accessToken);
-        log.debug("refresh token : " + refreshToken);
 
         return accessToken;
     }
