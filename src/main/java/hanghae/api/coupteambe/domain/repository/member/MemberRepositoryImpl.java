@@ -41,7 +41,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .from(projectMember)
                 .leftJoin(member)
                 .on(member.id.eq(projectMember.member.id))
-                .fetchJoin()
                 .where(projectMember.project.id.eq(pjId)
                         .and(member.delFlag.eq(StatusFlag.NORMAL)))
                 .distinct().fetch();
