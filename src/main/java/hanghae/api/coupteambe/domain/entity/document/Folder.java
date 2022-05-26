@@ -28,8 +28,7 @@ public class Folder extends BaseEntity {
     private String title = "title";
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private int position = 0;
+    private int position;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
     private List<Document> documents = new ArrayList<>();
@@ -45,7 +44,6 @@ public class Folder extends BaseEntity {
 
     public void updateFolder(FolderDto folderDto) {
         this.title = folderDto.getTitle();
-        this.position = folderDto.getPosition();
     }
 }
 
