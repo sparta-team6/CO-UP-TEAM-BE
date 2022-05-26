@@ -36,7 +36,7 @@ public class DocumentDto {
         this.title = document.getTitle();
         this.contents = document.getContents();
         this.position = document.getPosition();
-        this.nickname = document.getNickname();
+        this.nickname = document.getManagerNickname();
         this.createdTime = document.getCreatedTime();
         this.modifiedTime = document.getModifiedTime();
     }
