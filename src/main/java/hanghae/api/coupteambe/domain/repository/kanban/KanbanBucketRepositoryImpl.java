@@ -58,7 +58,8 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
                                             .select(
                                                     card.manager, member.profileImage, member.nickname,
                                                     bucket.id, bucket.title, bucket.position,
-                                                    card.id, card.title, card.contents, card.position
+                                                    card.id, card.title, card.contents, card.position,
+                                                    card.managerNickname
                                             ).distinct()
                                             .orderBy(card.manager.asc(), bucket.position.asc(), card.position.asc())
                                             .fetch();
@@ -97,6 +98,7 @@ public class KanbanBucketRepositoryImpl implements KanbanBucketRepositoryCustom 
                     t.get(card.id),
                     t.get(bucket.id),
                     t.get(card.manager),
+                    t.get(card.managerNickname),
                     t.get(card.title),
                     t.get(card.contents),
                     t.get(card.position)

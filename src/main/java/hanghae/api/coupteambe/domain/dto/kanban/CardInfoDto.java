@@ -23,6 +23,8 @@ public class CardInfoDto {
     // 카드 담당자 (카드 배당업무 담당자)
     private String manager;
 
+    private String managerNickname;
+
     // 카드 제목
     private String title;
 
@@ -37,6 +39,7 @@ public class CardInfoDto {
         this.kbcId = kanbanCard.getId();
         this.kbbId = kanbanCard.getKanbanBucket().getId();
         this.manager = kanbanCard.getManager();
+        this.managerNickname = kanbanCard.getManagerNickname();
         this.title = kanbanCard.getTitle();
         this.contents = kanbanCard.getContents();
         this.position = kanbanCard.getPosition();

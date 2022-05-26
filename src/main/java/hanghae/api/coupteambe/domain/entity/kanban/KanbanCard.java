@@ -41,6 +41,8 @@ public class KanbanCard extends BaseEntity {
     // 담당자
     private String manager;
 
+    private String managerNickname;
+
     // 배치순서
     @Column(nullable = false)
     @ColumnDefault("0")
@@ -52,6 +54,7 @@ public class KanbanCard extends BaseEntity {
         this.contents = cardInfoDto.getContents();
         this.position = cardInfoDto.getPosition();
         this.manager = cardInfoDto.getManager();
+        this.managerNickname = cardInfoDto.getManagerNickname();
     }
 
     public void updateBucket(KanbanBucket kanbanBucket) {
