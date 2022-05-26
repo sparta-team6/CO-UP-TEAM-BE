@@ -133,6 +133,7 @@ public class KanbanService {
         KanbanCard kanbanCard = KanbanCard.builder()
                                           .kanbanBucket(kanbanBucket)
                                           .manager(cardInfoDto.getManager())
+                                          .managerNickname(cardInfoDto.getManagerNickname())
                                           .title(cardInfoDto.getTitle())
                                           .contents(cardInfoDto.getContents())
                                           .position((int) cntCards).build();
