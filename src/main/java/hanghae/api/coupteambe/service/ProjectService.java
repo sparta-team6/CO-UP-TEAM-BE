@@ -203,20 +203,21 @@ public class ProjectService {
                 throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
             }
         } else {
-            // 퍼블릭 : role -> 읽기전용 read
-            if (isPublic(project)) {
-                resProjectInfoDto = ResProjectInfoDto.builder()
-                        .pjId(project.getId())
-                        .thumbnail(project.getThumbnail())
-                        .title(project.getTitle())
-                        .summary(project.getSummary())
-                        .inviteCode(project.getInviteCode())
-                        .projectRole(ProjectRole.READ)
-                        .build();
-            } else {
-                // private : 접근오류
-                throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
-            }
+//            // Public Private 처리 할건지 아닌지 정한 다음에 주석 풀지 말지 정합시다.
+//            // 퍼블릭 : role -> 읽기전용 read
+//            if (isPublic(project)) {
+//                resProjectInfoDto = ResProjectInfoDto.builder()
+//                        .pjId(project.getId())
+//                        .thumbnail(project.getThumbnail())
+//                        .title(project.getTitle())
+//                        .summary(project.getSummary())
+//                        .inviteCode(project.getInviteCode())
+//                        .projectRole(ProjectRole.READ)
+//                        .build();
+//            } else {
+//                // private : 접근오류
+//                throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
+//            }
             // private : 접근오류
             throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
         }
