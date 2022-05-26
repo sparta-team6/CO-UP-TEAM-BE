@@ -11,6 +11,7 @@ import hanghae.api.coupteambe.service.AuthService;
 import hanghae.api.coupteambe.util.exception.ErrorCode;
 import hanghae.api.coupteambe.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -116,14 +118,12 @@ public class AuthController {
         }
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("accessToken")) {
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
-            if (cookie.getName().equals("refreshToken")) {
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
+            log.debug("cookie name: '{}'", cookie.getName());
+            log.debug("cookie value: '{}'", cookie.getValue());
+            log.debug("cookie domain: '{}'", cookie.getDomain());
+
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
         }
 
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
