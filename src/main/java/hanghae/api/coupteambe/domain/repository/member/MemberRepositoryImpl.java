@@ -43,6 +43,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .on(member.id.eq(projectMember.member.id))
                 .where(projectMember.project.id.eq(pjId)
                         .and(projectMember.delFlag.eq(StatusFlag.NORMAL)))
+                .orderBy(projectMember.createdTime.asc())
                 .distinct().fetch();
     }
 }
