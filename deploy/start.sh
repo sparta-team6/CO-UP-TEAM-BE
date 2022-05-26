@@ -24,6 +24,7 @@ do
 
   if [ $COUNT -eq 0 ]; then
     COUNT=10
+    sudo kill -9 "$CURRENT_PID"
     echo "> sudo kill -9 $CURRENT_PID" >>/home/ubuntu/deploy.log
   fi
 

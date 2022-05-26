@@ -98,7 +98,7 @@ public class ProjectService {
     /**
      * M5-3 프로젝트 초대코드로 참가
      */
-    public void inviteProject(String inviteCode) {
+    public String inviteProject(String inviteCode) {
 
         // 1. 초대 코드를 가진 프로젝트를 조회한다.
         Optional<Project> optionalProject = projectRepository.findByInviteCode(inviteCode);
@@ -130,6 +130,7 @@ public class ProjectService {
             ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.READ_WRITE,((int) cntProjects));
             // 3-2. 프로젝트 저장
             projectMemberRepository.save(projectMember);
+            return project.getId().toString();
         } else {
             // 3-3. 프로젝트에 이미 참가한 경우, 예외처리
             throw new RequestException(ErrorCode.PROJECT_MEMBER_DUPLICATION_409);
@@ -183,37 +184,42 @@ public class ProjectService {
         Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
 
         ResProjectInfoDto resProjectInfoDto = null;
-        // 내가 참가한 플젝 접근 -> read & write
-        if (optionalProjectMember.isPresent()) {
-        // 2. 프로젝트가 존재하는 경우, 프로젝트 객체 리턴
-        resProjectInfoDto = ResProjectInfoDto.builder()
-                .pjId(project.getId())
-                .thumbnail(project.getThumbnail())
-                .title(project.getTitle())
-                .summary(project.getSummary())
-                .inviteCode(project.getInviteCode())
-                .projectRole(optionalProjectMember.get().getRole())
-                .createdTime(project.getCreatedTime())
-                .modifiedTime(project.getModifiedTime())
-                .position(optionalProjectMember.get().getPosition())
-                .build();
 
-        // 내가 참가하지 않은 플젝 접근 ( 퍼블릭 vs 프라이빗 )
-        } else {
-            // 퍼블릭 : role -> 읽기전용 read
-            if (isPublic(project)) {
+        // 프로젝트에 현재 참여하고 있는 멤버 또는 추방당하지 않은 멤버만 조회 가능
+        if (optionalProjectMember.isPresent()) {
+            if (optionalProjectMember.get().getDelFlag().equals(StatusFlag.NORMAL)) {
                 resProjectInfoDto = ResProjectInfoDto.builder()
                         .pjId(project.getId())
                         .thumbnail(project.getThumbnail())
                         .title(project.getTitle())
                         .summary(project.getSummary())
                         .inviteCode(project.getInviteCode())
-                        .projectRole(ProjectRole.READ)
+                        .projectRole(optionalProjectMember.get().getRole())
+                        .createdTime(project.getCreatedTime())
+                        .modifiedTime(project.getModifiedTime())
+                        .position(optionalProjectMember.get().getPosition())
                         .build();
             } else {
-                // private : 접근오류
                 throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
             }
+        } else {
+//            // Public Private 처리 할건지 아닌지 정한 다음에 주석 풀지 말지 정합시다.
+//            // 퍼블릭 : role -> 읽기전용 read
+//            if (isPublic(project)) {
+//                resProjectInfoDto = ResProjectInfoDto.builder()
+//                        .pjId(project.getId())
+//                        .thumbnail(project.getThumbnail())
+//                        .title(project.getTitle())
+//                        .summary(project.getSummary())
+//                        .inviteCode(project.getInviteCode())
+//                        .projectRole(ProjectRole.READ)
+//                        .build();
+//            } else {
+//                // private : 접근오류
+//                throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
+//            }
+            // private : 접근오류
+            throw new RequestException(ErrorCode.PROJECT_FORBIDDEN_403);
         }
         return resProjectInfoDto;
     }
