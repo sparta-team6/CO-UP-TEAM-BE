@@ -70,7 +70,7 @@ public class DocumentService {
                         .title(documentDto.getTitle())
                         .contents(documentDto.getContents())
                         .position((int) cntDocuments)
-                        .nickname(member.getNickname())
+                        .managerNickname(member.getNickname())
                         .build();
 
                 // 7. 새로 생성한 객체를 Repository 를 이용하여 DB에 저장한다

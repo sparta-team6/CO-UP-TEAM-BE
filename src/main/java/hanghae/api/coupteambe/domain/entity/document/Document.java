@@ -43,7 +43,7 @@ public class Document extends BaseEntity {
     
     // 문서 생성한 멤버의 닉네임
     @Column(nullable = false)
-    private String nickname;
+    private String managerNickname;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
