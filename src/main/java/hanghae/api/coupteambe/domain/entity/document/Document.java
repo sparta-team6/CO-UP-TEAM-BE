@@ -40,6 +40,10 @@ public class Document extends BaseEntity {
 
     @Column(nullable = false)
     private int position;
+    
+    // 문서 생성한 멤버의 닉네임
+    @Column(nullable = false)
+    private String managerNickname;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
