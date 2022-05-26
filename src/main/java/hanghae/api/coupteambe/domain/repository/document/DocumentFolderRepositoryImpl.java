@@ -24,7 +24,7 @@ public class DocumentFolderRepositoryImpl implements DocumentFolderRepositoryCus
                 .from(folder)
                 .where(folder.project.id.eq(UUID.fromString(projectId))
                         .and(folder.delFlag.eq(StatusFlag.NORMAL)))
-                .orderBy(folder.position.asc())
+                .orderBy(folder.createdTime.asc())
                 .distinct().fetch();
     }
 
@@ -36,7 +36,7 @@ public class DocumentFolderRepositoryImpl implements DocumentFolderRepositoryCus
                 .from(document)
                 .where(document.folder.id.eq(folderId)
                         .and(document.delFlag.eq(StatusFlag.NORMAL)))
-                .orderBy(document.position.asc())
+                .orderBy(document.createdTime.asc())
                 .distinct().fetch();
     }
 }
