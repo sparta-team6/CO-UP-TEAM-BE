@@ -48,6 +48,7 @@ public enum ErrorCode {
 
     // ProjectMember 관련
     PROJECT_MEMBER_DUPLICATION_409(HttpStatus.CONFLICT, "이미 프로젝트에 참가되어 있는 회원입니다."),
+    DENIED_TO_JOIN_PROJECT_409(HttpStatus.FORBIDDEN, "프로젝트 참가가 거부된 회원입니다."),
 
     // Kanban 관련
     KANBAN_BUCKET_NOT_FOUND_404(HttpStatus.NOT_FOUND, "요청한 칸반보드 ID가 없습니다."),

@@ -118,21 +118,26 @@ public class ProjectService {
         // 2-2. 해당 멤버가 존재하지 않는 경우 예외처리
         Member member = optionalMember
                 .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
-        // 카운팅
-        long cntProjects = projectMemberRepository.countAllByMember_Id(member.getId());
 
         // 3. 프로젝트에 참가하려는 멤버가 프로젝트 멤버 테이블에 존재하는지 확인한다.
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
 
-        // 존재하지 않는 경우에만 참가 시키도록 한다.
-        if (!projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId()).isPresent()) {
-
-            // 3-1. 프로젝트에 일반유저를 참가시킨다.
+        // 4. 존재하지 않는 경우에만 참가 시키도록 한다.
+        if (!optionalProjectMember.isPresent()) {
+            // 4-1. 유저수 카운팅
+            long cntProjects = projectMemberRepository.countAllByMember_Id(member.getId());
+            // 4-2. 프로젝트에 일반유저를 참가시킨다.
             ProjectMember projectMember = new ProjectMember(member, project, ProjectRole.READ_WRITE,((int) cntProjects));
-            // 3-2. 프로젝트 저장
+            // 4-3. 프로젝트 저장
             projectMemberRepository.save(projectMember);
+            // 4-4. 프로젝트 ID 반환 (초대코드로 입장한 해당 프로젝트 페이지로 바로 이동시키기 위함) -> 프론트 요청 있었음
             return project.getId().toString();
         } else {
-            // 3-3. 프로젝트에 이미 참가한 경우, 예외처리
+            // 5. 프로젝트멤버 테이블에는 존재하지만, 해당 프로젝트에서 나갔거나 추방당한 사람은 재입장 불가
+            if (optionalProjectMember.get().getDelFlag().equals(StatusFlag.DELETED)) {
+                throw new RequestException(ErrorCode.DENIED_TO_JOIN_PROJECT_409);
+            }
+            // 6. 프로젝트에 이미 참가한 경우, 예외처리
             throw new RequestException(ErrorCode.PROJECT_MEMBER_DUPLICATION_409);
         }
 
