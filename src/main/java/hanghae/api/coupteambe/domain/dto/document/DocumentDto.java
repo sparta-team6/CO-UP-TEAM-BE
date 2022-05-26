@@ -24,6 +24,8 @@ public class DocumentDto {
     private String contents;
     //배치순서
     private int position;
+    //작성자 닉네임
+    private String nickname;
     //생성시간
     private LocalDateTime createdTime;
     //수정시간
@@ -34,6 +36,7 @@ public class DocumentDto {
         this.title = document.getTitle();
         this.contents = document.getContents();
         this.position = document.getPosition();
+        this.nickname = document.getNickname();
         this.createdTime = document.getCreatedTime();
         this.modifiedTime = document.getModifiedTime();
     }
