@@ -17,6 +17,10 @@ public class MessageDto {
 
     private String senderLoginId;
 
+    private String nickname;
+
+    private String profileImage;
+
     private String pjId;
 
     private String message;
@@ -26,6 +30,8 @@ public class MessageDto {
     public MessageDto(ChatMessage chatMessage) {
         this.id = chatMessage.getId();
         this.senderLoginId = chatMessage.getSenderLoginId();
+        this.nickname = chatMessage.getNickname();
+        this.profileImage = chatMessage.getProfileImage();
         this.pjId = chatMessage.getPjId();
         this.message = chatMessage.getMessage();
         this.dateTime = chatMessage.getCreatedTime();
