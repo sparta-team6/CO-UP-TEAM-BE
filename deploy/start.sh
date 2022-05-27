@@ -36,4 +36,4 @@ do
 done
 
 echo "> 현재 구동중인 애플리케이션이 없으므로 새로운 애플리케이션을 시작합니다." >>/home/ubuntu/deploy.log
-nohup java -jar "$DEPLOY_JAR" >>/home/ubuntu/deploy.log 2>/home/ubuntu/deploy_err.log &
+nohup java -jar -Duser.timezone=Asia/Seoul "$DEPLOY_JAR" >>/home/ubuntu/deploy.log 2>/home/ubuntu/deploy_err.log &
