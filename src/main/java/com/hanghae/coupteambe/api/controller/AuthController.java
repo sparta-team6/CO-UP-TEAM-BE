@@ -121,13 +121,27 @@ public class AuthController {
             log.info("cookie name: '{}'", cookie.getName());
             log.info("cookie value: '{}'", cookie.getValue());
             log.info("cookie domain: '{}'", cookie.getDomain());
-
-            cookie.setMaxAge(0);
-            cookie.setValue("");
-            cookie.setDomain("cooperate-up.com");
-            cookie.setPath("/");
-            response.addCookie(cookie);
         }
+
+        ResponseCookie responseCookie = ResponseCookie.from("accessToken", "")
+                                                      .domain("cooperate-up.com")
+                                                      .httpOnly(false)
+                                                      .maxAge(0)
+                                                      .sameSite("None")
+                                                      .secure(true)
+                                                      .path("/").build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
+        responseCookie = ResponseCookie.from("refreshToken", "")
+                                       .domain("cooperate-up.com")
+                                       .httpOnly(false)
+                                       .maxAge(0)
+                                       .sameSite("None")
+                                       .secure(true)
+                                       .path("/").build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
         String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
         authService.logout(loginId);
