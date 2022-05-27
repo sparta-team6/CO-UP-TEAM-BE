@@ -35,10 +35,10 @@ public class Member extends BaseEntity {
 
     private String url;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String aboutMe;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String profileImage;
 
     private LocalDateTime loginTime;

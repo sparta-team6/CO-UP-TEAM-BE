@@ -25,7 +25,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     private String profileImage;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String message;
 
     private String pjId;
