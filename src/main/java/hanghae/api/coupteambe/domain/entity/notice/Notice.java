@@ -25,7 +25,7 @@ public class Notice extends BaseEntity {
     private String title = "untitle";
 
     // 본문
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String contents;
 
     // 프로젝트 멤버 번호
