@@ -118,11 +118,14 @@ public class AuthController {
         }
 
         for (Cookie cookie : cookies) {
-            log.debug("cookie name: '{}'", cookie.getName());
-            log.debug("cookie value: '{}'", cookie.getValue());
-            log.debug("cookie domain: '{}'", cookie.getDomain());
+            log.info("cookie name: '{}'", cookie.getName());
+            log.info("cookie value: '{}'", cookie.getValue());
+            log.info("cookie domain: '{}'", cookie.getDomain());
 
             cookie.setMaxAge(0);
+            cookie.setValue("");
+            cookie.setDomain("cooperate-up.com");
+            cookie.setPath("/");
             response.addCookie(cookie);
         }
 
@@ -136,7 +139,7 @@ public class AuthController {
 
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", jwtTokenDto.getAccessToken())
                                                       .domain("cooperate-up.com")
-                                                      .httpOnly(true)
+                                                      .httpOnly(false)
                                                       .maxAge(60 * 30)
                                                       .sameSite("None")
                                                       .secure(true)
@@ -146,7 +149,7 @@ public class AuthController {
 
         responseCookie = ResponseCookie.from("refreshToken", jwtTokenDto.getRefreshToken())
                                        .domain("cooperate-up.com")
-                                       .httpOnly(true)
+                                       .httpOnly(false)
                                        .maxAge(60 * 60 * 24)
                                        .sameSite("None")
                                        .secure(true)
