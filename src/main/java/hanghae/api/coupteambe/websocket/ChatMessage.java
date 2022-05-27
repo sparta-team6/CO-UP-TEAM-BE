@@ -21,6 +21,10 @@ public class ChatMessage extends BaseTimeEntity {
 
     private String senderLoginId;
 
+    private String nickname;
+
+    private String profileImage;
+
     @Column(columnDefinition = "TEXT")
     private String message;
 
@@ -29,6 +33,8 @@ public class ChatMessage extends BaseTimeEntity {
 
     public ChatMessage(MessageDto messageDto) {
         this.senderLoginId = messageDto.getSenderLoginId();
+        this.nickname = messageDto.getNickname();
+        this.profileImage = messageDto.getProfileImage();
         this.pjId = messageDto.getPjId();
         this.message = messageDto.getMessage();
     }
