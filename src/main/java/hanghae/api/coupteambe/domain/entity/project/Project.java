@@ -25,7 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Project extends BaseEntity {
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String thumbnail;
 
     @Column(nullable = false, length = 255)
