@@ -44,7 +44,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .leftJoin(project)
                 .on(project.id.eq(projectMember.project.id))
                 .where(projectMember.member.id.eq(mbId)
-                        .and(projectMember.delFlag.eq(StatusFlag.NORMAL)))
+                        .and(project.delFlag.eq(StatusFlag.NORMAL)))
                 .orderBy(projectMember.position.asc())
                 .distinct().fetch();
     }
