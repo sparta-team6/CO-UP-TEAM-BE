@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -34,6 +35,10 @@ public class CardInfoDto {
     // 배치 순서
     private int position;
 
+    private LocalDateTime createdTime;
+
+    private LocalDateTime modifiedTime;
+
     public CardInfoDto(KanbanCard kanbanCard) {
 
         this.kbcId = kanbanCard.getId();
@@ -43,6 +48,8 @@ public class CardInfoDto {
         this.title = kanbanCard.getTitle();
         this.contents = kanbanCard.getContents();
         this.position = kanbanCard.getPosition();
+        this.createdTime = kanbanCard.getCreatedTime();
+        this.modifiedTime = kanbanCard.getModifiedTime();
     }
 
     public CardInfoDto(String title, String contents, int position) {
