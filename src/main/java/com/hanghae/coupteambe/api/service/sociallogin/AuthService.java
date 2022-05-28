@@ -1,5 +1,6 @@
-package com.hanghae.coupteambe.api.service;
+package com.hanghae.coupteambe.api.service.sociallogin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hanghae.coupteambe.api.domain.dto.JwtTokenDto;
 import com.hanghae.coupteambe.api.domain.dto.social.SocialUserInfoDto;
 import com.hanghae.coupteambe.api.domain.entity.member.Member;
@@ -12,6 +13,8 @@ import com.hanghae.coupteambe.api.util.exception.ErrorCode;
 import com.hanghae.coupteambe.api.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
@@ -32,6 +36,32 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AuthKakaoService authKakaoService;
+    private final AuthGoogleService authGoogleService;
+    private final AuthNaverService authNaverService;
+
+    public void socialLogin(String socialPath, String code, String state, HttpServletResponse response) throws JsonProcessingException {
+        SocialUserInfoDto socialUserInfoDto = null;
+        switch (socialPath) {
+            case "kakao":
+                socialUserInfoDto = authKakaoService.socialLogin(code, "");
+                break;
+            case "google":
+                socialUserInfoDto = authGoogleService.socialLogin(code, "");
+                break;
+            case "naver":
+                socialUserInfoDto = authNaverService.socialLogin(code, state);
+                break;
+        }
+        if (socialUserInfoDto == null) {
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
+
+        String loginId = login(socialUserInfoDto);
+        JwtTokenDto jwtTokenDto = getJwtTokenDto(loginId);
+
+        setJwtCookie(response, jwtTokenDto);
+    }
 
     @Transactional
     public String login(SocialUserInfoDto socialUserInfoDto) {
@@ -63,9 +93,9 @@ public class AuthService {
             refreshToken.get().updateToken(jwtTokenDto.getRefreshToken());
         } else {
             refreshTokenRepository.save(RefreshToken.builder()
-                                                    .loginId(loginId)
-                                                    .refreshToken(jwtTokenDto.getRefreshToken())
-                                                    .build());
+                    .loginId(loginId)
+                    .refreshToken(jwtTokenDto.getRefreshToken())
+                    .build());
         }
 
         return jwtTokenDto;
@@ -125,23 +155,35 @@ public class AuthService {
         return generateSocialUserInfoDto(null, null, null, social);
     }
 
-    public SocialUserInfoDto naver(String code) {
-
-        //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
-        // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
-
-
-        Social social = Social.NAVER;
-        return generateSocialUserInfoDto(null, null, null, social);
+    public SocialUserInfoDto generateSocialUserInfoDto(String loginId, String nickname, String profileImage,
+                                                        Social social) {
+        return SocialUserInfoDto.builder()
+                .loginId(loginId)
+                .nickname(nickname)
+                .profileImage(profileImage)
+                .social(social).build();
     }
 
+    public void setJwtCookie(HttpServletResponse response, JwtTokenDto jwtTokenDto) {
 
-    private SocialUserInfoDto generateSocialUserInfoDto(String loginId, String nickname, String profileImage,
-            Social social) {
-        return SocialUserInfoDto.builder()
-                                .loginId(loginId)
-                                .nickname(nickname)
-                                .profileImage(profileImage)
-                                .social(social).build();
+        ResponseCookie responseCookie = ResponseCookie.from("accessToken", jwtTokenDto.getAccessToken())
+                .domain("cooperate-up.com")
+                .httpOnly(false)
+                .maxAge(60 * 30)
+                .sameSite("None")
+                .secure(true)
+                .path("/").build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
+        responseCookie = ResponseCookie.from("refreshToken", jwtTokenDto.getRefreshToken())
+                .domain("cooperate-up.com")
+                .httpOnly(false)
+                .maxAge(60 * 60 * 24)
+                .sameSite("None")
+                .secure(true)
+                .path("/").build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
     }
 }
