@@ -130,14 +130,7 @@ public class DocumentController {
     public DocumentDto getLastestDocument(@RequestParam("pjId") String pjId) {
         return documentService.getLastestDocument(pjId);
     }
-//    @GetMapping("/docs/new")
-//    public ResponseEntity<DocumentDto> getNewDoc(@RequestParam("pjId") String pjId) {
-//
-//        // 선택문서 상세 조회 서비스 호출
-//        DocumentDto documentDto = documentService.getLastestDocument(pjId);
-//        // 반환값 : 선택 문서 상세 조회값, 상태값(200)
-//        return ResponseEntity.ok(documentDto);
-//    }
+
 
         private boolean isValidMember () {
 
