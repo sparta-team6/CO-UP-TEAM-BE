@@ -40,6 +40,7 @@ public class FolderDto {
 
 
     public FolderDto(Folder folder) {
+        this.pjId = folder.getProject().getId();
         this.dfId = folder.getId().toString();
         this.title = folder.getTitle();
         this.position = folder.getPosition();

@@ -1,10 +1,12 @@
 package com.hanghae.coupteambe.api.domain.repository.document;
 
+import com.hanghae.coupteambe.api.domain.dto.document.DocumentDto;
 import com.hanghae.coupteambe.api.domain.entity.document.Document;
 import com.hanghae.coupteambe.api.domain.entity.document.Folder;
 import com.hanghae.coupteambe.api.domain.entity.document.QDocument;
 import com.hanghae.coupteambe.api.domain.entity.document.QFolder;
 import com.hanghae.coupteambe.api.enumerate.StatusFlag;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -39,4 +41,34 @@ public class DocumentFolderRepositoryImpl implements DocumentFolderRepositoryCus
                 .orderBy(document.createdTime.asc())
                 .distinct().fetch();
     }
+
+    @Override
+    public DocumentDto findLastestDocument_DSL(String projectId) {
+        QDocument document = QDocument.document;
+        QFolder folder = QFolder.folder;
+
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        DocumentDto.class,
+                        folder.id,
+                        document.folder.project.id,
+                        document.id,
+                        document.title,
+                        document.contents,
+                        document.position,
+                        document.managerNickname,
+                        document.createdTime,
+                        document.modifiedTime))
+                .from(document)
+                .leftJoin(folder)
+                .fetchJoin()
+                .on(document.folder.id.eq(folder.id))
+                .where(folder.project.id.eq(UUID.fromString(projectId))
+                        .and(folder.delFlag.eq(StatusFlag.NORMAL))
+                        .and(document.delFlag.eq(StatusFlag.NORMAL)))
+                .orderBy(document.modifiedTime.desc())
+                .limit(1)
+                .distinct().fetchOne();
+    }
+
 }

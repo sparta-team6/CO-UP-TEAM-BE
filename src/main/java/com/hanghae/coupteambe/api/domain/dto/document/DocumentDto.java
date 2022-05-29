@@ -16,6 +16,8 @@ import java.util.UUID;
 public class DocumentDto {
     //폴더번호
     private UUID dfId;
+    // 프로젝트 ID
+    private UUID pjId;
     //문서번호
     private UUID docId;
     //제목
@@ -32,6 +34,8 @@ public class DocumentDto {
     private LocalDateTime modifiedTime;
 
     public DocumentDto(Document document) {
+        this.dfId = document.getFolder().getId();
+        this.pjId = document.getFolder().getProject().getId();
         this.docId = document.getId();
         this.title = document.getTitle();
         this.contents = document.getContents();

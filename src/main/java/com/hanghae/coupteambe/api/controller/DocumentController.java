@@ -123,14 +123,31 @@ public class DocumentController {
         return ResponseEntity.ok(documentDto);
     }
 
-    private boolean isValidMember() {
+    /**
+     * M1-9 최신 문서 조회
+     */
+    @GetMapping("/docs/new")
+    public DocumentDto getLastestDocument(@RequestParam("pjId") String pjId) {
+        return documentService.getLastestDocument(pjId);
+    }
+//    @GetMapping("/docs/new")
+//    public ResponseEntity<DocumentDto> getNewDoc(@RequestParam("pjId") String pjId) {
+//
+//        // 선택문서 상세 조회 서비스 호출
+//        DocumentDto documentDto = documentService.getLastestDocument(pjId);
+//        // 반환값 : 선택 문서 상세 조회값, 상태값(200)
+//        return ResponseEntity.ok(documentDto);
+//    }
 
-        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        private boolean isValidMember () {
 
-        //todo 프로젝트에 참가한 멤버인지 확인 로직 작성해야함
-        // 권한이 없는 멤버라면 '프로젝트 권한이 없습니다' 예외 처리.
+            String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return true;
+            //todo 프로젝트에 참가한 멤버인지 확인 로직 작성해야함
+            // 권한이 없는 멤버라면 '프로젝트 권한이 없습니다' 예외 처리.
+
+            return true;
+        }
+
     }
 
-}

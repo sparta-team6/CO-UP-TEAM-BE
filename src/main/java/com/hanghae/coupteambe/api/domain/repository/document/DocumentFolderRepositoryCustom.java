@@ -1,5 +1,6 @@
 package com.hanghae.coupteambe.api.domain.repository.document;
 
+import com.hanghae.coupteambe.api.domain.dto.document.DocumentDto;
 import com.hanghae.coupteambe.api.domain.entity.document.Document;
 import com.hanghae.coupteambe.api.domain.entity.document.Folder;
 
@@ -13,4 +14,5 @@ public interface DocumentFolderRepositoryCustom {
 
     List<Folder> findFoldersAndDocumentsByProject_Id_DSL(String projectId);
     List<Document> findDocumentByFolder_Id_DSL(UUID folderId);
+    DocumentDto findLastestDocument_DSL(String projectId);
 }
