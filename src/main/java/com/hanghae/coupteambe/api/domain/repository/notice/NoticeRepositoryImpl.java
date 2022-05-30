@@ -37,7 +37,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
                 .fetchJoin()
                 .where(projectMember.project.id.eq(pjId)
                         .and(notice.delFlag.eq(StatusFlag.NORMAL)))
-                .orderBy(notice.modifiedTime.asc())
+                .orderBy(notice.modifiedTime.desc())
                 .distinct().fetch();
     }
 
