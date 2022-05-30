@@ -19,9 +19,9 @@ public class ChattingService {
         chattingRepository.save(new ChatMessage(messageDto));
     }
 
-    public List<MessageDto> getChatMessages(String pjId, Long id) {
-        List<ChatMessage> chatMessages = chattingRepository.findTop20ByPjIdAndIdLessThanOrderByIdDesc(
-                pjId, id);
+    public List<MessageDto> getChatMessages(String pjId, Long id, Integer size) {
+        List<ChatMessage> chatMessages = chattingRepository.getChattingMessages(
+                pjId, id, size);
         return chatMessages.stream().map(MessageDto::new).collect(Collectors.toList());
     }
 }
