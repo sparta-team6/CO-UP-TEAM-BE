@@ -30,9 +30,10 @@ public class ChatController {
     @GetMapping("/api/chatting")
     @ResponseBody
     public ResponseEntity<List<MessageDto>> chatLoad(@RequestParam("pjId") String pjId,
-            @RequestParam(value = "id", defaultValue = Long.MAX_VALUE + "") Long id) {
+            @RequestParam(value = "id", defaultValue = Long.MAX_VALUE + "") Long id,
+            @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
-        List<MessageDto> messages = chattingService.getChatMessages(pjId, id);
+        List<MessageDto> messages = chattingService.getChatMessages(pjId, id, size);
 
         return ResponseEntity.ok(messages);
     }
