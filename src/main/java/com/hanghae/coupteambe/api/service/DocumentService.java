@@ -1,6 +1,7 @@
 package com.hanghae.coupteambe.api.service;
 
 import com.hanghae.coupteambe.api.domain.dto.document.DocumentDto;
+import com.hanghae.coupteambe.api.domain.dto.document.FolderDto;
 import com.hanghae.coupteambe.api.domain.entity.document.Document;
 import com.hanghae.coupteambe.api.domain.entity.document.Folder;
 import com.hanghae.coupteambe.api.domain.entity.member.Member;
@@ -19,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,24 +40,24 @@ public class DocumentService {
     public DocumentDto createDocuments(DocumentDto documentDto) {
         // 1. 로그인 한 유저의 로그인 ID 추출
         String loginId = SecurityUtil.getCurrentUsername()
-                                     // 1-1. 로그인 안된 경우 예외처리
-                                     .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+                // 1-1. 로그인 안된 경우 예외처리
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
 
         // 2. DB 에 해당 유저가 존재하는지 확인
         Member member = memberRepository.findByLoginId(loginId)
-                                        // 2-1. 존재하지 않는 경우 예외처리
-                                        .orElseThrow(
-                                                () -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+                // 2-1. 존재하지 않는 경우 예외처리
+                .orElseThrow(
+                        () -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
         // 3. DB 에 해당 문서를 저장할 폴더가 존재하는지 조회
         Folder folder = documentFolderRepository.findById(documentDto.getDfId())
-                                                .orElseThrow(
-                                                        () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
+                .orElseThrow(
+                        () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
 
         // 3. 프로젝트 조회
         Project project = projectRepository.findById(folder.getProject().getId())
-                                           // 3-1. 존재하지 않는 경우 예외처리
-                                           .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
+                // 3-1. 존재하지 않는 경우 예외처리
+                .orElseThrow(() -> new RequestException(ErrorCode.PROJECT_NOT_FOUND_404));
 
         // 4. 유저 권한 조회
         Optional<ProjectMember> projectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), project.getId());
@@ -67,12 +68,13 @@ public class DocumentService {
                 long cntDocuments = documentRepository.countAllByfolder_Id(folder.getId());
                 // 7. 새 문서 객체를 생성한다.
                 Document document = Document.builder()
-                                            .folder(folder)
-                                            .title(documentDto.getTitle())
-                                            .contents(documentDto.getContents())
-                                            .position((int) cntDocuments)
-                                            .managerNickname(member.getNickname())
-                                            .build();
+                        .project(project)
+                        .folder(folder)
+                        .title(documentDto.getTitle())
+                        .contents(documentDto.getContents())
+                        .position((int) cntDocuments)
+                        .managerNickname(member.getNickname())
+                        .build();
 
                 // 7. 새로 생성한 객체를 Repository 를 이용하여 DB에 저장한다
                 return new DocumentDto(documentRepository.save(document));
@@ -134,5 +136,12 @@ public class DocumentService {
 
         return new DocumentDto(document);
 
+    }
+
+    /**
+     * M1-9 최신 문서 조회
+     */
+    public DocumentDto getLastestDocument(String projectId) {
+        return documentFolderRepository.findLastestDocument_DSL(projectId);
     }
 }

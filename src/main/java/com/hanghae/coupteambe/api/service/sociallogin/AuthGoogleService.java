@@ -1,4 +1,4 @@
-package com.hanghae.coupteambe.api.service;
+package com.hanghae.coupteambe.api.service.sociallogin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
-public class AuthGoogleService {
+public class AuthGoogleService implements SocialLoginService {
 
     @Value("${auth.google.client-id}")
     private String googleClientId;
@@ -30,18 +30,18 @@ public class AuthGoogleService {
     private String googleRedirectUri;
 
     // 구글 로그인
-    public SocialUserInfoDto google(String code) throws JsonProcessingException {
+    public SocialUserInfoDto socialLogin(String code, String state) throws JsonProcessingException {
 
         // 인가코드로 엑세스토큰 가져오기
-        String accessToken = getAccessToken(code);
+        String accessToken = getAccessToken(code, state);
 
         // 엑세스토큰으로 유저정보 가져오기
-        return getGoogleUserInfo(accessToken);
+        return getUserInfo(accessToken);
 
     }
 
     // 인가코드로 엑세스토큰 가져오기
-    private String getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code, String state) throws JsonProcessingException {
 
         // 헤더에 Content-type 지정
         HttpHeaders headers = new HttpHeaders();
@@ -49,7 +49,7 @@ public class AuthGoogleService {
 
         // 바디에 필요한 정보 담기
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("client_id" , googleClientId);
+        body.add("client_id", googleClientId);
         body.add("client_secret", googleClientSecret);
         body.add("code", code);
         body.add("redirect_uri", googleRedirectUri);
@@ -75,7 +75,7 @@ public class AuthGoogleService {
     }
 
     // 엑세스토큰으로 유저정보 가져오기
-    private SocialUserInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+    public SocialUserInfoDto getUserInfo(String accessToken) throws JsonProcessingException {
 
         // 헤더에 엑세스토큰 담기, Content-type 지정
         HttpHeaders headers = new HttpHeaders();

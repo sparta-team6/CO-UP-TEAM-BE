@@ -1,4 +1,4 @@
-package com.hanghae.coupteambe.api.service;
+package com.hanghae.coupteambe.api.service.sociallogin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,19 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
-public class AuthKakaoService {
-
-    public SocialUserInfoDto kakao(String code) throws JsonProcessingException {
-
-        //todo 프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
-        // 인증받은 사용자의 정보를 이용하여 SocialUserInfoDto를 생성하여 반환한다.
-
-        //프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
-        String accessToken = getAccessToken(code);
-
-        //인증받은 사용자의 정보를 이용하여 SocialUserInfoDto 를 생성하여 반환한다.
-        return getKakaoUserInfo(accessToken);
-    }
+public class AuthKakaoService implements SocialLoginService {
 
     @Value("${auth.kakao.client-id}")
     private String kakaoClientKId;
@@ -41,8 +29,16 @@ public class AuthKakaoService {
     @Value("${auth.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
+    public SocialUserInfoDto socialLogin(String code, String state) throws JsonProcessingException {
+        //프론트에서 받은 인가코드를 기반으로 인증서버에게 인증 받고,
+        String accessToken = getAccessToken(code, state);
+
+        //인증받은 사용자의 정보를 이용하여 SocialUserInfoDto 를 생성하여 반환한다.
+        return getUserInfo(accessToken);
+    }
+
     // 1. "인가 코드"로 "액세스 토큰" 요청
-    private String getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code, String state) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -84,7 +80,7 @@ public class AuthKakaoService {
     }
 
     // 2. "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
-    private SocialUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
+    public SocialUserInfoDto getUserInfo(String accessToken) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -115,9 +111,9 @@ public class AuthKakaoService {
         log.debug("프로필이미지 URL : " + profile_image);
 
         return SocialUserInfoDto.builder()
-                                .loginId(email)
-                                .nickname(nickname)
-                                .profileImage(profile_image)
-                                .social(Social.KAKAO).build();
+                .loginId(email)
+                .nickname(nickname)
+                .profileImage(profile_image)
+                .social(Social.KAKAO).build();
     }
 }
