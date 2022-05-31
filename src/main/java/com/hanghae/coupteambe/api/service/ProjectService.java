@@ -281,6 +281,35 @@ public class ProjectService {
         }
     }
 
+    /**
+     * M5-11 프로젝트 나가기,추방 한사람 복구
+     */
+    @Transactional
+    public void recoveryProject(UUID pjId, String loginId)  {
+        // 1. 현재 로그인한 유저의 ID 조회
+        String adminLoginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 2. 해당 멤버가 존재하지 않는 경우 예외처리
+        Optional<Member> optionalMember = memberRepository.findByLoginId(adminLoginId);
+        Member member = optionalMember
+                .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+        // 3. 프로젝트 참여 여부 조회 후 참여하지 않은 경우 예외처리
+        Optional<ProjectMember> optionalProjectMember = projectMemberRepository.findByMemberIdAndProjectId(member.getId(), pjId);
+        ProjectMember projectMember = optionalProjectMember
+                .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+        if (projectMember.getRole().equals(ProjectRole.ADMIN)) {
+            // 4. 프로젝트 참여 여부 조회 후 참여한 경우 프로젝트 참여 삭제
+            Member findRecoveryMember = memberRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+            Optional<ProjectMember> optionalRecoveryMember = projectMemberRepository.findByMemberIdAndProjectId(findRecoveryMember.getId(), pjId);
+            ProjectMember recoveryMember = optionalRecoveryMember
+                    .orElseThrow(() -> new RequestException(ErrorCode.COMMON_BAD_REQUEST_400));
+            recoveryMember.recovery();
+        } else {
+            // private : 접근오류
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
+    }
+
     private boolean isPublic(Project project) {
         return true;
     }
