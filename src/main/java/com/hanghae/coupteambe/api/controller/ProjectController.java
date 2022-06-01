@@ -112,4 +112,17 @@ public class ProjectController {
 
 
     }
+
+    /**
+     * M5-11 프로젝트 나가기,추방 한사람 복구
+     */
+    @PatchMapping("/recovery/{pjId}&{loginId}")
+    public ResponseEntity<ResResultDto> recoveryProject(@PathVariable String pjId, @PathVariable String loginId) {
+
+        projectService.recoveryProject(UUID.fromString(pjId),(loginId));
+
+        return ResponseEntity.ok(new ResResultDto("회원복구 완료"));
+
+
+    }
 }
