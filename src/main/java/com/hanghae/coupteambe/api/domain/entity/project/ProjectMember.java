@@ -50,6 +50,9 @@ public class ProjectMember extends BaseTimeEntity {
     public void delete() {
         this.delFlag = StatusFlag.DELETED;
     }
+    public void recovery() {
+        this.delFlag = StatusFlag.NORMAL;
+    }
 
     public ProjectMember(Member member, Project project, ProjectRole projectRole, int position) {
         this.member = member;
