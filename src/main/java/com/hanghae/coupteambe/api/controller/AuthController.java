@@ -3,7 +3,10 @@ package com.hanghae.coupteambe.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hanghae.coupteambe.api.domain.dto.JwtTokenDto;
 import com.hanghae.coupteambe.api.domain.dto.ResResultDto;
+import com.hanghae.coupteambe.api.domain.dto.social.SocialUserInfoDto;
 import com.hanghae.coupteambe.api.service.sociallogin.AuthService;
+import com.hanghae.coupteambe.api.service.sociallogin.SocialLoginService;
+import com.hanghae.coupteambe.api.service.sociallogin.SocialLoginServiceMap;
 import com.hanghae.coupteambe.api.util.exception.ErrorCode;
 import com.hanghae.coupteambe.api.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +28,28 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
 
     private final AuthService authService;
+    private final SocialLoginServiceMap socialLoginServiceMap;
+
 
     @PostMapping("/{social}")
     public ResponseEntity<ResResultDto> login(
             @PathVariable("social") String socialPath, @RequestParam(name = "code") String code, String state,
             HttpServletResponse response) throws JsonProcessingException {
 
-        authService.socialLogin(socialPath, code, state, response);
+        SocialLoginService socialLoginService = socialLoginServiceMap.get(socialPath);
+        if (socialLoginService == null) {
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
+
+        SocialUserInfoDto socialUserInfoDto = socialLoginService.socialLogin(code, state);
+        if (socialUserInfoDto == null) {
+            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
+        }
+
+        String loginId = authService.login(socialUserInfoDto);
+        JwtTokenDto jwtTokenDto = authService.getJwtTokenDto(loginId);
+
+        authService.setJwtCookie(response, jwtTokenDto);
 
         return ResponseEntity.ok(new ResResultDto("로그인 성공"));
     }
