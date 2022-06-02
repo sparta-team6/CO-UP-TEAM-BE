@@ -148,37 +148,24 @@ public class KanbanService {
      * M2-6 카드 수정
      */
     @Transactional
-    public void modifyCard(CardInfoDto cardInfoDto) {
+    public void modifyCard(CardInfoDto nextCardInfoDto) {
 
-        // 1. 파라매터로 받은 카드 객체에서 필요한 데이터를 추출한다.
-        UUID cardId = cardInfoDto.getKbcId();
-
-        // 2. 카드 ID를 key 로 해당 카드를 DB 에서 조회한다. Repository(JPA)이용
-        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository.findByIdAndDelFlag(cardId, StatusFlag.NORMAL);
-        KanbanCard targetCard = optionalKanbanCard.orElseThrow(
+        Optional<KanbanCard> optionalKanbanCard = kanbanCardRepository
+                .findByIdAndDelFlag(nextCardInfoDto.getKbcId(), StatusFlag.NORMAL);
+        KanbanCard currentCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
-        // 3. 새 카드 객체를 생성하고 조회한 카드로 초기화 한다.
-        // 4. 카드를 업데이트 시킨다.
-        //todo 버킷ID만 바꿔주면 될것같은데, JPA에서는 꼭 객체를 조회한 다음 객체를 바꿔야하는것인지?
-        List<KanbanCard> srcCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
-                targetCard.getKanbanBucket().getId(),
-                targetCard.getPosition(), StatusFlag.NORMAL);
-        srcCards.forEach(KanbanCard::minusPosition);
+        kanbanCardRepository.decreaseCardsPosition(currentCard.getKanbanBucket().getId(), currentCard.getPosition());
+        kanbanCardRepository.increaseCardsPosition(nextCardInfoDto.getKbbId(), nextCardInfoDto.getPosition());
 
-        List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
-                cardInfoDto.getKbbId(),
-                cardInfoDto.getPosition(), StatusFlag.NORMAL);
-        dstCards.forEach(KanbanCard::plusPosition);
-
-        UUID dstBucketId = cardInfoDto.getKbbId();
+        UUID dstBucketId = nextCardInfoDto.getKbbId();
         Optional<KanbanBucket> optTargetBucket = kanbanBucketRepository.findByIdAndDelFlag(dstBucketId,
                 StatusFlag.NORMAL);
         KanbanBucket dstBucket = optTargetBucket.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_BUCKET_NOT_FOUND_404));
 
-        targetCard.updateKanbanCard(cardInfoDto);
-        targetCard.updateBucket(dstBucket);
+        currentCard.updateKanbanCard(nextCardInfoDto);
+        currentCard.updateBucket(dstBucket);
     }
 
     /**
@@ -191,10 +178,7 @@ public class KanbanService {
         KanbanCard targetCard = optionalKanbanCard.orElseThrow(
                 () -> new RequestException(ErrorCode.KANBAN_CARD_NOT_FOUND_404));
 
-        List<KanbanCard> dstCards = kanbanCardRepository.findCardsByKanbanBucketIdAndPositionGreaterThanEqualAndDelFlag(
-                targetCard.getKanbanBucket().getId(),
-                targetCard.getPosition(), StatusFlag.NORMAL);
-        dstCards.forEach(KanbanCard::minusPosition);
+        kanbanCardRepository.decreaseCardsPosition(targetCard.getKanbanBucket().getId(), targetCard.getPosition());
 
         targetCard.delete();
 

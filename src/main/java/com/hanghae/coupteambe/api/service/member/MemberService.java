@@ -98,5 +98,18 @@ public class MemberService {
         return new ResMemberInfoDto(member);
     }
 
+    /**
+     * M4-11 회원탈퇴
+     */
+    @Transactional
+    public void deleteMember(String loginId) {
+        // 1. 파라미터로 받은 loginId를 key로 멤버 정보를 조회한다
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+
+        // 2. 회원 탈퇴 처리
+        memberRepository.delete(member);
+    }
+
 
 }

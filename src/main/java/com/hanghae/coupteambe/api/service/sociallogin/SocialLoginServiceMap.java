@@ -8,9 +8,12 @@ import java.util.HashMap;
 @Component
 public class SocialLoginServiceMap extends HashMap<String, SocialLoginService> {
 
-    public SocialLoginServiceMap() {
-        this.put(Social.GOOGLE.getSocial(), new AuthGoogleService());
-        this.put(Social.KAKAO.getSocial(), new AuthKakaoService());
-        this.put(Social.NAVER.getSocial(), new AuthNaverService());
+    public SocialLoginServiceMap(AuthGoogleService authGoogleService,
+            AuthKakaoService authKakaoService,
+            AuthNaverService authNaverService) {
+
+        this.put(Social.GOOGLE.getSocial(), authGoogleService);
+        this.put(Social.KAKAO.getSocial(), authKakaoService);
+        this.put(Social.NAVER.getSocial(), authNaverService);
     }
 }
