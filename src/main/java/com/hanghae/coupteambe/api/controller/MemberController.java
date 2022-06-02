@@ -67,4 +67,16 @@ public class MemberController {
         // 반환값 : 본인 정보, 상태값(200)
         return ResponseEntity.ok(memberInfoDto);
     }
+
+    /**
+     * M4-11 회원탈퇴
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResResultDto> deleteMember(@RequestParam("loginId") String loginId) {
+
+        memberService.deleteMember(loginId);
+
+        // 반환값 : 결과 메시지, 상태값(200)
+        return ResponseEntity.ok(new ResResultDto("회원 탈퇴 성공"));
+    }
 }
