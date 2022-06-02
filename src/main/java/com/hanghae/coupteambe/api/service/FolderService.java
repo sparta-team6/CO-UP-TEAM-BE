@@ -12,6 +12,7 @@ import com.hanghae.coupteambe.api.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.lang.model.type.ArrayType;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,8 @@ public class FolderService {
         Optional<Folder> optionalFolder = documentFolderRepository.findById(UUID.fromString(dfId));
         Folder folder = optionalFolder.orElseThrow(
                 () -> new RequestException(ErrorCode.FOLDER_NOT_FOUND_404));
-
+        List<Document> documents = folder.getDocuments();
+        documents.forEach(document -> document.delete());
         folder.delete();
     }
 

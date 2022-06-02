@@ -1,6 +1,5 @@
 package com.hanghae.coupteambe.api.service.sociallogin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hanghae.coupteambe.api.domain.dto.JwtTokenDto;
 import com.hanghae.coupteambe.api.domain.dto.social.SocialUserInfoDto;
 import com.hanghae.coupteambe.api.domain.entity.member.Member;
@@ -36,32 +35,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final AuthKakaoService authKakaoService;
-    private final AuthGoogleService authGoogleService;
-    private final AuthNaverService authNaverService;
-
-    public void socialLogin(String socialPath, String code, String state, HttpServletResponse response) throws JsonProcessingException {
-        SocialUserInfoDto socialUserInfoDto = null;
-        switch (socialPath) {
-            case "kakao":
-                socialUserInfoDto = authKakaoService.socialLogin(code, "");
-                break;
-            case "google":
-                socialUserInfoDto = authGoogleService.socialLogin(code, "");
-                break;
-            case "naver":
-                socialUserInfoDto = authNaverService.socialLogin(code, state);
-                break;
-        }
-        if (socialUserInfoDto == null) {
-            throw new RequestException(ErrorCode.COMMON_BAD_REQUEST_400);
-        }
-
-        String loginId = login(socialUserInfoDto);
-        JwtTokenDto jwtTokenDto = getJwtTokenDto(loginId);
-
-        setJwtCookie(response, jwtTokenDto);
-    }
 
     @Transactional
     public String login(SocialUserInfoDto socialUserInfoDto) {
