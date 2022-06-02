@@ -7,4 +7,8 @@ import java.util.UUID;
 
 public interface KanbanCardRepositoryCustom {
     List<KanbanCard> findCardsByKanbanBucket_Id_DSL(UUID kanbanBucketId);
+
+    long increaseCardsPosition(UUID bucketId, int position);
+
+    long decreaseCardsPosition(UUID bucketId, int position);
 }
