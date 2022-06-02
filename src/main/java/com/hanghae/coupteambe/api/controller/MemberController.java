@@ -71,7 +71,7 @@ public class MemberController {
     /**
      * M4-11 회원탈퇴
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/")
     public ResponseEntity<ResResultDto> deleteMember(@RequestParam("loginId") String loginId) {
 
         memberService.deleteMember(loginId);
