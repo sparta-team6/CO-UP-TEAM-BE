@@ -106,18 +106,8 @@ public class MemberService {
         // 1. 파라미터로 받은 loginId를 key로 멤버 정보를 조회한다
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
         Member member = optionalMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
-        // 2. 현재 로그인한 유저의 ID 조회
-        String LoginId = SecurityContextHolder.getContext().getAuthentication().getName();
-        // 3. 현재 로그인한 유저가 존재하지 않는 경우 예외처리
-        Optional<Member> tokenMember = memberRepository.findByLoginId(LoginId);
-        Member tokenmember = tokenMember.orElseThrow(() -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
 
-        // 4. 로그인한 유저와 탈퇴할 유저가 일치하지않는 경우 예외처리
-        if (!tokenmember.getLoginId().equals(member.getLoginId())) {
-            throw new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404);
-        }
-
-        // 5. 회원 탈퇴 처리
+        // 2. 회원 탈퇴 처리
         memberRepository.delete(member);
     }
 

@@ -4,8 +4,11 @@ import com.hanghae.coupteambe.api.domain.dto.ResResultDto;
 import com.hanghae.coupteambe.api.domain.dto.member.ReqMemberInfoDto;
 import com.hanghae.coupteambe.api.domain.dto.member.ResMemberInfoDto;
 import com.hanghae.coupteambe.api.service.member.MemberService;
+import com.hanghae.coupteambe.api.util.exception.ErrorCode;
+import com.hanghae.coupteambe.api.util.exception.RequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,7 +76,10 @@ public class MemberController {
      */
     @DeleteMapping("/")
     public ResponseEntity<ResResultDto> deleteMember(@RequestParam("loginId") String loginId) {
-
+        String currentLoginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!currentLoginId.equals(loginId)) {
+            throw new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404);
+        }
         memberService.deleteMember(loginId);
 
         // 반환값 : 결과 메시지, 상태값(200)
