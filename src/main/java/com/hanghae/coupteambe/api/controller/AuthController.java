@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hanghae.coupteambe.api.domain.dto.JwtTokenDto;
 import com.hanghae.coupteambe.api.domain.dto.ResResultDto;
 import com.hanghae.coupteambe.api.domain.dto.social.SocialUserInfoDto;
-import com.hanghae.coupteambe.api.service.sociallogin.AuthService;
+import com.hanghae.coupteambe.api.service.sociallogin.*;
 import com.hanghae.coupteambe.api.service.sociallogin.SocialLoginService;
 import com.hanghae.coupteambe.api.service.sociallogin.SocialLoginServiceMap;
 import com.hanghae.coupteambe.api.util.exception.ErrorCode;

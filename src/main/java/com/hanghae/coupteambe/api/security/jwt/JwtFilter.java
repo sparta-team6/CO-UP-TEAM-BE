@@ -36,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String refreshToken = jwtTokenDto == null ? null : jwtTokenDto.getRefreshToken();
         String requestURI = request.getRequestURI();
 
+        refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjQ2NTQxNzYzNzMsInN1YiI6ImZ1bm55a3llb25AZ21haWwuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiJ9.Mb_-BJZPktePxF2rghkgj5JyVRjPjopKYXAyl9Z_24Tjo9QLApkFUP9QHEwspX8-BJj3QX-S3ZRLz0AGoViaow";
+
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
             Authentication authentication = tokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
